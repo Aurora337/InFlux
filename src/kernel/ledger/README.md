@@ -1,0 +1,1 @@
+Ledger kernel: CTOR pipeline, serialization, sorting, and hash synchronization.

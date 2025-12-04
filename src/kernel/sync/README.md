@@ -1,0 +1,1 @@
+Synchronization kernel: GDE, ROS, SHCM, AINF placeholders.

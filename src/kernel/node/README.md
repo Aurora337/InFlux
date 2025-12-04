@@ -1,0 +1,1 @@
+Node types: VN, SN, REN, LN, AN, PTN, FI (placeholders).

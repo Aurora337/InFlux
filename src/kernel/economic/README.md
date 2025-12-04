@@ -1,0 +1,1 @@
+Economic kernel: reproduction, currency delta (ΔC), state machine and constants.
