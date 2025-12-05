@@ -1,0 +1,65 @@
+mkdir -p config \
+  config/kernel \
+  config/math \
+  config/economic \
+  config/ledger \
+  config/sync \
+  config/alignment \
+  config/node \
+  config/platform \
+  config/institution \
+  config/regulatory
+
+# Kernel configuration files
+touch config/kernel/kernel_constants.yaml
+touch config/kernel/kernel_modes.yaml
+touch config/kernel/kernel_startup_sequence.yaml
+
+# Math kernel configuration
+touch config/math/fpe_precision.yaml
+touch config/math/dro_rules.yaml
+touch config/math/sgf_parameters.yaml
+
+# Economic Engine configuration
+touch config/economic/economic_constants.yaml
+touch config/economic/reproduction_rules.yaml
+touch config/economic/deltaC_rules.yaml
+touch config/economic/esm_transitions.yaml
+
+# Ledger configuration
+touch config/ledger/pipeline_stages.yaml
+touch config/ledger/serialization_format.yaml
+touch config/ledger/ctor_sort_rules.yaml
+touch config/ledger/hash_protocol.yaml
+
+# Synchronization Kernel configuration
+touch config/sync/gde_rules.yaml
+touch config/sync/ros_windows.yaml
+touch config/sync/shcm_parameters.yaml
+touch config/sync/ainf_normalization.yaml
+
+# Alignment routing configuration
+touch config/alignment/alignment_matrix.yaml
+touch config/alignment/actor_roles.yaml
+touch config/alignment/routing_paths.yaml
+
+# Node behavior configuration
+touch config/node/validator_node.yaml
+touch config/node/standard_node.yaml
+touch config/node/reproduction_node.yaml
+touch config/node/ledger_node.yaml
+touch config/node/analytics_node.yaml
+touch config/node/platform_node.yaml
+touch config/node/fi_node.yaml
+
+# Platform configuration
+touch config/platform/platform_routing.yaml
+touch config/platform/multi_tenant_rules.yaml
+
+# Institutional configuration
+touch config/institution/fi_compliance.yaml
+touch config/institution/fi_shadow_ledger.yaml
+
+# Regulatory configuration
+touch config/regulatory/reg_observer_mode.yaml
+touch config/regulatory/reg_integrity_checks.yaml
