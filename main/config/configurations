@@ -1,0 +1,5 @@
+config/default.yaml
+config/testnet.yaml
+config/prototype.yaml
+config/node_roles.yaml
+config/logging.yaml
