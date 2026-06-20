@@ -41,6 +41,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - generate_sync_ops_audit_log.py
 - validate_sync_ops_audit_log.py
 - run_sync_ops_audit_assurance_pipeline.py
+- validate_sync_ops_audit_assurance_pipeline.py
 
 ## Quick Start
 Run from the repository root:
@@ -281,4 +282,11 @@ Run deterministic degraded scenarios from repository root:
 - Pipeline outputs:
 	- `testnet/launch/sync_ops_audit_assurance_pipeline.json`
 	- `testnet/launch/sync_ops_audit_assurance_pipeline.md`
+
+## v1.0.4 Audit Assurance Pipeline Validation
+- Validate deterministic integrity and cross-artifact consistency of audit assurance pipeline outputs:
+	- `python scripts/testnet/validate_sync_ops_audit_assurance_pipeline.py`
+- Validation outputs:
+	- `testnet/launch/sync_ops_audit_assurance_pipeline_validation.json`
+	- `testnet/launch/sync_ops_audit_assurance_pipeline_validation.md`
 
