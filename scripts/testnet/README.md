@@ -11,6 +11,8 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - emit_messages.py
 - verify_network.py
 - run_fault_scenarios.py
+- exchange_state.py
+- verify_state_sync.py
 
 ## Quick Start
 Run from the repository root:
@@ -40,3 +42,12 @@ Run deterministic degraded scenarios from repository root:
 - Output:
 	- `testnet/launch/fault_report.json`
 	- `testnet/launch/fault_report.md`
+
+## v0.8.1 State Sync
+- Build deterministic state payloads from snapshots:
+	- `python scripts/testnet/exchange_state.py`
+- Verify deterministic recovery and generate reports:
+	- `python scripts/testnet/verify_state_sync.py`
+- Outputs:
+	- `testnet/launch/sync_report.json`
+	- `testnet/launch/sync_report.md`
