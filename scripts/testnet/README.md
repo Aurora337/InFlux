@@ -31,6 +31,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - generate_sync_ops_assurance_report.py
 - validate_sync_ops_assurance_report.py
 - run_sync_ops_assurance_pipeline.py
+- generate_sync_ops_governance_report.py
 
 ## Quick Start
 Run from the repository root:
@@ -201,3 +202,10 @@ Run deterministic degraded scenarios from repository root:
 - Pipeline outputs:
 	- `testnet/launch/sync_ops_assurance_pipeline.json`
 	- `testnet/launch/sync_ops_assurance_pipeline.md`
+
+## v0.9.3 Governance Report
+- Generate deterministic governance approval/sign-off report from assurance artifacts:
+	- `python scripts/testnet/generate_sync_ops_governance_report.py`
+- Governance outputs:
+	- `testnet/launch/sync_ops_governance_report.json`
+	- `testnet/launch/sync_ops_governance_report.md`
