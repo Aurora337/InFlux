@@ -39,6 +39,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_sync_ops_finalization_pipeline.py
 - generate_v100_release_gate.py
 - generate_sync_ops_audit_log.py
+- validate_sync_ops_audit_log.py
 
 ## Quick Start
 Run from the repository root:
@@ -259,9 +260,17 @@ Run deterministic degraded scenarios from repository root:
 	- `testnet/launch/sync_ops_release_gate.json`
 	- `testnet/launch/sync_ops_release_gate.md`
 
-## v1.0.1 Audit Log
-- Generate deterministic post-release audit log with SHA-256 hashes for all terminal artifacts:
-	- `python scripts/testnet/generate_sync_ops_audit_log.py`
+## v1.0.1 Post-Release Audit Log
+- Generate deterministic post-release audit log across terminal sync-ops artifacts:
+	- `python scripts/testnet/generate_sync_ops_audit_log.py --release-version 1.0.1`
 - Audit log outputs:
 	- `testnet/launch/sync_ops_audit_log.json`
 	- `testnet/launch/sync_ops_audit_log.md`
+
+## v1.0.2 Audit Log Validation
+- Validate deterministic post-release audit log integrity and artifact hash consistency:
+	- `python scripts/testnet/validate_sync_ops_audit_log.py`
+- Validation outputs:
+	- `testnet/launch/sync_ops_audit_log_validation.json`
+	- `testnet/launch/sync_ops_audit_log_validation.md`
+
