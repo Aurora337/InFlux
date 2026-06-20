@@ -19,6 +19,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_partial_replay_stress.py
 - run_partial_replay_matrix.py
 - run_retry_exhaustion_suite.py
+- run_backoff_latency_suite.py
 
 ## Quick Start
 Run from the repository root:
@@ -96,3 +97,10 @@ Run deterministic degraded scenarios from repository root:
 - Suite outputs:
 	- `testnet/launch/retry_exhaustion_suite.json`
 	- `testnet/launch/retry_exhaustion_suite.md`
+
+## v0.8.6 Backoff Latency Suite
+- Validate deterministic backoff profiles against latency envelopes:
+	- `python scripts/testnet/run_backoff_latency_suite.py`
+- Suite outputs:
+	- `testnet/launch/backoff_latency_suite.json`
+	- `testnet/launch/backoff_latency_suite.md`
