@@ -135,6 +135,50 @@ def run_fault_suite(validators: int, epoch: int, fault_validator: str) -> dict:
     }
 
 
+def render_markdown_report(report: dict) -> str:
+    lines = [
+        "# v0.7.5 Fault Scenario Report",
+        "",
+        f"- Suite: {report['suite']}",
+        f"- Validators: {report['validators']}",
+        f"- Epoch: {report['epoch']}",
+        f"- Fault Validator: {report['fault_validator']}",
+        f"- Scenarios Checked: {report['scenarios_checked']}",
+        f"- Scenarios Passed: {report['scenarios_passed']}",
+        f"- Scenarios Failed: {report['scenarios_failed']}",
+        f"- Overall Status: {report['overall_status']}",
+        "",
+        "## Scenario Results",
+        "",
+        "| Scenario | Mode | Status | Consensus | Network | Agreement | Handshake | Invalid Msg | Missing Msg |",
+        "|---|---|---|---|---|---:|---:|---:|---:|",
+    ]
+
+    for item in report["results"]:
+        health = item["health"]
+        status = "PASS" if item["evaluation_passed"] else f"FAIL ({item['evaluation_reason']})"
+        lines.append(
+            "| "
+            + f"{item['scenario']} | {item['fault_mode']} | {status} | {health.get('consensus_status')} | "
+            + f"{health.get('network_status')} | {health.get('agreement_rate')} | "
+            + f"{health.get('handshake_completion_rate')} | {health.get('invalid_message_count')} | "
+            + f"{health.get('missing_message_count')} |"
+        )
+
+    lines.append("")
+    lines.append("## Launch Output (Per Scenario)")
+    lines.append("")
+    for item in report["results"]:
+        lines.append(f"### {item['scenario']}")
+        lines.append("")
+        lines.append("```text")
+        lines.extend(item.get("launch_output", []))
+        lines.append("```")
+        lines.append("")
+
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run deterministic fault scenarios")
     parser.add_argument("--validators", type=int, default=5, help="Number of validators")
@@ -149,6 +193,11 @@ def main() -> None:
         default="testnet/launch/fault_report.json",
         help="Path to write fault suite report",
     )
+    parser.add_argument(
+        "--markdown-output",
+        default="testnet/launch/fault_report.md",
+        help="Path to write markdown fault suite summary",
+    )
     args = parser.parse_args()
 
     report = run_fault_suite(args.validators, args.epoch, args.fault_validator)
@@ -159,11 +208,18 @@ def main() -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
+    markdown_path = Path(args.markdown_output)
+    if not markdown_path.is_absolute():
+        markdown_path = ROOT / markdown_path
+    markdown_path.parent.mkdir(parents=True, exist_ok=True)
+    markdown_path.write_text(render_markdown_report(report), encoding="utf-8")
+
     print(f"Fault scenarios checked: {report['scenarios_checked']}")
     print(f"Fault scenarios passed: {report['scenarios_passed']}")
     print(f"Fault scenarios failed: {report['scenarios_failed']}")
     print(f"Overall status: {report['overall_status']}")
     print(f"Report: {output_path}")
+    print(f"Markdown Report: {markdown_path}")
 
     raise SystemExit(0 if report["overall_status"] == "PASS" else 1)
 

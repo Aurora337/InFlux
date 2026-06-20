@@ -39,3 +39,4 @@ Run deterministic degraded scenarios from repository root:
 	- `python scripts/testnet/run_fault_scenarios.py`
 - Output:
 	- `testnet/launch/fault_report.json`
+	- `testnet/launch/fault_report.md`
