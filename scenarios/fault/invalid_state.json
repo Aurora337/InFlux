@@ -1,0 +1,14 @@
+{
+  "name": "invalid_state",
+  "validators": ["Validator-A", "Validator-B", "Validator-C", "Validator-D", "Validator-E"],
+  "rounds": 25,
+  "initial_state": {
+    "epoch": 0,
+    "supply": 1000.0,
+    "participants": 100
+  },
+  "events": [
+    {"round": 5, "type": "invalid_state", "validator": "Validator-A"},
+    {"round": 18, "type": "invalid_state", "validator": "Validator-A"}
+  ]
+}

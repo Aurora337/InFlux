@@ -1,0 +1,14 @@
+{
+  "name": "stale_validator",
+  "validators": ["Validator-A", "Validator-B", "Validator-C", "Validator-D", "Validator-E"],
+  "rounds": 25,
+  "initial_state": {
+    "epoch": 0,
+    "supply": 1000.0,
+    "participants": 100
+  },
+  "events": [
+    {"round": 8, "type": "stale_validator", "validator": "Validator-D"},
+    {"round": 9, "type": "stale_validator", "validator": "Validator-D"}
+  ]
+}

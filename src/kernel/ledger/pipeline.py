@@ -1,12 +1,20 @@
-"""pipeline.py
+try:
+    from kernel.state import State
+    from kernel.economic.delta_c import compute_delta
+except ModuleNotFoundError:
+    from state import State
+    from economic.delta_c import compute_delta
 
-Event pipeline placeholder for CTOR stages.
-"""
 
-from typing import List, Any
+def process_pipeline(state: State) -> State:
 
-def process_pipeline(events: List[Any]) -> List[Any]:
-    """Process events through a placeholder pipeline."""
-    return events[:]
+    delta = compute_delta(
+        state.supply,
+        state.participants
+    )
 
-__all__ = ["process_pipeline"]
+    return State(
+        epoch=state.epoch + 1,
+        supply=state.supply + delta,
+        participants=state.participants
+    )

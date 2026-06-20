@@ -1,0 +1,14 @@
+{
+  "name": "late_block",
+  "validators": ["Validator-A", "Validator-B", "Validator-C", "Validator-D", "Validator-E"],
+  "rounds": 25,
+  "initial_state": {
+    "epoch": 0,
+    "supply": 1000.0,
+    "participants": 100
+  },
+  "events": [
+    {"round": 6, "type": "late_block", "validator": "Validator-B"},
+    {"round": 7, "type": "late_block", "validator": "Validator-B"}
+  ]
+}

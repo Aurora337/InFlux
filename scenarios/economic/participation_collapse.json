@@ -1,0 +1,15 @@
+{
+  "name": "participation_collapse",
+  "epochs": 365,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 280.0,
+  "initial_participants": 90,
+  "initial_validators": 5,
+  "target_supply_cap": 7000.0,
+  "reserve_ratio": 0.18,
+  "reproduction_rate": 0.002,
+  "participant_growth_rate": -0.006,
+  "validator_growth_rate": -0.002,
+  "reserve_stability_factor": 0.07
+}

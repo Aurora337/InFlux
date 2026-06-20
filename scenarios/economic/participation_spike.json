@@ -1,0 +1,15 @@
+{
+  "name": "participation_spike",
+  "epochs": 365,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 280.0,
+  "initial_participants": 90,
+  "initial_validators": 5,
+  "target_supply_cap": 9000.0,
+  "reserve_ratio": 0.22,
+  "reproduction_rate": 0.004,
+  "participant_growth_rate": 0.010,
+  "validator_growth_rate": 0.001,
+  "reserve_stability_factor": 0.09
+}

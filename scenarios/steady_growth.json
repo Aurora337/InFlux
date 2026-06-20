@@ -1,0 +1,7 @@
+{
+  "name": "steady_growth",
+  "epoch": 0,
+  "supply": 1000.0,
+  "participants": 100,
+  "epochs": 365
+}

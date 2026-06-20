@@ -1,9 +1,18 @@
-"""delta_c.py
-
-Currency delta (ΔC) calculations placeholder.
+"""
+In-Flux Deterministic Economic Engine
 """
 
-def compute_delta(c_old: float, c_new: float) -> float:
-    return c_new - c_old
+BASE_GROWTH_RATE = 0.01
 
-__all__ = ["compute_delta"]
+
+def compute_delta(supply: float, participants: int) -> float:
+
+    participation_factor = max(participants, 1)
+
+    delta = (
+        supply
+        * BASE_GROWTH_RATE
+        * (participation_factor / 100)
+    )
+
+    return round(delta, 8)

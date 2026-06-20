@@ -1,0 +1,7 @@
+{
+  "name": "reserve_stress",
+  "epoch": 0,
+  "supply": 5000.0,
+  "participants": 140,
+  "epochs": 540
+}

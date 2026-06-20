@@ -1,0 +1,14 @@
+{
+  "name": "corrupted_hash",
+  "validators": ["Validator-A", "Validator-B", "Validator-C", "Validator-D", "Validator-E"],
+  "rounds": 25,
+  "initial_state": {
+    "epoch": 0,
+    "supply": 1000.0,
+    "participants": 100
+  },
+  "events": [
+    {"round": 10, "type": "corrupted_hash", "validator": "Validator-E"},
+    {"round": 17, "type": "corrupted_hash", "validator": "Validator-E"}
+  ]
+}
