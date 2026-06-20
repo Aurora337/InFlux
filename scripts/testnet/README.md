@@ -22,6 +22,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_backoff_latency_suite.py
 - run_policy_comparison_suite.py
 - run_sync_orchestration.py
+- run_sync_orchestration_supervisor.py
 
 ## Quick Start
 Run from the repository root:
@@ -120,3 +121,10 @@ Run deterministic degraded scenarios from repository root:
 - Orchestration outputs:
 	- `testnet/launch/sync_orchestration_report.json`
 	- `testnet/launch/sync_orchestration_report.md`
+
+## v0.8.7 Orchestration Supervisor
+- Run orchestration with retry-and-escalation supervision:
+	- `python scripts/testnet/run_sync_orchestration_supervisor.py`
+- Supervisor outputs:
+	- `testnet/launch/sync_orchestration_supervisor_report.json`
+	- `testnet/launch/sync_orchestration_supervisor_report.md`

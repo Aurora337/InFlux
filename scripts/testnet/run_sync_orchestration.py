@@ -24,6 +24,9 @@ def run_orchestration(
     ledger_height: int,
     output_json: Path,
     output_md: Path,
+    attempt: int = 1,
+    inject_failure_suite: str = "",
+    inject_failure_attempt: int = 0,
 ) -> dict:
     output_json.parent.mkdir(parents=True, exist_ok=True)
     output_md.parent.mkdir(parents=True, exist_ok=True)
@@ -96,12 +99,32 @@ def run_orchestration(
         else:
             suite_passed = bool(report_data and report_data.get("winner")) and completed.returncode == 0
 
+        failure_reason = "none"
+        if suite_passed is False:
+            failure_reason = "suite_validation_failed"
+
+        if (
+            inject_failure_suite
+            and suite["id"] == inject_failure_suite
+            and inject_failure_attempt > 0
+            and attempt == inject_failure_attempt
+        ):
+            suite_passed = False
+            failure_reason = "injected_failure"
+            completed = subprocess.CompletedProcess(
+                args=suite["command"],
+                returncode=1,
+                stdout=completed.stdout,
+                stderr=completed.stderr,
+            )
+
         suite_results.append(
             {
                 "suite_id": suite["id"],
                 "exit_code": completed.returncode,
                 "report_generated": report_exists,
                 "suite_passed": suite_passed,
+                "failure_reason": failure_reason,
                 "report": report_data,
                 "stdout": completed.stdout.strip(),
                 "stderr": completed.stderr.strip(),
@@ -136,6 +159,9 @@ def run_orchestration(
 
     report = {
         "suite": "v0.8.7-sync-orchestration",
+        "attempt": attempt,
+        "inject_failure_suite": inject_failure_suite,
+        "inject_failure_attempt": inject_failure_attempt,
         "validators": validators,
         "epoch": epoch,
         "blocks_missed": blocks_missed,
@@ -150,6 +176,7 @@ def run_orchestration(
                 "exit_code": item["exit_code"],
                 "report_generated": item["report_generated"],
                 "suite_passed": item["suite_passed"],
+                "failure_reason": item["failure_reason"],
             }
             for item in suite_results
         ],
@@ -160,6 +187,9 @@ def run_orchestration(
     lines = [
         "# v0.8.7 Sync Orchestration Report",
         "",
+        f"- Attempt: {report['attempt']}",
+        f"- Inject Failure Suite: {report['inject_failure_suite'] or 'none'}",
+        f"- Inject Failure Attempt: {report['inject_failure_attempt']}",
         f"- Validators: {report['validators']}",
         f"- Epoch: {report['epoch']}",
         f"- Blocks Missed: {report['blocks_missed']}",
@@ -172,7 +202,7 @@ def run_orchestration(
 
     for item in report["suite_results"]:
         lines.append(
-            f"- {item['suite_id']}: passed={item['suite_passed']} exit_code={item['exit_code']} report_generated={item['report_generated']}"
+            f"- {item['suite_id']}: passed={item['suite_passed']} exit_code={item['exit_code']} report_generated={item['report_generated']} failure_reason={item['failure_reason']}"
         )
 
     if policy_winner:
@@ -210,6 +240,19 @@ def main() -> None:
         default="testnet/launch/sync_orchestration_report.md",
         help="Consolidated orchestration markdown report",
     )
+    parser.add_argument("--attempt", type=int, default=1, help="Attempt number metadata for supervisor flows")
+    parser.add_argument(
+        "--inject-failure-suite",
+        default="",
+        choices=["", "retry_exhaustion_suite", "backoff_latency_suite", "policy_comparison_suite"],
+        help="Optional suite id to force-fail for deterministic supervisor testing",
+    )
+    parser.add_argument(
+        "--inject-failure-attempt",
+        type=int,
+        default=0,
+        help="Attempt number where injected failure should occur (0 disables)",
+    )
     args = parser.parse_args()
 
     report = run_orchestration(
@@ -219,6 +262,9 @@ def main() -> None:
         ledger_height=args.ledger_height,
         output_json=Path(args.output_json),
         output_md=Path(args.output_md),
+        attempt=args.attempt,
+        inject_failure_suite=args.inject_failure_suite,
+        inject_failure_attempt=args.inject_failure_attempt,
     )
 
     print(f"Orchestration Success: {report['orchestration_success']}")
