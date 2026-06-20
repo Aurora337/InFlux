@@ -10,6 +10,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - emit_snapshots.py
 - emit_messages.py
 - verify_network.py
+- run_fault_scenarios.py
 
 ## Quick Start
 Run from the repository root:
@@ -32,3 +33,9 @@ Run deterministic degraded scenarios from repository root:
 	- `python launch_testnet.py --fault-mode message_hash_mismatch --fault-validator validator-3`
 - Drop outbound handshake messages:
 	- `python launch_testnet.py --fault-mode drop_outbound --fault-validator validator-3`
+
+## v0.7.5 Fault Suite
+- Run consolidated scenarios and produce report:
+	- `python scripts/testnet/run_fault_scenarios.py`
+- Output:
+	- `testnet/launch/fault_report.json`
