@@ -30,6 +30,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - validate_sync_ops_promotion_packet.py
 - generate_sync_ops_assurance_report.py
 - validate_sync_ops_assurance_report.py
+- run_sync_ops_assurance_pipeline.py
 
 ## Quick Start
 Run from the repository root:
@@ -193,3 +194,10 @@ Run deterministic degraded scenarios from repository root:
 - Validation outputs:
 	- `testnet/launch/sync_ops_assurance_report_validation.json`
 	- `testnet/launch/sync_ops_assurance_report_validation.md`
+
+## v0.9.2 Assurance Pipeline
+- Run the full deterministic supervisor-to-assurance chain and emit one consolidated pipeline verdict:
+	- `python scripts/testnet/run_sync_ops_assurance_pipeline.py --inject-failure-suite backoff_latency_suite --inject-failure-attempt 1`
+- Pipeline outputs:
+	- `testnet/launch/sync_ops_assurance_pipeline.json`
+	- `testnet/launch/sync_ops_assurance_pipeline.md`
