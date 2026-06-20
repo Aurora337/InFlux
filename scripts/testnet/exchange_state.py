@@ -14,7 +14,12 @@ def _canonical_hash(payload: dict) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
-def exchange_state(snapshots_dir: Path, output_dir: Path, ledger_height: int) -> list[Path]:
+def exchange_state(
+    snapshots_dir: Path,
+    output_dir: Path,
+    ledger_height: int,
+    exclude_validator: str,
+) -> list[Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     for stale in output_dir.glob("*.json"):
         stale.unlink()
@@ -23,6 +28,8 @@ def exchange_state(snapshots_dir: Path, output_dir: Path, ledger_height: int) ->
     for snapshot_path in sorted(snapshots_dir.glob("*.json")):
         snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
         validator_id = snapshot["validator_id"]
+        if exclude_validator and validator_id == exclude_validator:
+            continue
         epoch = int(snapshot["epoch"])
 
         state_payload = {
@@ -46,9 +53,19 @@ def main() -> None:
     parser.add_argument("--snapshots-dir", default="testnet/launch/snapshots", help="Input snapshot directory")
     parser.add_argument("--output-dir", default="testnet/state", help="Output state payload directory")
     parser.add_argument("--ledger-height", type=int, default=1500, help="Deterministic ledger height value")
+    parser.add_argument(
+        "--exclude-validator",
+        default="",
+        help="Optional validator id to omit from exchanged state payloads",
+    )
     args = parser.parse_args()
 
-    generated = exchange_state(Path(args.snapshots_dir), Path(args.output_dir), args.ledger_height)
+    generated = exchange_state(
+        Path(args.snapshots_dir),
+        Path(args.output_dir),
+        args.ledger_height,
+        args.exclude_validator,
+    )
     print(f"State payloads generated: {len(generated)}")
 
 

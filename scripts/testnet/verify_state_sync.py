@@ -22,19 +22,20 @@ def _majority_state_hash(state_payloads: dict[str, dict]) -> tuple[str, float]:
     return majority_hash, agreement_rate
 
 
-def _offline_initial_hash(network_hash: str, target_validator: str) -> str:
-    seed = f"offline::{target_validator}::{network_hash}".encode("utf-8")
+def _offline_initial_hash(network_hash: str, target_validator: str, blocks_missed: int) -> str:
+    seed = f"offline::{target_validator}::{network_hash}::{blocks_missed}".encode("utf-8")
     return hashlib.sha256(seed).hexdigest()
 
 
 def render_markdown(report: dict) -> str:
     return "\n".join(
         [
-            "# v0.8.1 State Sync Report",
+            "# v0.8.2 State Sync Report",
             "",
             f"- Target Validator: {report['target_validator']}",
             f"- Validators Expected: {report['validators_expected']}",
             f"- Validators Observed: {report['validators_observed']}",
+            f"- Sync Mode: {report['sync_mode']}",
             f"- Epoch: {report['epoch']}",
             f"- Ledger Height: {report['ledger_height']}",
             f"- Network Hash: {report['network_state_hash']}",
@@ -42,7 +43,9 @@ def render_markdown(report: dict) -> str:
             f"- Recovered Hash: {report['recovered_hash']}",
             f"- Final Hash Match: {report['final_hash_match']}",
             f"- Agreement Rate: {report['agreement_rate']}",
+            f"- Blocks Missed: {report['blocks_missed']}",
             f"- Blocks Replayed: {report['blocks_replayed']}",
+            f"- Recovery Request Peers: {report['recovery_request_peers']}",
             f"- Recovery Time Seconds: {report['recovery_time_seconds']}",
             f"- Recovery Success: {report['recovery_success']}",
         ]
@@ -53,7 +56,7 @@ def verify_state_sync(
     peers_path: Path,
     state_dir: Path,
     target_validator: str,
-    blocks_replayed: int,
+    blocks_missed: int,
     output_json: Path,
     output_md: Path,
 ) -> dict:
@@ -74,30 +77,47 @@ def verify_state_sync(
         epoch = int(sample.get("epoch", 0))
         ledger_height = int(sample.get("ledger_height", 0))
 
-    offline_initial_hash = _offline_initial_hash(network_hash, target_validator)
+    target_present = target_validator in state_payloads
+    sync_mode = "full_sync" if target_present else "catchup_sync"
+
+    offline_initial_hash = _offline_initial_hash(network_hash, target_validator, blocks_missed)
     recovered_hash = network_hash
     final_hash_match = recovered_hash == network_hash and bool(network_hash)
 
+    blocks_replayed = blocks_missed
     recovery_time_seconds = round(blocks_replayed * 0.012, 3)
-    recovery_success = (
-        final_hash_match
-        and agreement_rate == 1.0
-        and target_validator in peer_ids
-        and len(state_payloads) == len(peer_ids)
-    )
+    recovery_request_peers = max(len(state_payloads) - (1 if target_present else 0), 0)
+
+    if sync_mode == "catchup_sync":
+        recovery_success = (
+            final_hash_match
+            and agreement_rate == 1.0
+            and target_validator in peer_ids
+            and len(state_payloads) == max(len(peer_ids) - 1, 0)
+        )
+    else:
+        recovery_success = (
+            final_hash_match
+            and agreement_rate == 1.0
+            and target_validator in peer_ids
+            and len(state_payloads) == len(peer_ids)
+        )
 
     report = {
-        "suite": "v0.8.1-state-synchronization",
+        "suite": "v0.8.2-state-synchronization",
         "target_validator": target_validator,
         "validators_expected": len(peer_ids),
         "validators_observed": len(state_payloads),
+        "sync_mode": sync_mode,
         "epoch": epoch,
         "ledger_height": ledger_height,
         "network_state_hash": network_hash,
         "offline_initial_hash": offline_initial_hash,
         "recovered_hash": recovered_hash,
         "agreement_rate": agreement_rate,
+        "blocks_missed": blocks_missed,
         "blocks_replayed": blocks_replayed,
+        "recovery_request_peers": recovery_request_peers,
         "recovery_time_seconds": recovery_time_seconds,
         "final_hash_match": final_hash_match,
         "recovery_success": recovery_success,
@@ -116,7 +136,7 @@ def main() -> None:
     parser.add_argument("--peers", default="testnet/peers/peers.json", help="Peer registry path")
     parser.add_argument("--state-dir", default="testnet/state", help="Directory containing state payloads")
     parser.add_argument("--target-validator", default="validator-5", help="Validator to simulate recovery for")
-    parser.add_argument("--blocks-replayed", type=int, default=100, help="Deterministic replayed block count")
+    parser.add_argument("--blocks-missed", type=int, default=100, help="Deterministic missed block count")
     parser.add_argument("--output-json", default="testnet/launch/sync_report.json", help="Output JSON report")
     parser.add_argument("--output-md", default="testnet/launch/sync_report.md", help="Output markdown report")
     args = parser.parse_args()
@@ -125,7 +145,7 @@ def main() -> None:
         peers_path=Path(args.peers),
         state_dir=Path(args.state_dir),
         target_validator=args.target_validator,
-        blocks_replayed=args.blocks_replayed,
+        blocks_missed=args.blocks_missed,
         output_json=Path(args.output_json),
         output_md=Path(args.output_md),
     )
