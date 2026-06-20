@@ -17,6 +17,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_staggered_catchup.py
 - run_dual_offline_recovery.py
 - run_partial_replay_stress.py
+- run_partial_replay_matrix.py
 
 ## Quick Start
 Run from the repository root:
@@ -80,3 +81,10 @@ Run deterministic degraded scenarios from repository root:
 - Outputs:
 	- `testnet/launch/partial_replay_report.json`
 	- `testnet/launch/partial_replay_report.md`
+
+## v0.8.5 Partial Replay Matrix
+- Run a deterministic matrix across multiple validators and replay profiles:
+	- `python scripts/testnet/run_partial_replay_matrix.py`
+- Consolidated outputs:
+	- `testnet/launch/partial_replay_matrix_report.json`
+	- `testnet/launch/partial_replay_matrix_report.md`
