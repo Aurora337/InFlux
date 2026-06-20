@@ -9,18 +9,18 @@ from pathlib import Path
 
 
 DEFAULT_GENESIS = {
-    "chain_id": "influx-testnet-v0.7",
-    "epoch": 0,
-    "initial_supply": 1000.0,
-    "participants": 100,
-    "validators": 5,
-    "genesis_hash": "pending",
+    "network_id": "influx-testnet",
+    "genesis_height": 0,
+    "initial_supply": 77000000,
+    "timestamp": 1781913600,
+    "validators": [],
 }
 
 
-def generate_genesis(output_path: Path, validator_count: int) -> dict:
+def generate_genesis(output_path: Path, validator_count: int, timestamp: int) -> dict:
     payload = dict(DEFAULT_GENESIS)
-    payload["validators"] = validator_count
+    payload["validator_count"] = validator_count
+    payload["timestamp"] = timestamp
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     return payload
@@ -39,9 +39,15 @@ def main() -> None:
         default=5,
         help="Number of validators in initial testnet",
     )
+    parser.add_argument(
+        "--timestamp",
+        type=int,
+        default=1781913600,
+        help="Deterministic genesis timestamp",
+    )
     args = parser.parse_args()
 
-    payload = generate_genesis(Path(args.output), args.validators)
+    payload = generate_genesis(Path(args.output), args.validators, args.timestamp)
     print(f"Generated genesis: {args.output}")
     print(json.dumps(payload, indent=2))
 

@@ -20,7 +20,7 @@ def main() -> None:
     args = parser.parse_args()
 
     status = launch_validator(Path(args.config))
-    print(f"{status['name']} connected")
+    print(f"{status['validator_id']} connected")
 
 
 if __name__ == "__main__":
