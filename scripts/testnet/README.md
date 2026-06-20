@@ -25,6 +25,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_sync_orchestration_supervisor.py
 - generate_sync_ops_runbook.py
 - generate_sync_handoff_note.py
+- validate_sync_ops_stability_gate.py
 
 ## Quick Start
 Run from the repository root:
@@ -147,3 +148,10 @@ Run deterministic degraded scenarios from repository root:
 - Handoff outputs:
 	- `testnet/launch/sync_ops_handoff_note.json`
 	- `testnet/launch/sync_ops_handoff_note.md`
+
+## v0.9.0 Stability Gate
+- Validate deterministic consistency between runbook and handoff artifacts:
+	- `python scripts/testnet/validate_sync_ops_stability_gate.py`
+- Stability gate outputs:
+	- `testnet/launch/sync_ops_stability_gate.json`
+	- `testnet/launch/sync_ops_stability_gate.md`
