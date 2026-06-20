@@ -57,6 +57,78 @@ def _actions_for_failure_reason(reason: str, escalated: bool) -> list[str]:
     ]
 
 
+def _build_incident_timeline(supervisor_suite: dict) -> list[dict]:
+    timeline: list[dict] = []
+    current_time = 0
+
+    timeline.append(
+        {
+            "t_plus_seconds": current_time,
+            "event": "sync_supervisor_started",
+            "severity": "low",
+            "details": "Supervisor initialized and orchestration attempts started.",
+        }
+    )
+
+    for attempt in supervisor_suite.get("attempts", []):
+        current_time += 15
+        attempt_id = int(attempt.get("attempt", 0))
+        timeline.append(
+            {
+                "t_plus_seconds": current_time,
+                "event": "attempt_started",
+                "severity": "low",
+                "details": f"Attempt {attempt_id} started.",
+            }
+        )
+
+        for suite_result in attempt.get("suite_results", []):
+            current_time += 10
+            failure_reason = suite_result.get("failure_reason", "none")
+            severity = _severity_for_failure_reason(
+                failure_reason,
+                escalated=False,
+            )
+            event_name = "suite_passed" if suite_result.get("suite_passed", False) else "suite_failed"
+            timeline.append(
+                {
+                    "t_plus_seconds": current_time,
+                    "event": event_name,
+                    "severity": severity,
+                    "details": (
+                        f"Attempt {attempt_id} suite {suite_result.get('suite_id', 'unknown')} "
+                        f"passed={suite_result.get('suite_passed', False)} "
+                        f"reason={failure_reason}."
+                    ),
+                }
+            )
+
+        current_time += 10
+        timeline.append(
+            {
+                "t_plus_seconds": current_time,
+                "event": "attempt_completed",
+                "severity": "low" if attempt.get("success", False) else "medium",
+                "details": f"Attempt {attempt_id} completed success={attempt.get('success', False)}.",
+            }
+        )
+
+    current_time += 10
+    timeline.append(
+        {
+            "t_plus_seconds": current_time,
+            "event": "supervisor_completed",
+            "severity": "critical" if supervisor_suite.get("escalated", False) else "low",
+            "details": (
+                f"Supervisor completed success={supervisor_suite.get('supervisor_success', False)} "
+                f"escalated={supervisor_suite.get('escalated', False)}."
+            ),
+        }
+    )
+
+    return timeline
+
+
 def _collect_failure_reasons(retry_suite: dict, supervisor_suite: dict) -> list[dict]:
     reasons: dict[str, dict] = {}
 
@@ -125,6 +197,8 @@ def generate_runbook(
     elif recovered_after_retry:
         operational_state = "degraded_recovered"
 
+    incident_timeline = _build_incident_timeline(supervisor_suite)
+
     report = {
         "suite": "v0.8.8-sync-operations-runbook",
         "operational_state": operational_state,
@@ -148,6 +222,7 @@ def generate_runbook(
             "supervisor_success": supervisor_success,
         },
         "incident_actions": incident_actions,
+        "incident_timeline": incident_timeline,
     }
 
     output_json.parent.mkdir(parents=True, exist_ok=True)
@@ -177,6 +252,19 @@ def generate_runbook(
         )
         for action in item["actions"]:
             lines.append(f"  - {action}")
+
+    lines.extend(
+        [
+            "",
+            "## Incident Timeline",
+            "",
+        ]
+    )
+
+    for event in report["incident_timeline"]:
+        lines.append(
+            f"- T+{event['t_plus_seconds']}s event={event['event']} severity={event['severity']} details={event['details']}"
+        )
 
     output_md.parent.mkdir(parents=True, exist_ok=True)
     output_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
