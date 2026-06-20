@@ -136,3 +136,6 @@ Run deterministic degraded scenarios from repository root:
 - Runbook outputs:
 	- `testnet/launch/sync_ops_runbook.json`
 	- `testnet/launch/sync_ops_runbook.md`
+
+## v0.8.9 Timeline Appendix
+- Runbook now includes deterministic incident timeline/event-log appendix derived from supervisor attempts and suite outcomes.
