@@ -21,6 +21,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_retry_exhaustion_suite.py
 - run_backoff_latency_suite.py
 - run_policy_comparison_suite.py
+- run_sync_orchestration.py
 
 ## Quick Start
 Run from the repository root:
@@ -112,3 +113,10 @@ Run deterministic degraded scenarios from repository root:
 - Suite outputs:
 	- `testnet/launch/policy_comparison_suite.json`
 	- `testnet/launch/policy_comparison_suite.md`
+
+## v0.8.7 Sync Orchestration
+- Run retry, latency, and policy suites as one orchestrated resilience pipeline:
+	- `python scripts/testnet/run_sync_orchestration.py`
+- Orchestration outputs:
+	- `testnet/launch/sync_orchestration_report.json`
+	- `testnet/launch/sync_orchestration_report.md`
