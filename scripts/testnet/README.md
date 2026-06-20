@@ -34,6 +34,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - generate_sync_ops_governance_report.py
 - validate_sync_ops_governance_report.py
 - run_sync_ops_governance_pipeline.py
+- generate_sync_ops_release_certificate.py
 
 ## Quick Start
 Run from the repository root:
@@ -225,3 +226,10 @@ Run deterministic degraded scenarios from repository root:
 - Pipeline outputs:
 	- `testnet/launch/sync_ops_governance_pipeline.json`
 	- `testnet/launch/sync_ops_governance_pipeline.md`
+
+## v0.9.4 Release Certificate
+- Generate deterministic release certificate with fingerprint from governance pipeline output:
+	- `python scripts/testnet/generate_sync_ops_release_certificate.py`
+- Certificate outputs:
+	- `testnet/launch/sync_ops_release_certificate.json`
+	- `testnet/launch/sync_ops_release_certificate.md`
