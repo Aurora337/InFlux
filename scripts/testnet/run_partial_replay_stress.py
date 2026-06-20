@@ -76,6 +76,7 @@ def render_markdown(report: dict) -> str:
         f"- Replay Chunks Expected: {report['replay_chunks_expected']}",
         f"- Blocks Replayed: {report['blocks_replayed']}",
         f"- Retry Exhausted: {report['retry_exhausted']}",
+        f"- Failure Reason: {report['failure_reason']}",
         f"- Final Hash Match: {report['final_hash_match']}",
         f"- Base Recovery Success: {report['base_recovery_success']}",
         f"- Stress Success: {report['stress_success']}",
@@ -153,6 +154,19 @@ def run_stress(
         and not retry_exhausted
     )
 
+    failure_reason = "none"
+    if not stress_success:
+        if not base_report.get("recovery_success", False):
+            failure_reason = "base_recovery_failed"
+        elif not base_report.get("final_hash_match", False):
+            failure_reason = "final_hash_mismatch"
+        elif retry_exhausted:
+            failure_reason = "retry_exhausted"
+        elif blocks_replayed != blocks_missed:
+            failure_reason = "incomplete_replay"
+        else:
+            failure_reason = "unknown"
+
     # Deterministic timing model: base sync + timeout penalties + retry overhead.
     recovery_time_seconds = round(
         float(base_report.get("recovery_time_seconds", 0.0)) + (timeout_events * 0.35) + (retry_used * 0.08),
@@ -173,6 +187,7 @@ def run_stress(
         "replay_plan": replay_plan,
         "blocks_replayed": blocks_replayed,
         "retry_exhausted": retry_exhausted,
+        "failure_reason": failure_reason,
         "final_hash_match": bool(base_report.get("final_hash_match", False)),
         "base_recovery_success": bool(base_report.get("recovery_success", False)),
         "stress_success": stress_success,
