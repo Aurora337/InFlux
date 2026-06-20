@@ -14,6 +14,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - exchange_state.py
 - verify_state_sync.py
 - run_catchup_sync.py
+- run_staggered_catchup.py
 
 ## Quick Start
 Run from the repository root:
@@ -56,3 +57,10 @@ Run deterministic degraded scenarios from repository root:
 ## v0.8.2 Catch-Up Sync
 - Simulate offline validator recovery after missing blocks:
 	- `python scripts/testnet/run_catchup_sync.py`
+
+## v0.8.3 Staggered Catch-Up
+- Run deterministic multi-validator catch-up scenarios one-by-one:
+	- `python scripts/testnet/run_staggered_catchup.py`
+- Consolidated outputs:
+	- `testnet/launch/staggered_sync_report.json`
+	- `testnet/launch/staggered_sync_report.md`
