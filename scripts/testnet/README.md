@@ -23,6 +23,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_policy_comparison_suite.py
 - run_sync_orchestration.py
 - run_sync_orchestration_supervisor.py
+- generate_sync_ops_runbook.py
 
 ## Quick Start
 Run from the repository root:
@@ -128,3 +129,10 @@ Run deterministic degraded scenarios from repository root:
 - Supervisor outputs:
 	- `testnet/launch/sync_orchestration_supervisor_report.json`
 	- `testnet/launch/sync_orchestration_supervisor_report.md`
+
+## v0.8.8 Sync Operations Runbook
+- Generate operational incident guidance from suite and supervisor reports:
+	- `python scripts/testnet/generate_sync_ops_runbook.py`
+- Runbook outputs:
+	- `testnet/launch/sync_ops_runbook.json`
+	- `testnet/launch/sync_ops_runbook.md`
