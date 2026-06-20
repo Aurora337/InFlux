@@ -18,7 +18,7 @@ def exchange_state(
     snapshots_dir: Path,
     output_dir: Path,
     ledger_height: int,
-    exclude_validator: str,
+    exclude_validators: set[str],
 ) -> list[Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     for stale in output_dir.glob("*.json"):
@@ -28,7 +28,7 @@ def exchange_state(
     for snapshot_path in sorted(snapshots_dir.glob("*.json")):
         snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
         validator_id = snapshot["validator_id"]
-        if exclude_validator and validator_id == exclude_validator:
+        if validator_id in exclude_validators:
             continue
         epoch = int(snapshot["epoch"])
 
@@ -58,13 +58,23 @@ def main() -> None:
         default="",
         help="Optional validator id to omit from exchanged state payloads",
     )
+    parser.add_argument(
+        "--exclude-validators",
+        nargs="*",
+        default=[],
+        help="Optional validator ids to omit from exchanged state payloads",
+    )
     args = parser.parse_args()
+
+    exclude_validators = set(args.exclude_validators)
+    if args.exclude_validator:
+        exclude_validators.add(args.exclude_validator)
 
     generated = exchange_state(
         Path(args.snapshots_dir),
         Path(args.output_dir),
         args.ledger_height,
-        args.exclude_validator,
+        exclude_validators,
     )
     print(f"State payloads generated: {len(generated)}")
 
