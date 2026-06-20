@@ -10,17 +10,21 @@ from pathlib import Path
 
 def bootstrap(validators_dir: Path, output_path: Path) -> dict:
     peers = []
+    peer_ids = []
     for path in sorted(validators_dir.glob("*.json")):
         payload = json.loads(path.read_text(encoding="utf-8"))
+        validator_id = payload["validator_id"]
+        peer_ids.append(validator_id)
         peers.append(
             {
-                "name": payload["name"],
-                "endpoint": f"{payload['host']}:{payload['port']}",
+                "validator_id": validator_id,
+                "endpoint": payload["address"],
             }
         )
 
     network = {
         "peer_count": len(peers),
+        "peer_ids": peer_ids,
         "peers": peers,
         "bootstrap_status": "ready" if peers else "empty",
     }
@@ -38,7 +42,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--output",
-        default="testnet/bootstrap/network.json",
+        default="testnet/peers/peers.json",
         help="Path to write network bootstrap JSON",
     )
     args = parser.parse_args()
