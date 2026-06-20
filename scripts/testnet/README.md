@@ -26,6 +26,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - generate_sync_ops_runbook.py
 - generate_sync_handoff_note.py
 - validate_sync_ops_stability_gate.py
+- generate_sync_ops_promotion_packet.py
 
 ## Quick Start
 Run from the repository root:
@@ -161,3 +162,10 @@ Run deterministic degraded scenarios from repository root:
 	- `readiness_score` (0-100)
 	- `promotion_recommendation` (`promote`, `promote_with_monitoring`, `block`, `hold`)
 	- `guidance` action list based on gate and operational state
+
+## v0.9.0 Promotion Packet
+- Generate deterministic release decision artifacts from runbook, handoff, and stability gate outputs:
+	- `python scripts/testnet/generate_sync_ops_promotion_packet.py`
+- Promotion packet outputs:
+	- `testnet/launch/sync_ops_promotion_packet.json`
+	- `testnet/launch/sync_ops_promotion_packet.md`
