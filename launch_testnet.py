@@ -67,9 +67,20 @@ def main() -> None:
     run_step(
         [
             sys.executable,
+            "scripts/testnet/emit_snapshots.py",
+            "--epoch",
+            "1",
+        ]
+    )
+
+    run_step(
+        [
+            sys.executable,
             "scripts/testnet/verify_network.py",
             "--expected-validators",
             str(validator_count),
+            "--epoch",
+            "1",
         ]
     )
 
