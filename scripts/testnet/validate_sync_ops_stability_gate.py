@@ -35,6 +35,62 @@ def _make_check(name: str, passed: bool, details: str) -> dict:
     }
 
 
+def _build_state_guidance(operational_state: str, escalated: bool, gate_passed: bool) -> list[str]:
+    if not gate_passed:
+        return [
+            "Block release promotion until all failed checks are resolved.",
+            "Regenerate runbook and handoff artifacts after fixes and rerun the stability gate.",
+        ]
+
+    if escalated or operational_state == "critical":
+        return [
+            "Keep promotion blocked while escalation remains active.",
+            "Run targeted recovery suites and obtain a non-critical operational state before release.",
+        ]
+
+    if operational_state == "degraded_recovered":
+        return [
+            "Promotion is allowed with monitoring due to recovered degraded state.",
+            "Run one additional supervisor verification and archive artifacts with release notes.",
+        ]
+
+    return [
+        "Promotion is allowed for stable state.",
+        "Proceed with standard release checklist and retain stability artifacts for traceability.",
+    ]
+
+
+def _calculate_readiness_score(checks_total: int, checks_failed: int, operational_state: str, escalated: bool) -> int:
+    score = 100
+    score -= checks_failed * 15
+
+    if escalated:
+        score -= 30
+    elif operational_state == "critical":
+        score -= 25
+    elif operational_state == "degraded_recovered":
+        score -= 10
+
+    if checks_total == 0:
+        score = 0
+
+    if score < 0:
+        return 0
+    if score > 100:
+        return 100
+    return score
+
+
+def _promotion_recommendation(gate_passed: bool, operational_state: str, escalated: bool) -> str:
+    if not gate_passed:
+        return "hold"
+    if escalated or operational_state == "critical":
+        return "block"
+    if operational_state == "degraded_recovered":
+        return "promote_with_monitoring"
+    return "promote"
+
+
 def _verify_top_actions(runbook_actions: list[dict], handoff_actions: list[dict]) -> tuple[bool, str]:
     if not handoff_actions:
         return False, "handoff top_actions is empty"
@@ -90,6 +146,8 @@ def _verify_recent_timeline(runbook_timeline: list[dict], handoff_recent: list[d
 def validate_stability_gate(runbook_path: Path, handoff_path: Path, output_json: Path, output_md: Path) -> dict:
     runbook = _load_json(runbook_path)
     handoff = _load_json(handoff_path)
+    operational_state = runbook.get("operational_state", "unknown") if runbook else "unknown"
+    escalated = bool(runbook.get("escalated", False)) if runbook else False
 
     checks: list[dict] = []
 
@@ -149,14 +207,35 @@ def validate_stability_gate(runbook_path: Path, handoff_path: Path, output_json:
 
     failed_checks = [item for item in checks if not item["passed"]]
     gate_passed = len(failed_checks) == 0
+    readiness_score = _calculate_readiness_score(
+        checks_total=len(checks),
+        checks_failed=len(failed_checks),
+        operational_state=operational_state,
+        escalated=escalated,
+    )
+    promotion_recommendation = _promotion_recommendation(
+        gate_passed=gate_passed,
+        operational_state=operational_state,
+        escalated=escalated,
+    )
+    guidance = _build_state_guidance(
+        operational_state=operational_state,
+        escalated=escalated,
+        gate_passed=gate_passed,
+    )
 
     report = {
         "suite": "v0.9.0-sync-ops-stability-gate",
         "gate_passed": gate_passed,
+        "readiness_score": readiness_score,
+        "promotion_recommendation": promotion_recommendation,
+        "operational_state": operational_state,
+        "escalated": escalated,
         "checks_total": len(checks),
         "checks_passed": len(checks) - len(failed_checks),
         "checks_failed": len(failed_checks),
         "failed_checks": [item["check"] for item in failed_checks],
+        "guidance": guidance,
         "checks": checks,
     }
 
@@ -167,14 +246,22 @@ def validate_stability_gate(runbook_path: Path, handoff_path: Path, output_json:
         "# v0.9.0 Sync Ops Stability Gate",
         "",
         f"- Gate Passed: {report['gate_passed']}",
+        f"- Readiness Score: {report['readiness_score']}/100",
+        f"- Promotion Recommendation: {report['promotion_recommendation']}",
+        f"- Operational State: {report['operational_state']}",
+        f"- Escalated: {report['escalated']}",
         f"- Checks Total: {report['checks_total']}",
         f"- Checks Passed: {report['checks_passed']}",
         f"- Checks Failed: {report['checks_failed']}",
         "",
-        "## Checks",
+        "## Guidance",
         "",
     ]
 
+    for line in report["guidance"]:
+        lines.append(f"- {line}")
+
+    lines.extend(["", "## Checks", ""])
     for check in report["checks"]:
         lines.append(f"- {check['check']}: passed={check['passed']} details={check['details']}")
 
@@ -227,6 +314,8 @@ def main() -> None:
     )
 
     print(f"Gate Passed: {report['gate_passed']}")
+    print(f"Readiness Score: {report['readiness_score']}")
+    print(f"Promotion Recommendation: {report['promotion_recommendation']}")
     print(f"Checks Passed: {report['checks_passed']}/{report['checks_total']}")
     print(f"Report: {args.output_json}")
     print(f"Report: {args.output_md}")
