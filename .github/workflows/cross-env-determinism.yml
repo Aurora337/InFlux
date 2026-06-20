@@ -1,0 +1,91 @@
+name: Cross-Environment Determinism
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  native:
+    name: Native-${{ matrix.environment }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment: Linux
+            runner: ubuntu-latest
+          - environment: Windows
+            runner: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate demo ledger
+        run: python scripts/generate_demo_ledger.py
+
+      - name: Generate environment report
+        run: >-
+          python cross_env_report.py
+          --environment ${{ matrix.environment }}
+          --replay-data-dir data/blocks_demo_verify
+          --output data/replays/reports/${{ matrix.environment }}_report.json
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-${{ matrix.environment }}
+          path: data/replays/reports/${{ matrix.environment }}_report.json
+
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build report inside Docker
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspaces/InFlux" \
+            -w /workspaces/InFlux \
+            python:3.12-slim \
+            bash -lc "python scripts/generate_demo_ledger.py && python cross_env_report.py --environment Docker --replay-data-dir data/blocks_demo_verify --output data/replays/reports/Docker_report.json"
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-Docker
+          path: data/replays/reports/Docker_report.json
+
+  compare:
+    name: Compare Reports
+    runs-on: ubuntu-latest
+    needs: [native, docker]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download reports
+        uses: actions/download-artifact@v4
+        with:
+          path: data/replays/reports
+
+      - name: Flatten report files
+        run: |
+          find data/replays/reports -name "*_report.json" -exec cp {} data/replays/reports/ \;
+
+      - name: Compare reports
+        run: python compare_env_reports.py --glob "data/replays/reports/*_report.json"

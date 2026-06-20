@@ -1,0 +1,15 @@
+{
+  "name": "long_horizon_growth",
+  "epochs": 100000,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 500.0,
+  "initial_participants": 100,
+  "initial_validators": 5,
+  "target_supply_cap": 25000.0,
+  "reserve_ratio": 0.30,
+  "reproduction_rate": 0.001,
+  "participant_growth_rate": 0.0005,
+  "validator_growth_rate": 0.0002,
+  "reserve_stability_factor": 0.03
+}

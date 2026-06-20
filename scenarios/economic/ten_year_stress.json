@@ -1,0 +1,15 @@
+{
+  "name": "ten_year_stress",
+  "epochs": 3650,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 600.0,
+  "initial_participants": 100,
+  "initial_validators": 5,
+  "target_supply_cap": 25000.0,
+  "reserve_ratio": 0.8,
+  "reproduction_rate": 0.00015,
+  "participant_growth_rate": 0.0005,
+  "validator_growth_rate": 0.0002,
+  "reserve_stability_factor": 0.5
+}

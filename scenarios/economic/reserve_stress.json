@@ -1,0 +1,15 @@
+{
+  "name": "reserve_stress",
+  "epochs": 365,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 120.0,
+  "initial_participants": 110,
+  "initial_validators": 5,
+  "target_supply_cap": 8000.0,
+  "reserve_ratio": 0.40,
+  "reproduction_rate": 0.003,
+  "participant_growth_rate": 0.001,
+  "validator_growth_rate": 0.0,
+  "reserve_stability_factor": 0.04
+}

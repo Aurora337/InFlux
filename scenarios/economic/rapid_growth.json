@@ -1,0 +1,15 @@
+{
+  "name": "rapid_growth",
+  "epochs": 365,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 350.0,
+  "initial_participants": 150,
+  "initial_validators": 5,
+  "target_supply_cap": 20000.0,
+  "reserve_ratio": 0.28,
+  "reproduction_rate": 0.005,
+  "participant_growth_rate": 0.004,
+  "validator_growth_rate": 0.002,
+  "reserve_stability_factor": 0.08
+}

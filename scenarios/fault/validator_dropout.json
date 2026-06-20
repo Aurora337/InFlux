@@ -1,0 +1,13 @@
+{
+  "name": "validator_dropout",
+  "validators": ["Validator-A", "Validator-B", "Validator-C", "Validator-D", "Validator-E"],
+  "rounds": 25,
+  "initial_state": {
+    "epoch": 0,
+    "supply": 1000.0,
+    "participants": 100
+  },
+  "events": [
+    {"round": 12, "type": "validator_dropout", "validator": "Validator-C"}
+  ]
+}

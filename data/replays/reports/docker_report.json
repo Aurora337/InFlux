@@ -1,0 +1,14 @@
+{
+  "environment": "Docker",
+  "generated_at": "2026-06-19T18:59:15.404834+00:00",
+  "platform_system": "Linux",
+  "platform_release": "6.18.33.1-microsoft-standard-WSL2",
+  "platform_machine": "x86_64",
+  "replay_blocks_checked": 3,
+  "replay_blocks_failed": 0,
+  "replay_determinism_score": 1.0,
+  "scenario_determinism_score": 1.0,
+  "consensus_agreement_rate": 1.0,
+  "final_state_hash": "e115d0cd506fafe895af4affda6cf909f2c9fadfa2209a8bdf65b680afc02cc2",
+  "ledger_integrity": "PASS"
+}

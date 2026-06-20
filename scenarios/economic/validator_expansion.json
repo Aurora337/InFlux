@@ -1,0 +1,15 @@
+{
+  "name": "validator_expansion",
+  "epochs": 365,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 320.0,
+  "initial_participants": 120,
+  "initial_validators": 5,
+  "target_supply_cap": 12000.0,
+  "reserve_ratio": 0.24,
+  "reproduction_rate": 0.004,
+  "participant_growth_rate": 0.002,
+  "validator_growth_rate": 0.01,
+  "reserve_stability_factor": 0.10
+}

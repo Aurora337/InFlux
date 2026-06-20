@@ -1,0 +1,15 @@
+{
+  "name": "five_year_growth",
+  "epochs": 1825,
+  "initial_epoch": 0,
+  "initial_supply": 1000.0,
+  "initial_reserve": 400.0,
+  "initial_participants": 100,
+  "initial_validators": 5,
+  "target_supply_cap": 18000.0,
+  "reserve_ratio": 0.8,
+  "reproduction_rate": 0.00015,
+  "participant_growth_rate": 0.0025,
+  "validator_growth_rate": 0.001,
+  "reserve_stability_factor": 0.5
+}
