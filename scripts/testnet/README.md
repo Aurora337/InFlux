@@ -28,6 +28,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - validate_sync_ops_stability_gate.py
 - generate_sync_ops_promotion_packet.py
 - validate_sync_ops_promotion_packet.py
+- generate_sync_ops_assurance_report.py
 
 ## Quick Start
 Run from the repository root:
@@ -177,3 +178,10 @@ Run deterministic degraded scenarios from repository root:
 - Validation outputs:
 	- `testnet/launch/sync_ops_promotion_packet_validation.json`
 	- `testnet/launch/sync_ops_promotion_packet_validation.md`
+
+## v0.9.2 Assurance Report
+- Generate deterministic assurance verdict from runbook, gate, promotion packet, and packet-validation artifacts:
+	- `python scripts/testnet/generate_sync_ops_assurance_report.py`
+- Assurance outputs:
+	- `testnet/launch/sync_ops_assurance_report.json`
+	- `testnet/launch/sync_ops_assurance_report.md`
