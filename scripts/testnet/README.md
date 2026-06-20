@@ -24,6 +24,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_sync_orchestration.py
 - run_sync_orchestration_supervisor.py
 - generate_sync_ops_runbook.py
+- generate_sync_handoff_note.py
 
 ## Quick Start
 Run from the repository root:
@@ -139,3 +140,10 @@ Run deterministic degraded scenarios from repository root:
 
 ## v0.8.9 Timeline Appendix
 - Runbook now includes deterministic incident timeline/event-log appendix derived from supervisor attempts and suite outcomes.
+
+## v0.8.9 Handoff Note
+- Generate a compact deterministic post-incident handoff note from runbook outputs:
+	- `python scripts/testnet/generate_sync_handoff_note.py`
+- Handoff outputs:
+	- `testnet/launch/sync_ops_handoff_note.json`
+	- `testnet/launch/sync_ops_handoff_note.md`
