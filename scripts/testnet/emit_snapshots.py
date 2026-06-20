@@ -22,7 +22,14 @@ def _shared_state_hash(genesis: dict, peers: dict, epoch: int) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
-def emit_snapshots(genesis_path: Path, peers_path: Path, output_dir: Path, epoch: int) -> list[Path]:
+def emit_snapshots(
+    genesis_path: Path,
+    peers_path: Path,
+    output_dir: Path,
+    epoch: int,
+    fault_mode: str,
+    fault_validator: str,
+) -> list[Path]:
     genesis = json.loads(genesis_path.read_text(encoding="utf-8"))
     peers = json.loads(peers_path.read_text(encoding="utf-8"))
     peer_ids = peers.get("peer_ids", [])
@@ -30,14 +37,24 @@ def emit_snapshots(genesis_path: Path, peers_path: Path, output_dir: Path, epoch
     state_hash = _shared_state_hash(genesis, peers, epoch)
 
     output_dir.mkdir(parents=True, exist_ok=True)
+    for stale in output_dir.glob("*.json"):
+        stale.unlink()
+
     generated: list[Path] = []
     for validator_id in peer_ids:
+        snapshot_hash = state_hash
+        fault_injected = False
+        if fault_mode == "snapshot_hash_mismatch" and fault_validator and validator_id == fault_validator:
+            snapshot_hash = hashlib.sha256(f"fault::{state_hash}".encode("utf-8")).hexdigest()
+            fault_injected = True
+
         snapshot = {
             "validator_id": validator_id,
             "epoch": epoch,
-            "state_hash": state_hash,
+            "state_hash": snapshot_hash,
             "timestamp": genesis.get("timestamp"),
             "message_type": "STATE_SYNC",
+            "fault_injected": fault_injected,
         }
         path = output_dir / f"{validator_id}.json"
         path.write_text(json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
@@ -51,6 +68,17 @@ def main() -> None:
     parser.add_argument("--peers", default="testnet/peers/peers.json", help="Path to peer registry JSON")
     parser.add_argument("--output-dir", default="testnet/launch/snapshots", help="Snapshot output directory")
     parser.add_argument("--epoch", type=int, default=1, help="Snapshot epoch")
+    parser.add_argument(
+        "--fault-mode",
+        choices=["none", "snapshot_hash_mismatch"],
+        default="none",
+        help="Optional snapshot fault injection mode",
+    )
+    parser.add_argument(
+        "--fault-validator",
+        default="",
+        help="Validator id to inject snapshot fault into",
+    )
     args = parser.parse_args()
 
     generated = emit_snapshots(
@@ -58,6 +86,8 @@ def main() -> None:
         peers_path=Path(args.peers),
         output_dir=Path(args.output_dir),
         epoch=args.epoch,
+        fault_mode=args.fault_mode,
+        fault_validator=args.fault_validator,
     )
     print(f"Emitted snapshots: {len(generated)}")
 

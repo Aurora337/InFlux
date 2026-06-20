@@ -44,9 +44,10 @@ def _validate_messages(
     messages: list[dict],
     snapshots: dict[str, dict],
     expected_validators: int,
-) -> tuple[int, int, float]:
+) -> tuple[int, int, float, int, int]:
     expected_count = expected_validators * (expected_validators - 1)
     valid = 0
+    invalid = 0
 
     for message in messages:
         from_id = message.get("from")
@@ -55,18 +56,23 @@ def _validate_messages(
         msg_hash = message.get("state_hash")
 
         if not from_id or not to_id or from_id == to_id:
+            invalid += 1
             continue
         if msg_type != "STATE_SYNC":
+            invalid += 1
             continue
         sender_snapshot = snapshots.get(from_id)
         if not sender_snapshot:
+            invalid += 1
             continue
         if sender_snapshot.get("state_hash") != msg_hash:
+            invalid += 1
             continue
         valid += 1
 
     completion_rate = (valid / expected_count) if expected_count else 0.0
-    return valid, expected_count, completion_rate
+    missing = max(expected_count - valid, 0)
+    return valid, expected_count, completion_rate, invalid, missing
 
 
 def verify(
@@ -93,7 +99,13 @@ def verify(
         for validator_id, payload in snapshots.items()
     }
 
-    valid_messages, expected_message_count, handshake_completion_rate = _validate_messages(
+    (
+        valid_messages,
+        expected_message_count,
+        handshake_completion_rate,
+        invalid_message_count,
+        missing_message_count,
+    ) = _validate_messages(
         messages,
         snapshots,
         expected_validators,
@@ -141,6 +153,8 @@ def verify(
         "message_count": valid_messages,
         "expected_message_count": expected_message_count,
         "handshake_completion_rate": handshake_completion_rate,
+        "invalid_message_count": invalid_message_count,
+        "missing_message_count": missing_message_count,
         "network_status": network_status,
         "canonical_state_hash": canonical_hash,
         "validator_hashes": per_validator_hashes,
@@ -195,6 +209,11 @@ def main() -> None:
         default="testnet/launch/network_health.json",
         help="Path to write network health metrics JSON",
     )
+    parser.add_argument(
+        "--allow-unhealthy",
+        action="store_true",
+        help="Return success exit code even when network is unhealthy",
+    )
     args = parser.parse_args()
 
     ok, message = verify(
@@ -207,7 +226,9 @@ def main() -> None:
         Path(args.health_output),
     )
     print(message)
-    raise SystemExit(0 if ok else 1)
+    if ok or args.allow_unhealthy:
+        raise SystemExit(0)
+    raise SystemExit(1)
 
 
 if __name__ == "__main__":
