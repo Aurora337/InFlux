@@ -155,3 +155,9 @@ Run deterministic degraded scenarios from repository root:
 - Stability gate outputs:
 	- `testnet/launch/sync_ops_stability_gate.json`
 	- `testnet/launch/sync_ops_stability_gate.md`
+
+## v0.9.0 Stability Scorecard
+- Stability gate now emits deterministic release-readiness scorecard fields:
+	- `readiness_score` (0-100)
+	- `promotion_recommendation` (`promote`, `promote_with_monitoring`, `block`, `hold`)
+	- `guidance` action list based on gate and operational state
