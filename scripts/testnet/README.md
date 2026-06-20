@@ -45,6 +45,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_sync_ops_audit_assurance_validation_pipeline.py
 - generate_sync_ops_reproducibility_manifest.py
 - validate_sync_ops_reproducibility_manifest.py
+- run_sync_ops_reproducibility_validation_pipeline.py
 
 ## Quick Start
 Run from the repository root:
@@ -313,4 +314,11 @@ Run deterministic degraded scenarios from repository root:
 - Validation outputs:
 	- `testnet/launch/sync_ops_reproducibility_manifest_validation.json`
 	- `testnet/launch/sync_ops_reproducibility_manifest_validation.md`
+
+## v1.0.8 Reproducibility Validation Pipeline
+- Run one-command deterministic reproducibility generation plus validation verification:
+	- `python scripts/testnet/run_sync_ops_reproducibility_validation_pipeline.py --inject-failure-suite backoff_latency_suite --inject-failure-attempt 1 --release-version 1.0.7`
+- Pipeline outputs:
+	- `testnet/launch/sync_ops_reproducibility_validation_pipeline.json`
+	- `testnet/launch/sync_ops_reproducibility_validation_pipeline.md`
 
