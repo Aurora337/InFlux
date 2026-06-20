@@ -37,6 +37,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - generate_sync_ops_release_certificate.py
 - validate_sync_ops_release_certificate.py
 - run_sync_ops_finalization_pipeline.py
+- generate_v100_release_gate.py
 
 ## Quick Start
 Run from the repository root:
@@ -249,3 +250,10 @@ Run deterministic degraded scenarios from repository root:
 - Pipeline outputs:
 	- `testnet/launch/sync_ops_finalization_pipeline.json`
 	- `testnet/launch/sync_ops_finalization_pipeline.md`
+
+## v1.0.0 Release Gate
+- Generate deterministic v1.0.0 release readiness gate from finalization pipeline output:
+	- `python scripts/testnet/generate_v100_release_gate.py`
+- Release gate outputs:
+	- `testnet/launch/sync_ops_release_gate.json`
+	- `testnet/launch/sync_ops_release_gate.md`
