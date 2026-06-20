@@ -32,10 +32,48 @@ def _load_snapshots(snapshots_dir: Path) -> dict[str, dict]:
     return snapshots
 
 
+def _load_messages(messages_dir: Path) -> list[dict]:
+    messages: list[dict] = []
+    for path in sorted(messages_dir.glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        messages.append(payload)
+    return messages
+
+
+def _validate_messages(
+    messages: list[dict],
+    snapshots: dict[str, dict],
+    expected_validators: int,
+) -> tuple[int, int, float]:
+    expected_count = expected_validators * (expected_validators - 1)
+    valid = 0
+
+    for message in messages:
+        from_id = message.get("from")
+        to_id = message.get("to")
+        msg_type = message.get("message_type")
+        msg_hash = message.get("state_hash")
+
+        if not from_id or not to_id or from_id == to_id:
+            continue
+        if msg_type != "STATE_SYNC":
+            continue
+        sender_snapshot = snapshots.get(from_id)
+        if not sender_snapshot:
+            continue
+        if sender_snapshot.get("state_hash") != msg_hash:
+            continue
+        valid += 1
+
+    completion_rate = (valid / expected_count) if expected_count else 0.0
+    return valid, expected_count, completion_rate
+
+
 def verify(
     peers_path: Path,
     genesis_path: Path,
     snapshots_dir: Path,
+    messages_dir: Path,
     expected_validators: int,
     epoch: int,
     health_output_path: Path,
@@ -49,10 +87,17 @@ def verify(
 
     canonical_hash = _state_hash_payload(genesis_payload, peers_payload)
     snapshots = _load_snapshots(snapshots_dir)
+    messages = _load_messages(messages_dir)
     per_validator_hashes: dict[str, str] = {
         validator_id: payload.get("state_hash", "")
         for validator_id, payload in snapshots.items()
     }
+
+    valid_messages, expected_message_count, handshake_completion_rate = _validate_messages(
+        messages,
+        snapshots,
+        expected_validators,
+    )
 
     hash_counts: dict[str, int] = {}
     for value in per_validator_hashes.values():
@@ -65,14 +110,24 @@ def verify(
     divergence_count = validators_online - most_common_count
     consensus_status = (
         "established"
-        if validators_online >= expected_validators and agreement_rate == 1.0 and hash_agreement_rate == 1.0
+        if (
+            validators_online >= expected_validators
+            and agreement_rate == 1.0
+            and hash_agreement_rate == 1.0
+            and handshake_completion_rate == 1.0
+        )
         else "degraded"
     )
     consensus_rate = agreement_rate
 
     network_status = (
         "healthy"
-        if (validators_online >= expected_validators and agreement_rate == 1.0 and hash_agreement_rate == 1.0)
+        if (
+            validators_online >= expected_validators
+            and agreement_rate == 1.0
+            and hash_agreement_rate == 1.0
+            and handshake_completion_rate == 1.0
+        )
         else "unhealthy"
     )
     health = {
@@ -83,6 +138,9 @@ def verify(
         "agreement_rate": agreement_rate,
         "divergence_count": divergence_count,
         "consensus_status": consensus_status,
+        "message_count": valid_messages,
+        "expected_message_count": expected_message_count,
+        "handshake_completion_rate": handshake_completion_rate,
         "network_status": network_status,
         "canonical_state_hash": canonical_hash,
         "validator_hashes": per_validator_hashes,
@@ -116,6 +174,11 @@ def main() -> None:
         help="Directory containing validator state snapshots",
     )
     parser.add_argument(
+        "--messages-dir",
+        default="testnet/messages",
+        help="Directory containing validator STATE_SYNC messages",
+    )
+    parser.add_argument(
         "--expected-validators",
         type=int,
         default=5,
@@ -138,6 +201,7 @@ def main() -> None:
         Path(args.peers),
         Path(args.genesis),
         Path(args.snapshots_dir),
+        Path(args.messages_dir),
         args.expected_validators,
         args.epoch,
         Path(args.health_output),

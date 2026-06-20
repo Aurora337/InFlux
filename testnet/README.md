@@ -6,6 +6,7 @@ v0.7 testnet preparation layout:
 - validators/
 - bootstrap/
 - peers/
+- messages/
 - configs/
 - launch/
 

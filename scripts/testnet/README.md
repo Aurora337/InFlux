@@ -8,6 +8,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - launch_validator.py
 - bootstrap_network.py
 - emit_snapshots.py
+- emit_messages.py
 - verify_network.py
 
 ## Quick Start
@@ -18,3 +19,6 @@ python launch_testnet.py
 ## v0.7.2 Outputs
 - `testnet/launch/snapshots/*.json`
 - `testnet/launch/network_health.json`
+
+## v0.7.3 Outputs
+- `testnet/messages/*.json`

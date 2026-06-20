@@ -73,6 +73,9 @@ def main() -> None:
         ]
     )
 
+    run_step([sys.executable, "scripts/testnet/emit_messages.py"])
+    print("Validator Handshake Complete")
+
     run_step(
         [
             sys.executable,
