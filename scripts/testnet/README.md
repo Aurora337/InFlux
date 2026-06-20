@@ -36,6 +36,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_sync_ops_governance_pipeline.py
 - generate_sync_ops_release_certificate.py
 - validate_sync_ops_release_certificate.py
+- run_sync_ops_finalization_pipeline.py
 
 ## Quick Start
 Run from the repository root:
@@ -241,3 +242,10 @@ Run deterministic degraded scenarios from repository root:
 - Validation outputs:
 	- `testnet/launch/sync_ops_release_certificate_validation.json`
 	- `testnet/launch/sync_ops_release_certificate_validation.md`
+
+## v0.9.6 Finalization Pipeline
+- Run full 14-stage deterministic pipeline from supervisor to validated release certificate:
+	- `python scripts/testnet/run_sync_ops_finalization_pipeline.py --inject-failure-suite backoff_latency_suite --inject-failure-attempt 1`
+- Pipeline outputs:
+	- `testnet/launch/sync_ops_finalization_pipeline.json`
+	- `testnet/launch/sync_ops_finalization_pipeline.md`
