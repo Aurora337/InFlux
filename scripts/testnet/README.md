@@ -16,6 +16,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - run_catchup_sync.py
 - run_staggered_catchup.py
 - run_dual_offline_recovery.py
+- run_partial_replay_stress.py
 
 ## Quick Start
 Run from the repository root:
@@ -72,3 +73,10 @@ Run deterministic degraded scenarios from repository root:
 - Outputs:
 	- `testnet/launch/dual_offline_report.json`
 	- `testnet/launch/dual_offline_report.md`
+
+## v0.8.5 Partial Replay Stress
+- Run deterministic catch-up replay stress with chunked replay, timeout, and retry metrics:
+	- `python scripts/testnet/run_partial_replay_stress.py`
+- Outputs:
+	- `testnet/launch/partial_replay_report.json`
+	- `testnet/launch/partial_replay_report.md`
