@@ -27,6 +27,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - generate_sync_handoff_note.py
 - validate_sync_ops_stability_gate.py
 - generate_sync_ops_promotion_packet.py
+- validate_sync_ops_promotion_packet.py
 
 ## Quick Start
 Run from the repository root:
@@ -169,3 +170,10 @@ Run deterministic degraded scenarios from repository root:
 - Promotion packet outputs:
 	- `testnet/launch/sync_ops_promotion_packet.json`
 	- `testnet/launch/sync_ops_promotion_packet.md`
+
+## v0.9.1 Promotion Packet Validation
+- Validate deterministic integrity and consistency of promotion packet artifacts:
+	- `python scripts/testnet/validate_sync_ops_promotion_packet.py`
+- Validation outputs:
+	- `testnet/launch/sync_ops_promotion_packet_validation.json`
+	- `testnet/launch/sync_ops_promotion_packet_validation.md`
