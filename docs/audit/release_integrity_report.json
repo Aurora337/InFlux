@@ -1,0 +1,32 @@
+{
+  "audit_valid": true,
+  "integrity_score": 1.0,
+  "missing_release_notes": [],
+  "orphaned_tags": [
+    "v0.1.0-kernel",
+    "v0.2.0-replay",
+    "v0.3.0-consensus",
+    "v0.4.0-resilience",
+    "v0.5.0-cross-platform",
+    "v0.6.0-economic",
+    "v0.6.0-economic-verification",
+    "v0.7.5-testnet-validation",
+    "v0.8.2-state-synchronization",
+    "v0.8.3-staggered-catchup",
+    "v0.8.4-dual-offline-recovery",
+    "v0.8.5-sync-hardening",
+    "v0.8.6-sync-resilience",
+    "v0.8.7-sync-orchestration",
+    "v0.8.8-sync-operations",
+    "v0.8.9-sync-operations-handoff",
+    "v0.9.0-sync-ops-stabilization",
+    "v0.9.1-sync-ops-hardening",
+    "v0.9.2-sync-ops-assurance",
+    "v0.9.3-sync-ops-governance",
+    "v0.9.4-sync-ops-finalization",
+    "v0.9.5-sync-ops-finalization",
+    "v0.9.6-sync-ops-finalization"
+  ],
+  "tags_checked": 35,
+  "tags_valid": 35
+}
