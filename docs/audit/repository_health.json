@@ -1,0 +1,15 @@
+{
+  "audit_count": 7,
+  "branch_count": 28,
+  "health_score": 0.3333,
+  "health_valid": false,
+  "missing_audits": [
+    "docs/audit/release_integrity_report.json"
+  ],
+  "missing_docs": [
+    "docs/audit/release_integrity_report.json"
+  ],
+  "release_count": 17,
+  "tag_count": 35,
+  "test_count": 26
+}
