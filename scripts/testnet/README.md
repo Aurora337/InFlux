@@ -49,6 +49,7 @@ This directory contains initial scaffolding scripts for v0.7 testnet preparation
 - generate_sync_ops_release_attestation.py
 - validate_sync_ops_release_attestation.py
 - run_sync_ops_release_attestation_validation_pipeline.py
+- validate_sync_ops_release_attestation_validation_pipeline.py
 
 ## Quick Start
 Run from the repository root:
@@ -345,4 +346,11 @@ Run deterministic degraded scenarios from repository root:
 - Pipeline outputs:
 	- `testnet/launch/sync_ops_release_attestation_validation_pipeline.json`
 	- `testnet/launch/sync_ops_release_attestation_validation_pipeline.md`
+
+## v1.1.1 Release Attestation Validation Pipeline Validator
+- Validate deterministic integrity and cross-artifact consistency of release-attestation validation pipeline outputs:
+	- `python scripts/testnet/validate_sync_ops_release_attestation_validation_pipeline.py`
+- Validation outputs:
+	- `testnet/launch/sync_ops_release_attestation_validation_pipeline_validation.json`
+	- `testnet/launch/sync_ops_release_attestation_validation_pipeline_validation.md`
 
