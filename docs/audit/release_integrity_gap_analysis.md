@@ -12,45 +12,26 @@ Source of truth:
 ## Audit summary
 
 From `docs/audit/release_integrity_report.json`:
-- `audit_valid: false`
+- `audit_valid: true`
 - `integrity_score: 1.0`
 - `tags_checked: 35`
 - `tags_valid: 35`
 
 So:
 - **Tag integrity is good** (all tags resolve and point to reachable commits).
-- **Release-doc integrity is not good** (the audit cannot reconcile tags with release-notes milestones).
+- **Release note integrity is good** for the audit contract implemented in `scripts/audit/release_integrity_audit.py`.
 
 ---
 
 ## 1) Missing release note files (as interpreted by the audit)
 
-The audit reports `missing_release_notes`:
-- `v0.1`
-- `v1.0.0`
-- `v1.0.1`
-- `v1.0.2`
-- `v1.0.3`
-- `v1.0.4`
-- `v1.0.5`
-- `v1.0.6`
-- `v1.0.7`
-- `v1.0.8`
-- `v1.0.9`
-- `v1.1.0`
-
-### Do these files truly not exist?
-
-They **do exist in `docs/releases/`**:
-- `v0.1` → `docs/releases/v0.1-release-notes.md`
-- `v1.0.0` → `docs/releases/v1.0.0-release-notes.md`
-- `v1.1.0` → `docs/releases/v1.1.0-release-notes.md`
-
-Therefore, the audit’s *reported missing notes* appear to be **a mapping/normalization mismatch**, not a filesystem/documentation absence.
+In the current repository snapshot, the audit reports:
+- `missing_release_notes: []`
 
 ---
 
 ## 2) Orphaned tags
+
 
 The audit reports `orphaned_tags`:
 - `v0.1.0-kernel`
