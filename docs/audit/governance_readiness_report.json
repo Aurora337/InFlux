@@ -1,0 +1,12 @@
+{
+  "certification_governed": true,
+  "governance_ready": true,
+  "governance_score": 1.0,
+  "health_governed": true,
+  "integrity_governed": true,
+  "monitoring_governed": true,
+  "policy_governed": true,
+  "readiness_governed": true,
+  "regression_governed": true,
+  "validation_governed": true
+}
