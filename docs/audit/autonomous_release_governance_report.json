@@ -1,0 +1,15 @@
+{
+  "certification_valid": true,
+  "compliance_valid": true,
+  "governance_ready": true,
+  "governance_score": 1.0,
+  "health_valid": true,
+  "integrity_valid": true,
+  "monitoring_valid": true,
+  "policy_valid": true,
+  "readiness_valid": true,
+  "regression_valid": true,
+  "release_decision": "approved",
+  "release_governed": true,
+  "validation_valid": true
+}
