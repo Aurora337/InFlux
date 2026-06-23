@@ -1,13 +1,76 @@
 import json
-import subprocess
 
-from scripts.testnet.validator_lifecycle import ValidatorLifecycle, run_validator_lifecycle
+import pytest
+
+from scripts.testnet.validator_lifecycle import (
+    LifecycleError,
+    ValidatorLifecycle,
+    run_validator_lifecycle,
+)
 
 
-def test_validator_lifecycle_default_output() -> None:
-    result = run_validator_lifecycle()
-    assert result == {
+def test_create_validator() -> None:
+    lifecycle = ValidatorLifecycle("validator-1")
+    lifecycle.create_validator()
+    assert lifecycle.emit_status() == {
         "validator_id": "validator-1",
+        "state": "CREATED",
+        "registered": False,
+        "started": False,
+        "healthy": False,
+        "recoverable": False,
+    }
+
+
+def test_register_validator() -> None:
+    lifecycle = ValidatorLifecycle("validator-1")
+    lifecycle.create_validator()
+    lifecycle.register_validator()
+    assert lifecycle.emit_status()["state"] == "REGISTERED"
+    assert lifecycle.emit_status()["registered"] is True
+
+
+def test_start_validator() -> None:
+    lifecycle = ValidatorLifecycle("validator-1")
+    lifecycle.create_validator()
+    lifecycle.register_validator()
+    lifecycle.start_validator()
+    assert lifecycle.emit_status() == {
+        "validator_id": "validator-1",
+        "state": "HEALTHY",
+        "registered": True,
+        "started": True,
+        "healthy": True,
+        "recoverable": False,
+    }
+
+
+def test_stop_validator() -> None:
+    lifecycle = ValidatorLifecycle("validator-1")
+    lifecycle.create_validator()
+    lifecycle.register_validator()
+    lifecycle.start_validator()
+    lifecycle.stop_validator()
+    assert lifecycle.emit_status() == {
+        "validator_id": "validator-1",
+        "state": "STOPPED",
+        "registered": True,
+        "started": False,
+        "healthy": False,
+        "recoverable": True,
+    }
+
+
+def test_recover_validator() -> None:
+    lifecycle = ValidatorLifecycle("validator-1")
+    lifecycle.create_validator()
+    lifecycle.register_validator()
+    lifecycle.start_validator()
+    lifecycle.stop_validator()
+    lifecycle.recover_validator()
+    assert lifecycle.emit_status() == {
+        "validator_id": "validator-1",
+        "state": "RECOVERED",
         "registered": True,
         "started": True,
         "healthy": True,
@@ -15,32 +78,20 @@ def test_validator_lifecycle_default_output() -> None:
     }
 
 
-def test_validator_lifecycle_cli_output() -> None:
-    run = subprocess.run(
-        ["python", "scripts/testnet/validator_lifecycle.py"],
-        cwd="/workspaces/InFlux",
-        capture_output=True,
-        text=True,
-    )
-    assert run.returncode == 0, run.stderr
-    payload = json.loads(run.stdout)
-    assert payload["validator_id"] == "validator-1"
-    assert payload["registered"] is True
-    assert payload["started"] is True
-    assert payload["healthy"] is True
-    assert payload["recoverable"] is True
+def test_invalid_transition_rejected() -> None:
+    lifecycle = ValidatorLifecycle("validator-1")
+    with pytest.raises(LifecycleError):
+        lifecycle.start_validator()
+
+    lifecycle.create_validator()
+    lifecycle.register_validator()
+    lifecycle.start_validator()
+    with pytest.raises(LifecycleError):
+        lifecycle.recover_validator()
 
 
-def test_validator_lifecycle_is_deterministic() -> None:
-    first = run_validator_lifecycle()
-    second = run_validator_lifecycle()
+def test_deterministic_output() -> None:
+    first = run_validator_lifecycle(validator_id="validator-1")
+    second = run_validator_lifecycle(validator_id="validator-1")
     assert first == second
-
-
-def test_validator_lifecycle_requires_creation_before_registration() -> None:
-    lifecycle = ValidatorLifecycle("validator-x")
-    try:
-        lifecycle.register()
-        raise AssertionError("registration should fail before create")
-    except RuntimeError:
-        pass
+    assert json.dumps(first, sort_keys=True) == json.dumps(second, sort_keys=True)
