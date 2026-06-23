@@ -4,13 +4,21 @@
 
 Implement a deterministic validator lifecycle state machine for testnet execution readiness.
 
-## Lifecycle Stages
+## Lifecycle State Machine
 
-1. Creation
-2. Registration
-3. Startup
-4. Shutdown
-5. Recovery
+CREATED -> REGISTERED -> STARTED -> HEALTHY -> STOPPED -> RECOVERED
+
+`start_validator` transitions through STARTED and emits HEALTHY as the stable
+runtime state for deterministic status output.
+
+## Required Capabilities
+
+- Create validator
+- Register validator
+- Start validator
+- Stop validator
+- Recover validator
+- Emit deterministic lifecycle status
 
 ## Deterministic Contract
 
@@ -19,6 +27,7 @@ Running the lifecycle script must emit:
 ```json
 {
   "validator_id": "validator-1",
+  "state": "HEALTHY",
   "registered": true,
   "started": true,
   "healthy": true,
@@ -26,11 +35,23 @@ Running the lifecycle script must emit:
 }
 ```
 
-## Implementation Notes
+## Transition Rules
 
-- Transitions are order-enforced and raise errors when out of sequence.
-- Recovery requires prior shutdown.
-- The final state after recovery is started and healthy.
+- Invalid transitions are rejected with `LifecycleError`.
+- Registration requires CREATED.
+- Start requires REGISTERED.
+- Stop requires HEALTHY.
+- Recover requires STOPPED.
+
+## Minimum Test Coverage
+
+- `create_validator`
+- `register_validator`
+- `start_validator`
+- `stop_validator`
+- `recover_validator`
+- `invalid_transition_rejected`
+- `deterministic_output`
 
 ## Validation
 

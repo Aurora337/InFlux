@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from enum import Enum
 import json
 
 
@@ -11,57 +12,78 @@ class LifecycleError(RuntimeError):
     """Raised when lifecycle transitions are attempted out of order."""
 
 
+class ValidatorState(str, Enum):
+    CREATED = "CREATED"
+    REGISTERED = "REGISTERED"
+    STARTED = "STARTED"
+    HEALTHY = "HEALTHY"
+    STOPPED = "STOPPED"
+    RECOVERED = "RECOVERED"
+
+
 class ValidatorLifecycle:
     def __init__(self, validator_id: str) -> None:
         self.validator_id = validator_id
-        self.created = False
+        self.state: ValidatorState | None = None
         self.registered = False
         self.started = False
         self.healthy = False
-        self.shutdown_complete = False
         self.recoverable = False
 
-    def create(self) -> None:
-        self.created = True
+    def _require_state(self, expected: ValidatorState, action: str) -> None:
+        if self.state != expected:
+            current = self.state.value if self.state else "UNINITIALIZED"
+            raise LifecycleError(f"cannot {action} from {current}; expected {expected.value}")
 
-    def register(self) -> None:
-        if not self.created:
-            raise LifecycleError("validator must be created before registration")
+    def create_validator(self) -> None:
+        if self.state is not None:
+            raise LifecycleError("validator has already been created")
+        self.state = ValidatorState.CREATED
+
+    def register_validator(self) -> None:
+        self._require_state(ValidatorState.CREATED, "register")
         self.registered = True
+        self.state = ValidatorState.REGISTERED
 
-    def start(self) -> None:
-        if not self.registered:
-            raise LifecycleError("validator must be registered before startup")
+    def start_validator(self) -> None:
+        self._require_state(ValidatorState.REGISTERED, "start")
+        self.state = ValidatorState.STARTED
         self.started = True
         self.healthy = True
+        self.state = ValidatorState.HEALTHY
 
-    def shutdown(self) -> None:
-        if not self.started:
-            raise LifecycleError("validator must be started before shutdown")
-        self.shutdown_complete = True
+    def stop_validator(self) -> None:
+        self._require_state(ValidatorState.HEALTHY, "stop")
+        self.state = ValidatorState.STOPPED
+        self.started = False
         self.healthy = False
-
-    def recover(self) -> None:
-        if not self.shutdown_complete:
-            raise LifecycleError("validator must be shut down before recovery")
         self.recoverable = True
+
+    def recover_validator(self) -> None:
+        self._require_state(ValidatorState.STOPPED, "recover")
         self.started = True
         self.healthy = True
+        self.state = ValidatorState.RECOVERED
 
-    def run_full_lifecycle(self) -> dict:
-        self.create()
-        self.register()
-        self.start()
-        self.shutdown()
-        self.recover()
-
+    def emit_status(self) -> dict:
+        if self.state is None:
+            raise LifecycleError("validator must be created before status emission")
         return {
             "validator_id": self.validator_id,
+            "state": self.state.value,
             "registered": self.registered,
             "started": self.started,
             "healthy": self.healthy,
             "recoverable": self.recoverable,
         }
+
+    def run_full_lifecycle(self) -> dict:
+        self.create_validator()
+        self.register_validator()
+        self.start_validator()
+        self.stop_validator()
+        self.recover_validator()
+        return self.emit_status()
 
 
 def run_validator_lifecycle(validator_id: str = "validator-1") -> dict:
@@ -77,11 +99,13 @@ def main() -> None:
 
     result = run_validator_lifecycle(validator_id=args.validator_id)
 
+    payload = json.dumps(result, indent=2, sort_keys=True)
+
     if args.output_json:
         with open(args.output_json, "w", encoding="utf-8") as handle:
-            handle.write(json.dumps(result, indent=2) + "\n")
+            handle.write(payload + "\n")
 
-    print(json.dumps(result, indent=2))
+    print(payload)
 
 
 if __name__ == "__main__":
