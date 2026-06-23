@@ -1,0 +1,10 @@
+{
+  "baseline_valid": true,
+  "health_regression": false,
+  "integrity_regression": false,
+  "monitoring_regression": false,
+  "readiness_regression": false,
+  "regression_detected": false,
+  "regression_score": 1.0,
+  "validation_regression": false
+}
