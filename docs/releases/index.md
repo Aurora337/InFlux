@@ -22,7 +22,8 @@ Readable milestone history for the Sync Ops Audit Ladder and earlier release mil
 - [v1.1.3-release-notes.md](SYNC_OPS_AUDIT_LADDER.md): Continuous Audit Monitor (drift detection) ✅
 - [v1.1.4-release-notes.md](v1.1.4-release-notes.md): Automated Release Validation (aggregation layer) ✅
 - v1.1.5-release-notes.md: Regression Detection (historical trends) ✅
-- v1.1.6-release-notes.md: Release Certification (full automation) ▶
+- v1.1.6-release-notes.md: Release Certification (full automation) ✅
+- v1.1.7-release-notes.md: Audit Policy Enforcement (governance rules) ▶
 - v1.2.0-release-notes.md: Autonomous Release Governance (self-healing) 🎯
 
 **Key Features**:
@@ -50,7 +51,7 @@ v1.2.0: Autonomous Governance (self-healing)
 ```
 
 ## Suggested Next Milestone
-- v1.1.6 Release Certification Pipeline: aggregate all audit systems into a single certification decision.
+- v1.1.7 Audit Policy Enforcement: centralize governance rules into policy-driven release checks.
 
 ## Audit Regression Detection
 
@@ -71,3 +72,13 @@ Primary report signals:
 - certification_valid
 - certification_score
 - release_certified
+
+## Audit Policy Enforcement
+
+v1.1.7 centralizes release governance requirements into a deterministic policy
+engine so enforcement rules can evolve without changing audit code.
+
+Primary report signals:
+- policy_valid
+- policy_score
+- policy_enforced

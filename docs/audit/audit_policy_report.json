@@ -1,0 +1,12 @@
+{
+  "certification_requirement_met": true,
+  "health_requirement_met": true,
+  "integrity_requirement_met": true,
+  "monitoring_requirement_met": true,
+  "policy_enforced": true,
+  "policy_score": 1.0,
+  "policy_valid": true,
+  "readiness_requirement_met": true,
+  "regression_requirement_met": true,
+  "validation_requirement_met": true
+}
