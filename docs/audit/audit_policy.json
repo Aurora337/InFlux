@@ -1,0 +1,9 @@
+{
+  "require_certification": true,
+  "require_health": true,
+  "require_integrity": true,
+  "require_monitoring": true,
+  "require_readiness": true,
+  "require_regression_clear": true,
+  "require_validation": true
+}
