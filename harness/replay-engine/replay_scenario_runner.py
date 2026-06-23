@@ -8,11 +8,11 @@ import sys
 
 sys.path.insert(0, "src")
 
-from kernel.state import State
-from kernel.ledger.pipeline import process_pipeline
-from kernel.ledger.serialization import serialize_state
-from kernel.ledger.hash_sync import compute_root_hash
-from kernel.ledger.block_store import BlockStore
+from influx.kernel.state import State
+from influx.kernel.ledger.pipeline import process_pipeline
+from influx.kernel.ledger.serialization import serialize_state
+from influx.kernel.ledger.hash_sync import compute_root_hash
+from influx.kernel.ledger.block_store import BlockStore
 from replay_audit import audit_ledger_replay
 
 

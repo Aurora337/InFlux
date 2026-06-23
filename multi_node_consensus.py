@@ -8,7 +8,7 @@ import sys
 sys.path.insert(0, "src")
 sys.path.insert(0, "harness/node-mesh-sim")
 
-from kernel.state import State
+from influx.kernel.state import State
 from consensus_simulator import MultiNodeConsensusSimulator
 
 

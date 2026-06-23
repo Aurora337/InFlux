@@ -9,7 +9,7 @@ sys.path.insert(0, "src")
 sys.path.insert(0, "harness/replay-engine")
 sys.path.insert(0, "harness/node-mesh-sim")
 
-from kernel.state import State
+from influx.kernel.state import State
 from replay_audit import audit_ledger_replay
 from replay_scenario_runner import run_all_scenarios
 from consensus_simulator import MultiNodeConsensusSimulator

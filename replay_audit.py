@@ -8,7 +8,7 @@ import sys
 sys.path.insert(0, "src")
 sys.path.insert(0, "harness/replay-engine")
 
-from kernel.state import State
+from influx.kernel.state import State
 from replay_audit import audit_ledger_replay
 
 

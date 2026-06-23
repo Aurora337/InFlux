@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, "src")
 sys.path.insert(0, "harness/economic-stress")
 
-from kernel.state import State
+from influx.kernel.state import State
 from simulation_runner import EconomicSimulator
 from metrics_collector import MetricsCollector
 from stress_report import ReportGenerator
