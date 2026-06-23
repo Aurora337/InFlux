@@ -1,9 +1,9 @@
-from kernel.state import State
-from kernel.ledger.pipeline import process_pipeline
-from kernel.ledger.serialization import serialize_state
-from kernel.ledger.hash_sync import compute_root_hash
-from kernel.node.vn import ValidatorNode
-from kernel.sync.shcm import verify_state_hash
+from influx.kernel.state import State
+from influx.kernel.ledger.pipeline import process_pipeline
+from influx.kernel.ledger.serialization import serialize_state
+from influx.kernel.ledger.hash_sync import compute_root_hash
+from influx.kernel.node.vn import ValidatorNode
+from influx.kernel.sync.shcm import verify_state_hash
 
 
 def _simulate_network(consensus_override: list[str] | None = None):

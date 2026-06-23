@@ -1,4 +1,4 @@
-from kernel.sync.shcm import verify_state_hash
+from influx.kernel.sync.shcm import verify_state_hash
 
 
 def test_validator_consensus_mismatch_majority_passes():

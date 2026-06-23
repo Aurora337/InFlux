@@ -5,8 +5,8 @@ import os
 import shutil
 sys.path.insert(0, "src")
 
-from kernel.ledger.block import Block
-from kernel.ledger.block_store import BlockStore
+from influx.kernel.ledger.block import Block
+from influx.kernel.ledger.block_store import BlockStore
 
 
 def test_block_creation():

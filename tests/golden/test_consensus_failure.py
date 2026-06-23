@@ -1,4 +1,4 @@
-from kernel.sync.shcm import verify_state_hash
+from influx.kernel.sync.shcm import verify_state_hash
 
 
 def test_consensus_failure():
