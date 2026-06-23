@@ -1,0 +1,11 @@
+{
+  "certification_score": 1.0,
+  "certification_valid": true,
+  "health_valid": true,
+  "integrity_valid": true,
+  "monitoring_valid": true,
+  "readiness_valid": true,
+  "regression_valid": true,
+  "release_certified": true,
+  "validation_valid": true
+}
