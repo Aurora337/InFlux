@@ -1,0 +1,113 @@
+name: Release Validation Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - v1.*-sync-ops-audit
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  release-validation:
+    runs-on: ubuntu-latest
+    name: Automated Release Validation
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git operations
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      # Step 4: Run unit tests
+      - name: Run unit tests
+        run: python -m pytest tests/ -q
+        continue-on-error: true
+
+      # Step 5: Run Release Integrity Audit
+      - name: Release Integrity Audit
+        run: python scripts/audit/release_integrity_audit.py
+        continue-on-error: true
+
+      # Step 6: Repository Health Dashboard
+      - name: Repository Health Dashboard
+        run: python scripts/audit/repository_health_dashboard.py
+        continue-on-error: true
+
+      # Step 7: Release Readiness Audit
+      - name: Release Readiness Audit
+        run: python scripts/audit/release_readiness_audit.py
+        continue-on-error: true
+
+      # Step 8: Continuous Audit Monitor
+      - name: Continuous Audit Monitor
+        run: python scripts/audit/continuous_audit_monitor.py
+        continue-on-error: true
+
+      # Step 9: Automated Release Validation (enforcement gate)
+      - name: Automated Release Validation
+        id: validation
+        run: python scripts/audit/automated_release_validation.py
+
+      # Step 10: Check release approval
+      - name: Enforce Release Approval
+        run: |
+          APPROVAL=$(python -c "import json; print(json.load(open('docs/audit/automated_release_validation_report.json')).get('release_approved', False))")
+          if [ "$APPROVAL" != "True" ]; then
+            echo "❌ Release validation failed - release_approved is False"
+            python -m json.tool < docs/audit/automated_release_validation_report.json
+            exit 1
+          fi
+          echo "✅ Release validation passed - release_approved is True"
+
+      # Step 11: Upload audit reports as artifacts
+      - name: Upload audit reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: audit-reports
+          path: docs/audit/*report.json
+          retention-days: 30
+
+      # Step 12: Comment on PR with validation status
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('docs/audit/automated_release_validation_report.json', 'utf8'));
+            
+            const comment = `## 📋 Release Validation Report
+            
+            **Status**: ${report.release_approved ? '✅ APPROVED' : '⚠️ NOT APPROVED'}
+            **Score**: ${(report.validation_score * 100).toFixed(0)}%
+            
+            ### Validation Checks:
+            - ${report.release_integrity_valid ? '✓' : '✗'} Release Integrity: ${report.release_integrity_valid ? 'Valid' : 'Invalid'}
+            - ${report.repository_health_valid ? '✓' : '✗'} Repository Health: ${report.repository_health_valid ? 'Valid' : 'Invalid'}
+            - ${report.release_readiness_valid ? '✓' : '✗'} Release Readiness: ${report.release_readiness_valid ? 'Valid' : 'Invalid'}
+            - ${report.continuous_monitoring_valid ? '✓' : '✗'} Continuous Monitoring: ${report.continuous_monitoring_valid ? 'Valid' : 'Invalid'}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+        continue-on-error: true
