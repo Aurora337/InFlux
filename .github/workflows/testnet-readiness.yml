@@ -1,0 +1,28 @@
+name: Testnet Readiness
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run readiness assessment
+        run: python scripts/assessment/testnet_readiness.py
+
+      - name: Run readiness tests
+        run: python -m pytest tests/assessment/test_testnet_readiness.py -q
+
+      - name: Enforce deterministic score artifact
+        run: |
+          python scripts/assessment/testnet_readiness.py
+          git diff --exit-code docs/architecture/testnet_readiness_score.json
