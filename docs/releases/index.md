@@ -25,8 +25,8 @@ Readable milestone history for the Sync Ops Audit Ladder and earlier release mil
 - v1.1.6-release-notes.md: Release Certification (full automation) ✅
 - v1.1.7-release-notes.md: Audit Policy Enforcement (governance rules) ✅
 - v1.1.8-release-notes.md: Governance Readiness Validation (pre-governance) ✅
-- v1.1.9-release-notes.md: Governance Compliance Monitoring (continuous compliance) ▶
-- v1.2.0-release-notes.md: Autonomous Release Governance (self-healing) 🎯
+- v1.1.9-release-notes.md: Governance Compliance Monitoring (continuous compliance) ✅
+- v1.2.0-release-notes.md: Autonomous Release Governance (governance engine) ▶
 
 **Key Features**:
 - Deterministic audit pipeline (read JSON, produce JSON)
@@ -53,7 +53,7 @@ v1.2.0: Autonomous Governance (self-healing)
 ```
 
 ## Suggested Next Milestone
-- v1.1.9 Governance Compliance Monitoring: continuously verify governance requirements remain compliant over time.
+- v1.2.0 Autonomous Release Governance: aggregate every audit artifact into the final release decision.
 
 ## Audit Regression Detection
 
@@ -102,3 +102,13 @@ that no governance component drifts into a non-compliant state.
 Primary report signals:
 - compliance_valid
 - compliance_score
+
+## Autonomous Release Governance
+
+v1.2.0 is the final governance orchestrator. It consumes every validated audit
+artifact and produces the authoritative release decision.
+
+Primary report signals:
+- release_governed
+- governance_score
+- release_decision
