@@ -1,6 +1,6 @@
 # InFlux Release Notes Index
 
-Readable milestone history for protocol evolution from deterministic kernel baseline to economic verification.
+Readable milestone history for the Sync Ops Audit Ladder and earlier release milestones.
 
 ## Milestones
 
@@ -50,4 +50,4 @@ v1.2.0: Autonomous Governance (self-healing)
 ```
 
 ## Suggested Next Milestone
-- v0.7 Testnet Preparation: genesis configuration, validator bootstrap, peer discovery, network configuration, and launch automation.
+- v1.1.5 Regression Detection: historical trend analysis for validation_score and release_approval drift.
