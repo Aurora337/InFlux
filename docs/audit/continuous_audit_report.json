@@ -1,12 +1,12 @@
 {
-  "monitoring_valid": false,
-  "monitoring_score": 0.75,
-  "timestamp": "2026-06-23T03:48:10.458770Z",
+  "monitoring_valid": true,
+  "monitoring_score": 1.0,
+  "timestamp": "2026-06-23T04:03:45.101403Z",
   "drift_detection": {
     "audit_drift_detected": false,
     "health_drift_detected": false,
     "readiness_drift_detected": false,
-    "working_tree_drift_detected": true
+    "working_tree_drift_detected": false
   },
   "checks": {
     "integrity": {
@@ -22,8 +22,8 @@
       "message": "Readiness OK"
     },
     "working_tree": {
-      "valid": false,
-      "message": "Working tree has uncommitted changes"
+      "valid": true,
+      "message": "Working tree clean"
     }
   }
 }
