@@ -1,71 +1,44 @@
-# InFlux Testnet Readiness Assessment (v1.3.1)
+# InFlux Testnet Readiness Assessment (v1.3.2)
 
 ## Objective
 
-Determine what is required to launch a real multi-node testnet from current repository state.
+Convert protocol assessment artifacts into a deterministic testnet readiness score.
 
-## Current Capability Snapshot
+## Deterministic Output
 
-### Available Now
+- testnet_ready: false
+- readiness_score: 0.64
+- threshold_overall: 0.8
+- threshold_minimum_domain: 0.6
 
-- Testnet directory scaffolding for bootstrap/config/genesis/state/peers/validators.
-- Deterministic report-generation workflows under scripts/testnet and testnet/launch outputs.
-- Simulation and verification tooling for consensus/replay/sync-oriented checks.
+## Domain Scores
 
-### Not Yet Sufficient for Real Testnet Launch
+| Domain | Criteria | Score |
+|---|---|---:|
+| consensus | Implemented / Deterministic / Multi-node capable | 0.77 |
+| validator_lifecycle | Creation / Registration / Startup / Shutdown / Recovery | 0.39 |
+| peer_discovery | Static / Dynamic / Missing | 0.22 |
+| state_replication | Hash agreement / Snapshot exchange / Recovery | 0.43 |
+| replay_engine | Deterministic replay / Verification / Recovery | 0.88 |
+| ledger | Persistence / Verification / Auditability | 0.77 |
+| economics | Verification engine / Simulation coverage / Audit coverage | 1.00 |
 
-- Persistent validator process lifecycle orchestration.
-- Network transport and peer discovery protocol implementation.
-- Node admission/removal and synchronization controls in live runtime.
-- Operational runbooks bound to live node telemetry rather than offline artifacts.
+## Blocking Domains
 
-## Readiness Score
+- validator_lifecycle
+- peer_discovery
+- state_replication
 
-Overall real multi-node testnet readiness: 4/10
+## Scoring Model
 
-## Domain Breakdown
+- implemented = 1.00
+- partial = 0.65
+- missing = 0.00
 
-| Domain | Ready? | Score (/10) | Notes |
-|---|---|---:|---|
-| Genesis and config scaffolding | Yes | 7 | Structure exists and can seed deterministic workflows |
-| Validator runtime lifecycle | Partial | 3 | Role files exist but lifecycle controls are incomplete |
-| Peer discovery and networking | No | 2 | Simulator-based mesh present; production network stack missing |
-| Consensus runtime | Partial | 4 | Simulation evidence exists; production network consensus not complete |
-| State replication and recovery | Partial | 4 | Deterministic verification scripts exist; runtime replication service incomplete |
-| Ledger durability and replay integration | Partial | 5 | Block store and replay tooling exist; full production durability model needs hardening |
-| Observability and operational controls | Partial | 4 | Many reports exist; fewer live runtime telemetry pathways |
-| Governance gate integration | Yes | 9 | Governance control plane can gate releases when protocol evidence is available |
+Each domain score is the arithmetic mean of its criterion scores. Overall readiness score is the arithmetic mean of the seven domain scores.
 
-## Required to Launch Real Multi-Node Testnet
+## Sources
 
-### Must-Have (Blockers)
-
-1. Implement real validator node runtime and process orchestration.
-2. Implement peer networking layer with discovery, handshakes, and message transport.
-3. Implement consensus service for live validator rounds and fault handling.
-4. Implement state replication/recovery paths for lagging/rejoining validators.
-5. Define deterministic bootstrap flow from genesis to steady-state network.
-
-### Should-Have (Stability)
-
-1. Integrate ledger persistence/replay with crash recovery checks.
-2. Add structured runtime telemetry and health endpoints for nodes.
-3. Build repeatable environment scripts for local and CI multi-node bring-up.
-4. Add failure-injection scenarios against live network runtime.
-
-### Governance Coupling (Release Control)
-
-1. Feed live testnet outcomes into governance artifacts used by autonomous release governance.
-2. Add a release gate requiring successful multi-node testnet evidence for protocol releases.
-3. Keep governance score deterministic and artifact-complete before promotion.
-
-## Recommended v1.3.x Sequence
-
-1. v1.3.2: Validator/runtime and network transport baseline.
-2. v1.3.3: Consensus and replication service hardening.
-3. v1.3.4: Executable testnet orchestration + CI integration.
-4. v1.3.5: Governance-coupled protocol release gate using live testnet evidence.
-
-## Conclusion
-
-InFlux is not yet ready for a real multi-node production-like testnet launch, but it has sufficient scaffolding and governance controls to move quickly once runtime protocol gaps are addressed.
+- docs/architecture/protocol_gap_analysis.md
+- docs/architecture/protocol_inventory.md
+- docs/architecture/testnet_readiness_assessment.md
