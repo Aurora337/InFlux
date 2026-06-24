@@ -2,6 +2,7 @@
 
 from .cluster_engine import ClusterDetectionEngine
 from .simulation import ClusterEvent, run_cluster_emergence_simulation
+from .validation import validate_cluster_emergence_report
 from .cluster_types import (
     ClusterLifecycle,
     ClusterState,
@@ -21,4 +22,5 @@ __all__ = [
     "NodeRole",
     "NodeSignal",
     "run_cluster_emergence_simulation",
+    "validate_cluster_emergence_report",
 ]
