@@ -3,6 +3,11 @@
 from .bootstrap import bootstrap_from_genesis, load_genesis
 from .clusters import Cluster, ClusterMembership, ClusterRegistry
 from .registry import NodeRegistry
+from .synchronization import (
+    ClusterStateExchange,
+    SynchronizationResult,
+    SynchronizationSession,
+)
 
 __all__ = [
     "bootstrap_from_genesis",
@@ -11,4 +16,7 @@ __all__ = [
     "Cluster",
     "ClusterMembership",
     "ClusterRegistry",
+    "SynchronizationSession",
+    "ClusterStateExchange",
+    "SynchronizationResult",
 ]
