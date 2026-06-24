@@ -9,6 +9,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import python_cmd
+
 
 REPRO_ARTIFACTS = [
     "testnet/launch/sync_ops_finalization_pipeline.json",
@@ -85,14 +87,13 @@ def generate_repro_manifest(
     output_json: Path,
     output_md: Path,
 ) -> dict:
-    base_cmd = [
-        "/usr/bin/python3",
+    base_cmd = python_cmd(
         "scripts/testnet/run_sync_ops_audit_assurance_validation_pipeline.py",
         "--min-readiness-score",
         str(min_readiness_score),
         "--release-version",
         release_version,
-    ]
+    )
     if inject_failure_suite:
         base_cmd.extend(["--inject-failure-suite", inject_failure_suite])
     if inject_failure_attempt > 0:

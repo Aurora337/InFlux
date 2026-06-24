@@ -10,10 +10,15 @@ if [ -d ".venv" ]; then
   . .venv/bin/activate
 fi
 
-echo "Running pytest..."
-if command -v pytest >/dev/null 2>&1; then
-  pytest -q
+PYTHON_CMD=""
+if command -v python >/dev/null 2>&1; then
+  PYTHON_CMD="python"
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON_CMD="python3"
 else
-  echo "pytest not found. Install with: pip install pytest"
+  echo "No Python executable found in PATH (python/python3)."
   exit 2
 fi
+
+echo "Running pytest..."
+"$PYTHON_CMD" -m pytest -q

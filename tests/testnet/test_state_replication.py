@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from runtime_executable import python_cmd
 from scripts.testnet.state_replication_validator import StateReplicationError, validate_state_replication
 
 
@@ -27,7 +28,7 @@ def test_state_replication_output_contract() -> None:
 
 def test_state_replication_cli_output() -> None:
     run = subprocess.run(
-        ["python3", "scripts/testnet/state_replication_validator.py"],
+        python_cmd("scripts/testnet/state_replication_validator.py"),
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,

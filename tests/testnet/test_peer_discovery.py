@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import subprocess
 
+from runtime_executable import python_cmd
 from scripts.testnet.peer_discovery import validate_peer_discovery
 
 
@@ -137,9 +138,25 @@ def test_deterministic_output(tmp_path: Path) -> None:
     assert json.dumps(first, sort_keys=True) == json.dumps(second, sort_keys=True)
 
 
-def test_peer_discovery_cli_output() -> None:
+def test_peer_discovery_cli_output(tmp_path: Path) -> None:
+    peers_path, validators_dir, network_health_path = _write_artifacts(
+        tmp_path,
+        peers=["peer-1", "peer-2", "peer-3", "peer-4", "peer-5"],
+        validators=["peer-1", "peer-2", "peer-3", "peer-4", "peer-5"],
+    )
+
     run = subprocess.run(
-        ["python3", "scripts/testnet/peer_discovery.py"],
+        python_cmd(
+            "scripts/testnet/peer_discovery.py",
+            "--peer-count",
+            "5",
+            "--peers-path",
+            str(peers_path),
+            "--validators-dir",
+            str(validators_dir),
+            "--network-health-path",
+            str(network_health_path),
+        ),
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,

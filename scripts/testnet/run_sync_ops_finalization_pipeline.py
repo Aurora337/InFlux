@@ -9,6 +9,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import python_cmd
+
 
 def _load_json(path: Path) -> dict:
     if not path.exists():
@@ -44,17 +46,17 @@ def run_pipeline(
     output_json: Path,
     output_md: Path,
 ) -> dict:
-    supervisor_cmd = ["/usr/bin/python3", "scripts/testnet/run_sync_orchestration_supervisor.py"]
+    supervisor_cmd = python_cmd("scripts/testnet/run_sync_orchestration_supervisor.py")
     if inject_failure_suite:
         supervisor_cmd.extend(["--inject-failure-suite", inject_failure_suite])
     if inject_failure_attempt > 0:
         supervisor_cmd.extend(["--inject-failure-attempt", str(inject_failure_attempt)])
 
-    assurance_pipeline_cmd = [
-        "/usr/bin/python3",
+    assurance_pipeline_cmd = python_cmd(
         "scripts/testnet/run_sync_ops_assurance_pipeline.py",
-        "--min-readiness-score", str(min_readiness_score),
-    ]
+        "--min-readiness-score",
+        str(min_readiness_score),
+    )
     if inject_failure_suite:
         assurance_pipeline_cmd.extend(["--inject-failure-suite", inject_failure_suite])
     if inject_failure_attempt > 0:
@@ -62,23 +64,24 @@ def run_pipeline(
 
     steps = [
         ("supervisor", supervisor_cmd),
-        ("runbook", ["/usr/bin/python3", "scripts/testnet/generate_sync_ops_runbook.py"]),
-        ("handoff", ["/usr/bin/python3", "scripts/testnet/generate_sync_handoff_note.py"]),
-        ("stability_gate", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_stability_gate.py"]),
-        ("promotion_packet", ["/usr/bin/python3", "scripts/testnet/generate_sync_ops_promotion_packet.py", "--min-readiness-score", str(min_readiness_score)]),
-        ("promotion_packet_validation", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_promotion_packet.py"]),
-        ("assurance_report", ["/usr/bin/python3", "scripts/testnet/generate_sync_ops_assurance_report.py"]),
-        ("assurance_report_validation", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_assurance_report.py"]),
+        ("runbook", python_cmd("scripts/testnet/generate_sync_ops_runbook.py")),
+        ("handoff", python_cmd("scripts/testnet/generate_sync_handoff_note.py")),
+        ("stability_gate", python_cmd("scripts/testnet/validate_sync_ops_stability_gate.py")),
+        ("promotion_packet", python_cmd("scripts/testnet/generate_sync_ops_promotion_packet.py", "--min-readiness-score", str(min_readiness_score))),
+        ("promotion_packet_validation", python_cmd("scripts/testnet/validate_sync_ops_promotion_packet.py")),
+        ("assurance_report", python_cmd("scripts/testnet/generate_sync_ops_assurance_report.py")),
+        ("assurance_report_validation", python_cmd("scripts/testnet/validate_sync_ops_assurance_report.py")),
         ("assurance_pipeline", assurance_pipeline_cmd),
-        ("governance_report", ["/usr/bin/python3", "scripts/testnet/generate_sync_ops_governance_report.py"]),
-        ("governance_report_validation", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_governance_report.py"]),
-        ("governance_pipeline", [
-            "/usr/bin/python3", "scripts/testnet/run_sync_ops_governance_pipeline.py",
-            "--min-readiness-score", str(min_readiness_score),
-        ] + (["--inject-failure-suite", inject_failure_suite] if inject_failure_suite else [])
+        ("governance_report", python_cmd("scripts/testnet/generate_sync_ops_governance_report.py")),
+        ("governance_report_validation", python_cmd("scripts/testnet/validate_sync_ops_governance_report.py")),
+        ("governance_pipeline", python_cmd(
+            "scripts/testnet/run_sync_ops_governance_pipeline.py",
+            "--min-readiness-score",
+            str(min_readiness_score),
+        ) + (["--inject-failure-suite", inject_failure_suite] if inject_failure_suite else [])
           + (["--inject-failure-attempt", str(inject_failure_attempt)] if inject_failure_attempt > 0 else [])),
-        ("release_certificate", ["/usr/bin/python3", "scripts/testnet/generate_sync_ops_release_certificate.py"]),
-        ("release_certificate_validation", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_release_certificate.py"]),
+        ("release_certificate", python_cmd("scripts/testnet/generate_sync_ops_release_certificate.py")),
+        ("release_certificate_validation", python_cmd("scripts/testnet/validate_sync_ops_release_certificate.py")),
     ]
 
     stage_results: list[dict] = []

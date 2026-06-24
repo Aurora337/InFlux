@@ -2,6 +2,7 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import python_cmd
 from scripts.testnet.validate_testnet_deployment_preflight import run_preflight
 
 
@@ -29,8 +30,7 @@ def _build_valid_tree(root: Path) -> None:
 def _run_cli(root: Path, out: Path, min_validators: int = 1) -> subprocess.CompletedProcess:
     repo_root = Path(__file__).resolve().parents[2]
     return subprocess.run(
-        [
-            "python3",
+        python_cmd(
             "scripts/testnet/validate_testnet_deployment_preflight.py",
             "--root",
             str(root),
@@ -38,7 +38,7 @@ def _run_cli(root: Path, out: Path, min_validators: int = 1) -> subprocess.Compl
             str(min_validators),
             "--output",
             str(out),
-        ],
+        ),
         cwd=str(repo_root),
         capture_output=True,
         text=True,
