@@ -18,7 +18,7 @@ Checks:
 import json
 import subprocess
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -52,7 +52,7 @@ def check_tests_valid():
         "tests/assessment/test_testnet_readiness.py::test_testnet_readiness_output_contract "
         "-v --tb=short 2>&1 | tail -20"
     )
-
+    
     # Parse pytest output for pass/fail
     if "passed" in stdout and "failed" not in stdout:
         # Extract test count
@@ -60,7 +60,7 @@ def check_tests_valid():
         match = re.search(r"(\d+) passed", stdout)
         if match:
             return True, int(match.group(1)), 0
-
+    
     # Fallback: run tests and check exit code
     success, _, _ = run_command(
         "python -m pytest "
@@ -183,7 +183,7 @@ def generate_readiness_report():
     report = {
         "release_ready": release_ready,
         "readiness_score": round(readiness_score, 2),
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         "checks": {
             "tests_valid": tests_valid,
             "audit_valid": audit_valid,
