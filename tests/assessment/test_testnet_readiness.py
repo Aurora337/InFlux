@@ -5,6 +5,9 @@ from pathlib import Path
 from runtime_executable import PYTHON_EXECUTABLE
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 def _run_assessment(output_json: Path, output_md: Path) -> dict:
     result = subprocess.run(
         [
@@ -15,7 +18,7 @@ def _run_assessment(output_json: Path, output_md: Path) -> dict:
             "--output-md",
             str(output_md),
         ],
-        cwd="/workspaces/InFlux",
+        cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
     )

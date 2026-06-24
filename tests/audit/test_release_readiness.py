@@ -12,18 +12,21 @@ import pytest
 from runtime_executable import PYTHON_EXECUTABLE
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 class TestReleaseReadinessAudit:
     """Tests for release readiness audit checks."""
     
     @pytest.fixture
     def audit_script(self):
         """Path to audit script."""
-        return Path("/workspaces/InFlux/scripts/audit/release_readiness_audit.py")
+        return REPO_ROOT / "scripts" / "audit" / "release_readiness_audit.py"
     
     @pytest.fixture
     def report_file(self):
         """Path to generated report."""
-        return Path("/workspaces/InFlux/docs/audit/release_readiness_report.json")
+        return REPO_ROOT / "docs" / "audit" / "release_readiness_report.json"
     
     def test_audit_script_exists(self, audit_script):
         """Verify audit script is present."""
@@ -34,7 +37,7 @@ class TestReleaseReadinessAudit:
         result = subprocess.run(
             [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert result.returncode in [0, 1], f"Script failed: {result.stderr}"
     
@@ -43,7 +46,7 @@ class TestReleaseReadinessAudit:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert report_file.exists(), "Report JSON not generated"
     
@@ -52,7 +55,7 @@ class TestReleaseReadinessAudit:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -65,7 +68,7 @@ class TestReleaseReadinessAudit:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -86,7 +89,7 @@ class TestReleaseReadinessAudit:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -112,7 +115,7 @@ class TestReleaseReadinessAudit:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -126,7 +129,7 @@ class TestReleaseReadinessAudit:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:

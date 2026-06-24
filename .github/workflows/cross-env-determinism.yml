@@ -81,11 +81,12 @@ jobs:
       - name: Download reports
         uses: actions/download-artifact@v4
         with:
-          path: data/replays/reports
+          path: tmp/reports
 
       - name: Flatten report files
         run: |
-          find data/replays/reports -name "*_report.json" -exec cp {} data/replays/reports/ \;
+          mkdir -p tmp/reports/flat
+          find tmp/reports -name "*_report.json" -exec cp {} tmp/reports/flat/ \;
 
       - name: Compare reports
-        run: python compare_env_reports.py --glob "data/replays/reports/*_report.json"
+        run: python compare_env_reports.py --glob "tmp/reports/flat/*_report.json"

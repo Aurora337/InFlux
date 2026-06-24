@@ -12,18 +12,21 @@ import pytest
 from runtime_executable import PYTHON_EXECUTABLE
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 class TestContinuousAuditMonitor:
     """Tests for continuous audit monitor."""
     
     @pytest.fixture
     def monitor_script(self):
         """Path to monitor script."""
-        return Path("/workspaces/InFlux/scripts/audit/continuous_audit_monitor.py")
+        return REPO_ROOT / "scripts" / "audit" / "continuous_audit_monitor.py"
     
     @pytest.fixture
     def report_file(self):
         """Path to generated report."""
-        return Path("/workspaces/InFlux/docs/audit/continuous_audit_report.json")
+        return REPO_ROOT / "docs" / "audit" / "continuous_audit_report.json"
     
     def test_monitor_script_exists(self, monitor_script):
         """Verify monitor script is present."""
@@ -34,7 +37,7 @@ class TestContinuousAuditMonitor:
         result = subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert result.returncode in [0, 1], f"Script failed: {result.stderr}"
     
@@ -43,7 +46,7 @@ class TestContinuousAuditMonitor:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert report_file.exists(), "Report JSON not generated"
     
@@ -52,7 +55,7 @@ class TestContinuousAuditMonitor:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -65,7 +68,7 @@ class TestContinuousAuditMonitor:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -87,7 +90,7 @@ class TestContinuousAuditMonitor:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -110,7 +113,7 @@ class TestContinuousAuditMonitor:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -135,7 +138,7 @@ class TestContinuousAuditMonitor:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -149,7 +152,7 @@ class TestContinuousAuditMonitor:
         subprocess.run(
             [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:

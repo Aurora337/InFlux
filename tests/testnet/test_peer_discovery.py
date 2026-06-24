@@ -5,6 +5,9 @@ import subprocess
 from scripts.testnet.peer_discovery import validate_peer_discovery
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 def _write_artifacts(base_dir: Path, peers: list[str], validators: list[str], expected_peer_count: int = 5) -> tuple[Path, Path, Path]:
     peers_dir = base_dir / "testnet" / "peers"
     validators_dir = base_dir / "testnet" / "validators"
@@ -137,7 +140,7 @@ def test_deterministic_output(tmp_path: Path) -> None:
 def test_peer_discovery_cli_output() -> None:
     run = subprocess.run(
         ["python3", "scripts/testnet/peer_discovery.py"],
-        cwd="/workspaces/InFlux",
+        cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
     )
