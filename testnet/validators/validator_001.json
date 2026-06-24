@@ -1,0 +1,7 @@
+{
+  "validator_id": "validator-001",
+  "name": "bootstrap-validator-001",
+  "role": "validator",
+  "stake": 1000,
+  "active": true
+}
