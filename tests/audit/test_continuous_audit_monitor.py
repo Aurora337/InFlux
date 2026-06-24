@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+from runtime_executable import PYTHON_EXECUTABLE
+
 
 class TestContinuousAuditMonitor:
     """Tests for continuous audit monitor."""
@@ -30,7 +32,7 @@ class TestContinuousAuditMonitor:
     def test_monitor_script_executable(self, monitor_script):
         """Verify script runs without errors."""
         result = subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -39,7 +41,7 @@ class TestContinuousAuditMonitor:
     def test_report_generated(self, monitor_script, report_file):
         """Verify report JSON is generated."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -48,7 +50,7 @@ class TestContinuousAuditMonitor:
     def test_report_valid_json(self, monitor_script, report_file):
         """Verify report is valid JSON."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -61,7 +63,7 @@ class TestContinuousAuditMonitor:
     def test_report_has_required_fields(self, monitor_script, report_file):
         """Verify report has all required fields."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -83,7 +85,7 @@ class TestContinuousAuditMonitor:
     def test_drift_detection_structure(self, monitor_script, report_file):
         """Verify drift_detection object has expected structure."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -106,7 +108,7 @@ class TestContinuousAuditMonitor:
     def test_checks_structure(self, monitor_script, report_file):
         """Verify checks object has expected structure."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -131,7 +133,7 @@ class TestContinuousAuditMonitor:
     def test_monitoring_score_valid_range(self, monitor_script, report_file):
         """Verify monitoring score is between 0 and 1."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -145,7 +147,7 @@ class TestContinuousAuditMonitor:
     def test_monitoring_valid_consistency(self, monitor_script, report_file):
         """Verify monitoring_valid matches no drifts detected."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )

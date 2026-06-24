@@ -1,0 +1,68 @@
+name: Runtime Portability Validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - v1.3.5-environment-hardening
+
+jobs:
+  ubuntu:
+    name: Ubuntu Portability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Audit runtime environment
+        run: python scripts/audit/runtime_environment_audit.py --output docs/audit/runtime_environment_report_ubuntu.json
+
+      - name: Run audit portability tests
+        run: python -m pytest tests/audit tests/assessment/test_testnet_readiness.py -q
+
+  linux-container:
+    name: Linux Container Portability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run portability checks in container
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspaces/InFlux" \
+            -w /workspaces/InFlux \
+            python:3.12-slim \
+            bash -lc "python -m pip install --upgrade pip && pip install pytest && python scripts/audit/runtime_environment_audit.py --output docs/audit/runtime_environment_report_container.json && python -m pytest tests/audit tests/assessment/test_testnet_readiness.py -q"
+
+  wsl:
+    name: WSL Portability
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate using WSL
+        shell: pwsh
+        run: |
+          $workspace = $env:GITHUB_WORKSPACE -replace '\\', '/'
+          $drive = $workspace.Substring(0,1).ToLower()
+          $rest = $workspace.Substring(2)
+          $wslWorkspace = "/mnt/$drive$rest"
+
+          wsl.exe -e bash -lc "python3 --version"
+          wsl.exe -e bash -lc "cd '$wslWorkspace' && python3 -m pip install --upgrade pip && python3 -m pip install pytest"
+          wsl.exe -e bash -lc "cd '$wslWorkspace' && python3 scripts/audit/runtime_environment_audit.py --output docs/audit/runtime_environment_report_wsl.json"
+          wsl.exe -e bash -lc "cd '$wslWorkspace' && python3 -m pytest tests/audit tests/assessment/test_testnet_readiness.py -q"

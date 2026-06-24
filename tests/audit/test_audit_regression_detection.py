@@ -5,6 +5,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import PYTHON_EXECUTABLE
+
 
 SCRIPT_PATH = Path("scripts/audit/audit_regression_detection.py")
 
@@ -65,7 +67,7 @@ def _seed_baseline_reports(root: Path):
 
 def _run_detector(cwd: Path):
     result = subprocess.run(
-        ["python", str(SCRIPT_PATH.resolve())],
+        [PYTHON_EXECUTABLE, str(SCRIPT_PATH.resolve())],
         cwd=cwd,
         capture_output=True,
         text=True,

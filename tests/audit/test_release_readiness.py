@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+from runtime_executable import PYTHON_EXECUTABLE
+
 
 class TestReleaseReadinessAudit:
     """Tests for release readiness audit checks."""
@@ -30,7 +32,7 @@ class TestReleaseReadinessAudit:
     def test_audit_script_executable(self, audit_script):
         """Verify script runs without errors."""
         result = subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -39,7 +41,7 @@ class TestReleaseReadinessAudit:
     def test_report_generated(self, audit_script, report_file):
         """Verify report JSON is generated."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -48,7 +50,7 @@ class TestReleaseReadinessAudit:
     def test_report_valid_json(self, audit_script, report_file):
         """Verify report is valid JSON."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -61,7 +63,7 @@ class TestReleaseReadinessAudit:
     def test_report_has_required_fields(self, audit_script, report_file):
         """Verify report has all required fields."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -82,7 +84,7 @@ class TestReleaseReadinessAudit:
     def test_report_checks_structure(self, audit_script, report_file):
         """Verify checks object has expected structure."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -108,7 +110,7 @@ class TestReleaseReadinessAudit:
     def test_readiness_score_valid_range(self, audit_script, report_file):
         """Verify readiness score is between 0 and 1."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )
@@ -122,7 +124,7 @@ class TestReleaseReadinessAudit:
     def test_release_ready_consistency(self, audit_script, report_file):
         """Verify release_ready matches all checks passing."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
             cwd="/workspaces/InFlux"
         )

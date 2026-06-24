@@ -2,11 +2,13 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import PYTHON_EXECUTABLE
+
 
 def _run_assessment(output_json: Path, output_md: Path) -> dict:
     result = subprocess.run(
         [
-            "python",
+            PYTHON_EXECUTABLE,
             "scripts/assessment/testnet_readiness.py",
             "--output-json",
             str(output_json),

@@ -16,6 +16,8 @@ from pathlib import Path
 
 import pytest
 
+from runtime_executable import PYTHON_EXECUTABLE
+
 
 class TestAutomatedReleaseValidation:
     """Test suite for automated release validation script."""
@@ -37,7 +39,7 @@ class TestAutomatedReleaseValidation:
     def test_validation_script_executable(self, script_path):
         """Verify validation script runs without error."""
         result = subprocess.run(
-            ["python", str(script_path)],
+            [PYTHON_EXECUTABLE, str(script_path)],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -49,7 +51,7 @@ class TestAutomatedReleaseValidation:
         """Verify validation report is generated."""
         # Run script to generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -60,7 +62,7 @@ class TestAutomatedReleaseValidation:
         """Verify report is valid JSON."""
         # Generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -75,7 +77,7 @@ class TestAutomatedReleaseValidation:
         """Verify report contains all required fields."""
         # Generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -103,7 +105,7 @@ class TestAutomatedReleaseValidation:
         """Verify checks have required structure."""
         # Generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -126,7 +128,7 @@ class TestAutomatedReleaseValidation:
         """Verify validation score is between 0 and 1."""
         # Generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -142,7 +144,7 @@ class TestAutomatedReleaseValidation:
         """Verify validation_valid matches overall result."""
         # Generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -167,7 +169,7 @@ class TestAutomatedReleaseValidation:
         """Verify release_approved matches validation_valid."""
         # Generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
@@ -186,7 +188,7 @@ class TestAutomatedReleaseValidation:
         """Verify report includes RFC3339 timestamp."""
         # Generate report
         subprocess.run(
-            ["python", "scripts/audit/automated_release_validation.py"],
+            [PYTHON_EXECUTABLE, "scripts/audit/automated_release_validation.py"],
             cwd=Path.cwd(),
             capture_output=True,
             text=True
