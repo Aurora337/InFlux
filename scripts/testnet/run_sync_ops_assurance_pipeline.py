@@ -9,6 +9,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import python_cmd
+
 
 def _load_json(path: Path) -> dict:
     if not path.exists():
@@ -48,7 +50,7 @@ def run_pipeline(
     output_json: Path,
     output_md: Path,
 ) -> dict:
-    supervisor_cmd = ["/usr/bin/python3", "scripts/testnet/run_sync_orchestration_supervisor.py"]
+    supervisor_cmd = python_cmd("scripts/testnet/run_sync_orchestration_supervisor.py")
     if inject_failure_suite:
         supervisor_cmd.extend(["--inject-failure-suite", inject_failure_suite])
     if inject_failure_attempt > 0:
@@ -56,21 +58,20 @@ def run_pipeline(
 
     steps = [
         ("supervisor", supervisor_cmd),
-        ("runbook", ["/usr/bin/python3", "scripts/testnet/generate_sync_ops_runbook.py"]),
-        ("handoff", ["/usr/bin/python3", "scripts/testnet/generate_sync_handoff_note.py"]),
-        ("stability_gate", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_stability_gate.py"]),
+        ("runbook", python_cmd("scripts/testnet/generate_sync_ops_runbook.py")),
+        ("handoff", python_cmd("scripts/testnet/generate_sync_handoff_note.py")),
+        ("stability_gate", python_cmd("scripts/testnet/validate_sync_ops_stability_gate.py")),
         (
             "promotion_packet",
-            [
-                "/usr/bin/python3",
+            python_cmd(
                 "scripts/testnet/generate_sync_ops_promotion_packet.py",
                 "--min-readiness-score",
                 str(min_readiness_score),
-            ],
+            ),
         ),
-        ("promotion_packet_validation", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_promotion_packet.py"]),
-        ("assurance_report", ["/usr/bin/python3", "scripts/testnet/generate_sync_ops_assurance_report.py"]),
-        ("assurance_report_validation", ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_assurance_report.py"]),
+        ("promotion_packet_validation", python_cmd("scripts/testnet/validate_sync_ops_promotion_packet.py")),
+        ("assurance_report", python_cmd("scripts/testnet/generate_sync_ops_assurance_report.py")),
+        ("assurance_report_validation", python_cmd("scripts/testnet/validate_sync_ops_assurance_report.py")),
     ]
 
     stage_results: list[dict] = []

@@ -9,6 +9,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import python_cmd
+
 
 def _load_json(path: Path) -> dict:
     if not path.exists():
@@ -45,14 +47,13 @@ def run_pipeline(
     output_json: Path,
     output_md: Path,
 ) -> dict:
-    audit_assurance_cmd = [
-        "/usr/bin/python3",
+    audit_assurance_cmd = python_cmd(
         "scripts/testnet/run_sync_ops_audit_assurance_pipeline.py",
         "--min-readiness-score",
         str(min_readiness_score),
         "--release-version",
         release_version,
-    ]
+    )
     if inject_failure_suite:
         audit_assurance_cmd.extend(["--inject-failure-suite", inject_failure_suite])
     if inject_failure_attempt > 0:
@@ -62,7 +63,7 @@ def run_pipeline(
         ("audit_assurance_pipeline", audit_assurance_cmd),
         (
             "audit_assurance_pipeline_validation",
-            ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_audit_assurance_pipeline.py"],
+            python_cmd("scripts/testnet/validate_sync_ops_audit_assurance_pipeline.py"),
         ),
     ]
 

@@ -9,6 +9,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import python_cmd
+
 
 def _load_json(path: Path) -> dict:
     if not path.exists():
@@ -45,14 +47,13 @@ def run_pipeline(
     output_json: Path,
     output_md: Path,
 ) -> dict:
-    repro_cmd = [
-        "/usr/bin/python3",
+    repro_cmd = python_cmd(
         "scripts/testnet/generate_sync_ops_reproducibility_manifest.py",
         "--min-readiness-score",
         str(min_readiness_score),
         "--release-version",
         release_version,
-    ]
+    )
     if inject_failure_suite:
         repro_cmd.extend(["--inject-failure-suite", inject_failure_suite])
     if inject_failure_attempt > 0:
@@ -62,7 +63,7 @@ def run_pipeline(
         ("reproducibility_manifest", repro_cmd),
         (
             "reproducibility_manifest_validation",
-            ["/usr/bin/python3", "scripts/testnet/validate_sync_ops_reproducibility_manifest.py"],
+            python_cmd("scripts/testnet/validate_sync_ops_reproducibility_manifest.py"),
         ),
     ]
 
