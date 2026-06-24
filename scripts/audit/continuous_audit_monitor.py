@@ -18,6 +18,9 @@ from datetime import datetime
 from pathlib import Path
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 def run_command(cmd):
     """Run shell command and return result."""
     try:
@@ -26,7 +29,7 @@ def run_command(cmd):
             shell=True,
             capture_output=True,
             text=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         return result.returncode == 0, result.stdout.strip(), result.stderr.strip()
     except Exception as e:
@@ -44,7 +47,7 @@ def load_report(report_path):
 
 def check_integrity_drift():
     """Check for drift in integrity metrics."""
-    report_path = Path("/workspaces/InFlux/docs/audit/release_integrity_report.json")
+    report_path = REPO_ROOT / "docs" / "audit" / "release_integrity_report.json"
     
     if not report_path.exists():
         return False, "Report missing"
@@ -73,7 +76,7 @@ def check_integrity_drift():
 
 def check_health_drift():
     """Check for drift in health metrics."""
-    report_path = Path("/workspaces/InFlux/docs/audit/repository_health.json")
+    report_path = REPO_ROOT / "docs" / "audit" / "repository_health.json"
     
     if not report_path.exists():
         return False, "Report missing"
@@ -108,7 +111,7 @@ def check_health_drift():
 
 def check_readiness_drift():
     """Check for drift in readiness metrics."""
-    report_path = Path("/workspaces/InFlux/docs/audit/release_readiness_report.json")
+    report_path = REPO_ROOT / "docs" / "audit" / "release_readiness_report.json"
     
     if not report_path.exists():
         return False, "Report missing"
@@ -185,7 +188,7 @@ def generate_monitoring_report():
     }
     
     # Write report
-    report_path = Path("/workspaces/InFlux/docs/audit/continuous_audit_report.json")
+    report_path = REPO_ROOT / "docs" / "audit" / "continuous_audit_report.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(report_path, "w") as f:

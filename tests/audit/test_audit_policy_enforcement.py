@@ -5,6 +5,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import PYTHON_EXECUTABLE
+
 
 SCRIPT_PATH = Path("scripts/audit/audit_policy_enforcement.py")
 
@@ -42,7 +44,7 @@ def _seed_passing_inputs(root: Path):
 
 def _run_policy(root: Path):
     result = subprocess.run(
-        ["python", str(SCRIPT_PATH.resolve()), "--root", str(root)],
+        [PYTHON_EXECUTABLE, str(SCRIPT_PATH.resolve()), "--root", str(root)],
         capture_output=True,
         text=True,
     )

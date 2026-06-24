@@ -9,6 +9,11 @@ from pathlib import Path
 
 import pytest
 
+from runtime_executable import PYTHON_EXECUTABLE
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 class TestContinuousAuditMonitor:
     """Tests for continuous audit monitor."""
@@ -16,12 +21,12 @@ class TestContinuousAuditMonitor:
     @pytest.fixture
     def monitor_script(self):
         """Path to monitor script."""
-        return Path("/workspaces/InFlux/scripts/audit/continuous_audit_monitor.py")
+        return REPO_ROOT / "scripts" / "audit" / "continuous_audit_monitor.py"
     
     @pytest.fixture
     def report_file(self):
         """Path to generated report."""
-        return Path("/workspaces/InFlux/docs/audit/continuous_audit_report.json")
+        return REPO_ROOT / "docs" / "audit" / "continuous_audit_report.json"
     
     def test_monitor_script_exists(self, monitor_script):
         """Verify monitor script is present."""
@@ -30,27 +35,27 @@ class TestContinuousAuditMonitor:
     def test_monitor_script_executable(self, monitor_script):
         """Verify script runs without errors."""
         result = subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert result.returncode in [0, 1], f"Script failed: {result.stderr}"
     
     def test_report_generated(self, monitor_script, report_file):
         """Verify report JSON is generated."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert report_file.exists(), "Report JSON not generated"
     
     def test_report_valid_json(self, monitor_script, report_file):
         """Verify report is valid JSON."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -61,9 +66,9 @@ class TestContinuousAuditMonitor:
     def test_report_has_required_fields(self, monitor_script, report_file):
         """Verify report has all required fields."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -83,9 +88,9 @@ class TestContinuousAuditMonitor:
     def test_drift_detection_structure(self, monitor_script, report_file):
         """Verify drift_detection object has expected structure."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -106,9 +111,9 @@ class TestContinuousAuditMonitor:
     def test_checks_structure(self, monitor_script, report_file):
         """Verify checks object has expected structure."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -131,9 +136,9 @@ class TestContinuousAuditMonitor:
     def test_monitoring_score_valid_range(self, monitor_script, report_file):
         """Verify monitoring score is between 0 and 1."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -145,9 +150,9 @@ class TestContinuousAuditMonitor:
     def test_monitoring_valid_consistency(self, monitor_script, report_file):
         """Verify monitoring_valid matches no drifts detected."""
         subprocess.run(
-            ["python", str(monitor_script)],
+            [PYTHON_EXECUTABLE, str(monitor_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:

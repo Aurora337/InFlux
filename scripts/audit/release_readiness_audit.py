@@ -22,6 +22,9 @@ from datetime import datetime
 from pathlib import Path
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 def run_command(cmd, capture=True):
     """Run shell command and return result."""
     try:
@@ -31,11 +34,11 @@ def run_command(cmd, capture=True):
                 shell=True,
                 capture_output=True,
                 text=True,
-                cwd="/workspaces/InFlux"
+                cwd=str(REPO_ROOT)
             )
             return result.returncode == 0, result.stdout.strip(), result.stderr.strip()
         else:
-            result = subprocess.run(cmd, shell=True, cwd="/workspaces/InFlux")
+            result = subprocess.run(cmd, shell=True, cwd=str(REPO_ROOT))
             return result.returncode == 0, "", ""
     except Exception as e:
         return False, "", str(e)
@@ -60,8 +63,8 @@ def check_tests_valid():
 
 def check_audit_reports_valid():
     """Verify release_integrity and repository_health reports exist and are valid."""
-    audit_file = Path("/workspaces/InFlux/docs/audit/release_integrity_report.json")
-    health_file = Path("/workspaces/InFlux/docs/audit/repository_health.json")
+    audit_file = REPO_ROOT / "docs" / "audit" / "release_integrity_report.json"
+    health_file = REPO_ROOT / "docs" / "audit" / "repository_health.json"
     
     audit_valid = False
     health_valid = False
@@ -92,7 +95,7 @@ def check_release_notes_present():
     version = version.strip()
     
     # Look for release notes
-    release_notes_dir = Path("/workspaces/InFlux/docs/releases")
+    release_notes_dir = REPO_ROOT / "docs" / "releases"
     if release_notes_dir.exists():
         # Check if any release notes exist
         notes_files = list(release_notes_dir.glob("*.md"))
@@ -183,7 +186,7 @@ def generate_readiness_report():
     }
     
     # Write report
-    report_path = Path("/workspaces/InFlux/docs/audit/release_readiness_report.json")
+    report_path = REPO_ROOT / "docs" / "audit" / "release_readiness_report.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(report_path, "w") as f:

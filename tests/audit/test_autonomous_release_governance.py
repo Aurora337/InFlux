@@ -5,6 +5,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from runtime_executable import PYTHON_EXECUTABLE
+
 
 SCRIPT_PATH = Path("scripts/audit/autonomous_release_governance.py")
 
@@ -48,7 +50,7 @@ def _seed_passing_inputs(root: Path):
 
 def _run_governance(root: Path):
     result = subprocess.run(
-        ["python", str(SCRIPT_PATH.resolve()), "--root", str(root)],
+        [PYTHON_EXECUTABLE, str(SCRIPT_PATH.resolve()), "--root", str(root)],
         capture_output=True,
         text=True,
     )

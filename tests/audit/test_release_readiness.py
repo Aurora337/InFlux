@@ -9,6 +9,11 @@ from pathlib import Path
 
 import pytest
 
+from runtime_executable import PYTHON_EXECUTABLE
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 class TestReleaseReadinessAudit:
     """Tests for release readiness audit checks."""
@@ -16,12 +21,12 @@ class TestReleaseReadinessAudit:
     @pytest.fixture
     def audit_script(self):
         """Path to audit script."""
-        return Path("/workspaces/InFlux/scripts/audit/release_readiness_audit.py")
+        return REPO_ROOT / "scripts" / "audit" / "release_readiness_audit.py"
     
     @pytest.fixture
     def report_file(self):
         """Path to generated report."""
-        return Path("/workspaces/InFlux/docs/audit/release_readiness_report.json")
+        return REPO_ROOT / "docs" / "audit" / "release_readiness_report.json"
     
     def test_audit_script_exists(self, audit_script):
         """Verify audit script is present."""
@@ -30,27 +35,27 @@ class TestReleaseReadinessAudit:
     def test_audit_script_executable(self, audit_script):
         """Verify script runs without errors."""
         result = subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert result.returncode in [0, 1], f"Script failed: {result.stderr}"
     
     def test_report_generated(self, audit_script, report_file):
         """Verify report JSON is generated."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         assert report_file.exists(), "Report JSON not generated"
     
     def test_report_valid_json(self, audit_script, report_file):
         """Verify report is valid JSON."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -61,9 +66,9 @@ class TestReleaseReadinessAudit:
     def test_report_has_required_fields(self, audit_script, report_file):
         """Verify report has all required fields."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -82,9 +87,9 @@ class TestReleaseReadinessAudit:
     def test_report_checks_structure(self, audit_script, report_file):
         """Verify checks object has expected structure."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -108,9 +113,9 @@ class TestReleaseReadinessAudit:
     def test_readiness_score_valid_range(self, audit_script, report_file):
         """Verify readiness score is between 0 and 1."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
@@ -122,9 +127,9 @@ class TestReleaseReadinessAudit:
     def test_release_ready_consistency(self, audit_script, report_file):
         """Verify release_ready matches all checks passing."""
         subprocess.run(
-            ["python", str(audit_script)],
+            [PYTHON_EXECUTABLE, str(audit_script)],
             capture_output=True,
-            cwd="/workspaces/InFlux"
+            cwd=str(REPO_ROOT)
         )
         
         with open(report_file) as f:
