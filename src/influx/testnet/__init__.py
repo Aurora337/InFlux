@@ -8,6 +8,11 @@ from .synchronization import (
     SynchronizationResult,
     SynchronizationSession,
 )
+from .economic_propagation import (
+    EconomicStateExchange,
+    EconomicSyncSession,
+    EconomicPropagationResult,
+)
 
 __all__ = [
     "bootstrap_from_genesis",
@@ -19,4 +24,7 @@ __all__ = [
     "SynchronizationSession",
     "ClusterStateExchange",
     "SynchronizationResult",
+    "EconomicStateExchange",
+    "EconomicSyncSession",
+    "EconomicPropagationResult",
 ]
