@@ -1,6 +1,5 @@
 """Multi-cluster genesis validation with deterministic convergence proof."""
 
-import hashlib
 import json
 
 from influx.testnet import ClusterRegistry
@@ -114,13 +113,6 @@ def test_multi_cluster_ledger_baseline_identical():
 def test_multi_cluster_genesis_reserve_circulation():
     """Test that reserve and circulation baselines can be tracked."""
     registry = _create_test_clusters(3)
-    
-    # Genesis baseline: all clusters start with same reserve/circulation
-    genesis_baseline = {
-        "reserve": 1000000.0,
-        "circulation": 500000.0,
-        "ledger_height": 0,
-    }
     
     # Verify registry can track this baseline
     state = registry.registry_state()

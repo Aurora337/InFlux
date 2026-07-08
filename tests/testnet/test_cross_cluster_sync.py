@@ -1,6 +1,6 @@
 """Cross-cluster synchronization and convergence validation tests."""
 
-from influx.testnet import Cluster, ClusterRegistry, SynchronizationSession, SynchronizationResult
+from influx.testnet import Cluster, SynchronizationSession, SynchronizationResult
 
 
 def _create_and_populate_cluster(cluster_id: str, node_count: int = 6) -> Cluster:

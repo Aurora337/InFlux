@@ -1,0 +1,307 @@
+# InFlux Coding Standards
+
+Version: v1.4.4
+
+---
+
+ Purpose
+
+This document defines the coding standards for the InFlux implementation.
+
+Its purpose is to ensure that all source code remains:
+
+- readable
+- maintainable
+- deterministic
+- testable
+- consistent across the entire project
+
+These standards apply to all production code, tests, tooling, and automation.
+
+---
+
+ Guiding Principles
+
+All code should prioritize:
+
+- correctness before optimization
+- simplicity before complexity
+- explicit behavior over implicit behavior
+- deterministic execution
+- maintainability over cleverness
+
+Readable code is preferred over compact code.
+
+---
+
+ Language Standards
+
+The primary implementation language is Python.
+
+General guidelines:
+
+- Follow current Python best practices.
+- Prefer the standard library when practical.
+- Minimize unnecessary external dependencies.
+- Use modern language features supported by the project's target Python version.
+
+---
+
+ Project Organization
+
+Each module should have a single, clearly defined responsibility.
+
+Modules should:
+
+- expose clean public interfaces
+- avoid circular dependencies
+- minimize coupling
+- maximize cohesion
+
+Shared utilities belong in dedicated utility modules.
+
+---
+
+ Naming Conventions
+
+## Modules
+
+Use lowercase names with underscores.
+
+Examples:
+
+ledger_pipeline.py
+state_transition.py
+validator_registry.py
+
+---
+
+## Classes
+
+Use PascalCase.
+
+Examples:
+
+ConsensusEngine
+LedgerExecutor
+ValidatorRegistry
+
+---
+
+## Functions
+
+Use lowercase with underscores.
+
+Examples:
+
+validate_transaction()
+compute_consensus()
+replicate_state()
+
+---
+
+## Variables
+
+Use descriptive snake_case names.
+
+Avoid abbreviations unless they are widely understood.
+
+Good:
+
+validator_score
+cluster_state
+economic_snapshot
+
+Avoid:
+
+vs
+cs
+tmp1
+
+---
+
+## Constants
+
+Use uppercase with underscores.
+
+Example:
+
+MAX_CLUSTER_SIZE
+DEFAULT_TIMEOUT
+PROTOCOL_VERSION
+
+---
+
+ Documentation Standards
+
+Every public:
+
+- class
+- function
+- module
+
+should include documentation describing:
+
+- purpose
+- parameters
+- return values
+- exceptions (when applicable)
+
+Complex algorithms should include explanatory comments describing *why* they work, not merely *what* they do.
+
+---
+
+ Type Annotations
+
+Use type hints throughout the codebase.
+
+Examples:
+
+def validate_transaction(tx: Transaction) -> ValidationResult:
+
+Benefits include:
+
+- improved readability
+- static analysis
+- safer refactoring
+- better tooling support
+
+---
+
+ Error Handling
+
+Errors should:
+
+- be explicit
+- be recoverable when appropriate
+- provide meaningful diagnostic information
+
+Avoid silently ignoring exceptions.
+
+Unexpected conditions should be logged and handled according to protocol rules.
+
+---
+
+ Deterministic Programming
+
+Implementation must avoid:
+
+- hidden global state
+- non-deterministic iteration order
+- uncontrolled randomness
+- system-dependent behavior
+- implicit time dependencies
+
+Identical protocol inputs must always produce identical outputs.
+
+---
+
+ Immutability
+
+Prefer immutable data structures whenever practical.
+
+Mutable state should:
+
+- be localized
+- have clear ownership
+- change only through well-defined interfaces
+
+State transitions should remain easy to audit.
+
+---
+
+ Dependency Management
+
+Every dependency should be evaluated for:
+
+- necessity
+- maintenance status
+- security
+- licensing
+- long-term support
+
+Dependencies should be minimized.
+
+---
+
+ Logging Standards
+
+Logging should provide sufficient information for:
+
+- debugging
+- monitoring
+- auditing
+- replay validation
+
+Logs should never expose confidential information.
+
+Logging should remain deterministic where possible.
+
+---
+
+ Testing Requirements
+
+Every production feature should include:
+
+- unit tests
+- integration tests (where applicable)
+
+Critical protocol components should also include:
+
+- deterministic replay tests
+- simulation tests
+
+Bug fixes should include regression tests whenever practical.
+
+---
+
+ Code Review Expectations
+
+Every change should be reviewed for:
+
+- correctness
+- protocol compliance
+- readability
+- maintainability
+- performance impact
+- security implications
+
+Reviews should focus on improving long-term code quality.
+
+---
+
+ Performance Guidelines
+
+Performance improvements should never alter protocol behavior.
+
+Optimizations should:
+
+- preserve determinism
+- maintain readability
+- include benchmarking when significant
+
+Correctness always takes priority over speed.
+
+---
+
+ Version Control Practices
+
+Changes should be:
+
+- logically grouped
+- clearly described
+- independently testable
+
+Commit messages should explain the purpose of the change, not merely the files modified.
+
+---
+
+  Summary
+
+The InFlux Coding Standards establish a consistent engineering foundation for the project.
+
+By emphasizing determinism, readability, modularity, and disciplined development practices, these standards support a maintainable and reliable implementation of the InFlux protocol.
+
+---
+
+end of document

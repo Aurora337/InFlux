@@ -1,14 +1,15 @@
 {
-  "audit_valid": true,
+  "audit_valid": false,
   "integrity_score": 1.0,
-  "missing_release_notes": [],
+  "missing_release_notes": [
+    "v1.2.0"
+  ],
   "orphaned_tags": [
     "v0.1.0-kernel",
     "v0.2.0-replay",
     "v0.3.0-consensus",
     "v0.4.0-resilience",
     "v0.5.0-cross-platform",
-    "v0.6.0-economic",
     "v0.6.0-economic-verification",
     "v0.7.5-testnet-validation",
     "v0.8.2-state-synchronization",
