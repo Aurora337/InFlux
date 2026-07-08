@@ -3,7 +3,6 @@
 Floating Point Emulation utilities (placeholder implementations).
 """
 
-from typing import Tuple
 
 def emulated_add(a: float, b: float) -> float:
     """Deterministically add two floats (placeholder).

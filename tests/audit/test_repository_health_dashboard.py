@@ -13,11 +13,9 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 from typing import Dict
 
-import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -25,7 +23,6 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from scripts.audit.repository_health_dashboard import (  # noqa: E402
     REPOSITORY_HEALTH_PATH,
     collect_repository_health,
-    write_report,
 )
 
 

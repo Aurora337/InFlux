@@ -1,6 +1,6 @@
 """Golden test suite for cluster formation determinism and boundary enforcement."""
 
-from influx.testnet import Cluster, ClusterMembership, ClusterRegistry
+from influx.testnet import Cluster, ClusterRegistry
 
 
 def test_cluster_creation_and_membership():
