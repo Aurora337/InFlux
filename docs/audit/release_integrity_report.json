@@ -2,7 +2,8 @@
   "audit_valid": false,
   "integrity_score": 1.0,
   "missing_release_notes": [
-    "v1.2.0"
+    "v1.2.0",
+    "v1.5.0"
   ],
   "orphaned_tags": [
     "v0.1.0-kernel",
@@ -28,6 +29,6 @@
     "v0.9.5-sync-ops-finalization",
     "v0.9.6-sync-ops-finalization"
   ],
-  "tags_checked": 36,
-  "tags_valid": 36
+  "tags_checked": 37,
+  "tags_valid": 37
 }
