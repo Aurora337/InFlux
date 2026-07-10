@@ -1,11 +1,11 @@
 {
   "audit_count": 7,
-  "branch_count": 5,
+  "branch_count": 6,
   "health_score": 1.0,
   "health_valid": true,
   "missing_audits": [],
   "missing_docs": [],
   "release_count": 19,
   "tag_count": 38,
-  "test_count": 228
+  "test_count": 232
 }
