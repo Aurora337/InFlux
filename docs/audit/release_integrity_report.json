@@ -27,8 +27,9 @@
     "v0.9.3-sync-ops-governance",
     "v0.9.4-sync-ops-finalization",
     "v0.9.5-sync-ops-finalization",
-    "v0.9.6-sync-ops-finalization"
+    "v0.9.6-sync-ops-finalization",
+    "v1.9.0-state-root-complete"
   ],
-  "tags_checked": 37,
-  "tags_valid": 37
+  "tags_checked": 38,
+  "tags_valid": 38
 }
