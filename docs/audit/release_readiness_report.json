@@ -1,7 +1,7 @@
 {
   "release_ready": false,
   "readiness_score": 0.71,
-  "timestamp": "2026-07-10T20:41:58.524964Z",
+  "timestamp": "2026-07-10T21:14:23.309852Z",
   "checks": {
     "tests_valid": true,
     "audit_valid": false,
