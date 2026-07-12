@@ -10,7 +10,8 @@ requires-python = ">=3.10"
 dependencies = [
     "fastapi",
     "requests",
-    "uvicorn"
+    "uvicorn",
+    "pynacl>=1.5.0"
 ]
 
 [project.scripts]
@@ -30,4 +31,19 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = [
     "src"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "pynacl>=1.5.0",
+    "argon2-cffi>=21.3.0",
+    "cryptography>=39.0.0",
+]
+
+crypto = [
+    "pynacl>=1.5.0",
+    "argon2-cffi>=21.3.0",
+    "cryptography>=39.0.0",
 ]
