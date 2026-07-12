@@ -1,17 +1,17 @@
 {
   "monitoring_valid": false,
-  "monitoring_score": 0.25,
-  "timestamp": "2026-07-12T20:17:37.902905Z",
+  "monitoring_score": 0.5,
+  "timestamp": "2026-07-12T22:20:39.447920Z",
   "drift_detection": {
-    "audit_drift_detected": true,
+    "audit_drift_detected": false,
     "health_drift_detected": false,
     "readiness_drift_detected": true,
     "working_tree_drift_detected": true
   },
   "checks": {
     "integrity": {
-      "valid": false,
-      "message": "Integrity drift detected"
+      "valid": true,
+      "message": "Integrity OK"
     },
     "health": {
       "valid": true,
