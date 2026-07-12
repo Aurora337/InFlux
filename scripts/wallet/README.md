@@ -33,6 +33,12 @@ Use a batch file to process multiple account rotations:
 python scripts/wallet/rotate_and_resign.py --storage .wallet --batch-file batch.jsonl --backup
 ```
 
+Or use the wrapper script for a consistent environment:
+
+```bash
+scripts/wallet/run.sh --storage .wallet --account acct-cli --private-hex <private_hex> --public-hex <public_hex> --resign-dir storage/txs --backup
+```
+
 Batch file format is newline-delimited JSON with fields:
 
 ```json
