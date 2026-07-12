@@ -26,7 +26,8 @@ Readable milestone history for the Sync Ops Audit Ladder and earlier release mil
 - v1.1.7-release-notes.md: Audit Policy Enforcement (governance rules) ✅
 - v1.1.8-release-notes.md: Governance Readiness Validation (pre-governance) ✅
 - v1.1.9-release-notes.md: Governance Compliance Monitoring (continuous compliance) ✅
-- v1.2.0-release-notes.md: Autonomous Release Governance (governance engine) ▶
+- [v1.2.0-release-notes.md](v1.2.0-release-notes.md): Autonomous Release Governance (governance engine) ▶
+- [v1.5.0-release-notes.md](v1.5.0-release-notes.md): Wallet Hardening and Key Management Integration ▶
 
 **Key Features**:
 - Deterministic audit pipeline (read JSON, produce JSON)

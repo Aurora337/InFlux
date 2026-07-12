@@ -1,10 +1,7 @@
 {
-  "audit_valid": false,
+  "audit_valid": true,
   "integrity_score": 1.0,
-  "missing_release_notes": [
-    "v1.2.0",
-    "v1.5.0"
-  ],
+  "missing_release_notes": [],
   "orphaned_tags": [
     "v0.1.0-kernel",
     "v0.2.0-replay",
