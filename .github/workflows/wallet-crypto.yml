@@ -28,3 +28,8 @@ jobs:
       - name: Run wallet tests
         run: |
           pytest -q tests/wallet
+
+      - name: Validate wallet CLI entrypoint
+        run: |
+          python -m influx.wallet.cli --help
+          bash scripts/wallet/run.sh --help
