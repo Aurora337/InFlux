@@ -46,8 +46,9 @@ def run_command(cmd, capture=True):
 
 def check_tests_valid():
     """Verify all tests pass."""
+    python_executable = sys.executable
     success, stdout, _ = run_command(
-        "python -m pytest "
+        f"{python_executable} -m pytest "
         "tests/audit/test_audit_policy_enforcement.py::test_policy_schema "
         "tests/assessment/test_testnet_readiness.py::test_testnet_readiness_output_contract "
         "-v --tb=short 2>&1 | tail -20"
@@ -63,7 +64,7 @@ def check_tests_valid():
     
     # Fallback: run tests and check exit code
     success, _, _ = run_command(
-        "python -m pytest "
+        f"{python_executable} -m pytest "
         "tests/audit/test_audit_policy_enforcement.py::test_policy_schema "
         "tests/assessment/test_testnet_readiness.py::test_testnet_readiness_output_contract "
         "-q"
@@ -126,8 +127,8 @@ def check_tags_consistent():
 
 
 def check_working_tree_clean():
-    """Verify no uncommitted changes."""
-    success, stdout, _ = run_command("git status --porcelain")
+    """Verify no uncommitted changes outside expected audit artifacts."""
+    success, stdout, _ = run_command("git status --porcelain -- . ':(exclude)docs/audit'")
     return stdout.strip() == ""
 
 
