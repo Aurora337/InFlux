@@ -94,6 +94,26 @@ Before opening a Pull Request:
 * Verify deterministic behavior.
 * Confirm documentation updates.
 
+## Wallet migration tooling
+
+The repo includes a wallet key rotation and transaction resigning tool under `scripts/wallet/`. Run it with:
+
+```bash
+scripts/wallet/run.sh --storage .wallet --account acct-cli --private-hex <private_hex> --public-hex <public_hex> --resign-dir storage/txs --backup
+```
+
+If the package is installed, the entrypoint `influx-wallet-rotate` is available for direct use.
+
+## Wallet migration tooling
+
+The repo includes a wallet key rotation and transaction resigning tool under `scripts/wallet/`. Run it with:
+
+```bash
+scripts/wallet/run.sh --storage .wallet --account acct-cli --private-hex <private_hex> --public-hex <public_hex> --resign-dir storage/txs --backup
+```
+
+If the package is installed, the entrypoint `influx-wallet-rotate` is available for direct use.
+
 ---
 
 # Documentation
