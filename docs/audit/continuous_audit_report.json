@@ -1,7 +1,7 @@
 {
   "monitoring_valid": false,
   "monitoring_score": 0.25,
-  "timestamp": "2026-07-11T21:59:19.325758Z",
+  "timestamp": "2026-07-12T20:17:37.902905Z",
   "drift_detection": {
     "audit_drift_detected": true,
     "health_drift_detected": false,
