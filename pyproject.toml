@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 influx = "influx.cli.main:main"
+influx-wallet-rotate = "influx.wallet.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

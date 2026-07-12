@@ -20,3 +20,7 @@ AGPL-3.0
 ## Status
 Stage 2 completed — Kernel Construction  
 Moving into Stage 3 and Stage 4 testnet bring-up.
+
+## Developer tooling
+- Wallet migration tooling: `scripts/wallet/run.sh` or installed entrypoint `influx-wallet-rotate`
+- Usage and batch-file examples are available in `scripts/wallet/README.md`.
