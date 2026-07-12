@@ -39,6 +39,12 @@ Or use the wrapper script for a consistent environment:
 scripts/wallet/run.sh --storage .wallet --account acct-cli --private-hex <private_hex> --public-hex <public_hex> --resign-dir storage/txs --backup
 ```
 
+If the package is installed in the current environment, you can also invoke the entrypoint directly:
+
+```bash
+influx-wallet-rotate --storage .wallet --account acct-cli --private-hex <private_hex> --public-hex <public_hex> --resign-dir storage/txs --backup
+```
+
 Batch file format is newline-delimited JSON with fields:
 
 ```json

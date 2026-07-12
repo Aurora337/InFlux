@@ -2,12 +2,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from influx.wallet.manager import WalletManager
-from influx.wallet.signing import Ed25519WalletSigner
 from influx.wallet.transactions import WalletTransaction, TransactionInput, TransactionOutput
 from nacl.signing import SigningKey
 import json
 
-from scripts.wallet.rotate_and_resign import main as rotate_main
+from influx.wallet.cli import main as rotate_main
 
 
 def test_rotate_and_resign_cli():

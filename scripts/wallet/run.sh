@@ -10,4 +10,4 @@ if [ -d ".venv" ]; then
   . .venv/bin/activate
 fi
 
-python "$SCRIPT_DIR/rotate_and_resign.py" "$@"
+PYTHONPATH="$REPO_ROOT/src" python -m influx.wallet.cli "$@"
