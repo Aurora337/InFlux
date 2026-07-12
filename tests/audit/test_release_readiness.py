@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from runtime_executable import PYTHON_EXECUTABLE
+from influx.runtime_executable import PYTHON_EXECUTABLE
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]

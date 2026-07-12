@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import json
 import subprocess
 from pathlib import Path
 
-from runtime_executable import PYTHON_EXECUTABLE
+from influx.runtime_executable import PYTHON_EXECUTABLE
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -22,13 +24,15 @@ def _run_assessment(output_json: Path, output_md: Path) -> dict:
         capture_output=True,
         text=True,
     )
+
     assert result.returncode == 0, result.stderr
     assert output_json.exists()
     assert output_md.exists()
+
     return json.loads(output_json.read_text(encoding="utf-8"))
 
 
-def test_testnet_readiness_output_contract(tmp_path: Path):
+def test_testnet_readiness_output_contract(tmp_path: Path) -> None:
     output_json = tmp_path / "testnet_readiness_score.json"
     output_md = tmp_path / "testnet_readiness_assessment.md"
 
@@ -45,12 +49,12 @@ def test_testnet_readiness_output_contract(tmp_path: Path):
     assert payload["economics"] == 1.0
 
 
-
-def test_testnet_readiness_blocking_domains(tmp_path: Path):
+def test_testnet_readiness_blocking_domains(tmp_path: Path) -> None:
     output_json = tmp_path / "score.json"
     output_md = tmp_path / "assessment.md"
 
     payload = _run_assessment(output_json, output_md)
+
     assert payload["blocking_domains"] == [
         "validator_lifecycle",
         "peer_discovery",
@@ -58,10 +62,10 @@ def test_testnet_readiness_blocking_domains(tmp_path: Path):
     ]
 
 
-
-def test_testnet_readiness_is_deterministic(tmp_path: Path):
+def test_testnet_readiness_is_deterministic(tmp_path: Path) -> None:
     json_one = tmp_path / "one.json"
     md_one = tmp_path / "one.md"
+
     json_two = tmp_path / "two.json"
     md_two = tmp_path / "two.md"
 

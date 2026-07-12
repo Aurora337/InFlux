@@ -9,7 +9,7 @@ import json
 import subprocess
 from pathlib import Path
 
-from runtime_executable import python_cmd
+from influx.runtime_executable import python_cmd
 
 
 REPRO_ARTIFACTS = [

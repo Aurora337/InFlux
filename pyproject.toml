@@ -7,10 +7,14 @@ name = "influx"
 version = "0.1.0"
 description = "InFlux Ledger + Consensus System"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "fastapi",
+    "requests",
+    "uvicorn"
+]
 
 [project.scripts]
-influx = "influx.cli:main"
+influx = "influx.cli.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -22,3 +26,8 @@ where = ["src"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["E402"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "src"
+]

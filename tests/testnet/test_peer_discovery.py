@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from runtime_executable import python_cmd
+from influx.runtime_executable import python_cmd
 from scripts.testnet.peer_discovery import validate_peer_discovery
 
 
