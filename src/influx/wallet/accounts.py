@@ -24,6 +24,9 @@ class WalletAccount:
         default_factory=list
     )
 
+    # active key version for this account (managed by KeyStore)
+    key_version: int | None = None
+
     def add_address(
         self,
         address: str,
@@ -88,4 +91,17 @@ class WalletAccount:
             "addresses": list(
                 self.addresses
             ),
+            "key_version": self.key_version,
         }
+
+    def set_active_key_from_keystore(self, keystore) -> None:
+        """Update this account's active key_version from a `KeyStore` instance."""
+        entry = keystore.get_active_key(self.account_id)
+        if entry:
+            self.key_version = entry.version
+
+    def add_key_to_keystore(self, keystore, private_hex: str, public_hex: str, created_at: int):
+        """Add a new key to `keystore` for this account and update `key_version`."""
+        entry = keystore.add_key(self.account_id, private_hex, public_hex, created_at)
+        self.key_version = entry.version
+        return entry
