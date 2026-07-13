@@ -1,4 +1,5 @@
 from typing import Any, List, Dict
+from influx.crypto.hash import DeterministicHasher
 
 
 class State:
@@ -23,7 +24,7 @@ class State:
             self.state_hash = self.compute_hash()
 
     def compute_hash(self) -> str:
-        return f"hash_{self.epoch}_{self.height}"
+        return DeterministicHasher.hash(self.to_dict())
 
     def to_dict(self) -> Dict[str, Any]:
         return {
