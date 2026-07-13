@@ -1,7 +1,7 @@
 import hashlib
 import json
 from typing import Any
-
+from dataclasses import asdict, is_dataclass
 
 class DeterministicHasher:
     """
@@ -19,15 +19,16 @@ class DeterministicHasher:
         Recursively convert data into deterministic structure.
         """
 
+        if is_dataclass(data):
+            return DeterministicHasher.normalize(asdict(data))
+
         if isinstance(data, dict):
-            # sort keys AND normalize values recursively
             return {
                 key: DeterministicHasher.normalize(data[key])
                 for key in sorted(data.keys())
             }
 
         elif isinstance(data, list):
-            # IMPORTANT: sort lists ONLY if order is not semantically meaningful
             return [
                 DeterministicHasher.normalize(item)
                 for item in data
