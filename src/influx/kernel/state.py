@@ -17,11 +17,34 @@ class State:
         self.height: int = 0
         self.state_hash: str = "genesis"
 
-    def apply(self, block: Any = None) -> None:
-        if block is not None:
-            self.ledger.append(block)
-            self.height += 1
-            self.state_hash = self.compute_hash()
+    def apply(self, block) -> None:
+        if not self.validate_transition(block):
+            raise ValueError("Invalid state transition")
+
+        if any(
+            existing.to_dict() == block.to_dict()
+            for existing in self.ledger
+        ):
+            return
+
+        self.ledger.append(block)
+        self.height = block.height
+        self.state_hash = self.compute_hash()
+
+    def validate_transition(self, block) -> bool:
+        if block.height < 0:
+            return False
+
+        if not isinstance(block.previous_hash, str):
+            return False
+
+        if len(block.previous_hash) != 64:
+            return False
+
+        if not isinstance(block.state_hash, str):
+            return False
+
+        return True
 
     def compute_hash(self) -> str:
         return DeterministicHasher.hash(self.to_dict())
@@ -33,8 +56,12 @@ class State:
             "participants": self.participants,
             "ledger": self.ledger,
             "height": self.height,
-            "state_hash": self.state_hash,
         }
+        
+    
+
+    
+        
     
     
      
