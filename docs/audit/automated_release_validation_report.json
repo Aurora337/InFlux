@@ -1,28 +1,28 @@
 {
-  "validation_valid": true,
-  "validation_score": 1.0,
-  "release_integrity_valid": true,
+  "validation_valid": false,
+  "validation_score": 0.25,
+  "release_integrity_valid": false,
   "repository_health_valid": true,
-  "release_readiness_valid": true,
-  "continuous_monitoring_valid": true,
-  "release_approved": true,
+  "release_readiness_valid": false,
+  "continuous_monitoring_valid": false,
+  "release_approved": false,
   "checks": {
     "integrity": {
-      "valid": true,
-      "message": "Integrity OK"
+      "valid": false,
+      "message": "Integrity audit failed"
     },
     "health": {
       "valid": true,
       "message": "Health OK"
     },
     "readiness": {
-      "valid": true,
-      "message": "Readiness OK"
+      "valid": false,
+      "message": "Readiness score not 1.0: 0.71"
     },
     "monitoring": {
-      "valid": true,
-      "message": "Monitoring OK"
+      "valid": false,
+      "message": "Monitoring score not 1.0: 0.75"
     }
   },
-  "timestamp": "2026-07-13T23:15:20.497265Z"
+  "timestamp": "2026-07-14T03:36:02.345629Z"
 }

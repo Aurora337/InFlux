@@ -1,25 +1,25 @@
 {
   "monitoring_valid": false,
-  "monitoring_score": 0.75,
-  "timestamp": "2026-07-13T23:17:33.751061Z",
+  "monitoring_score": 0.25,
+  "timestamp": "2026-07-14T03:38:04.355147Z",
   "drift_detection": {
-    "audit_drift_detected": false,
+    "audit_drift_detected": true,
     "health_drift_detected": false,
-    "readiness_drift_detected": false,
+    "readiness_drift_detected": true,
     "working_tree_drift_detected": true
   },
   "checks": {
     "integrity": {
-      "valid": true,
-      "message": "Integrity OK"
+      "valid": false,
+      "message": "Integrity drift detected"
     },
     "health": {
       "valid": true,
       "message": "Health OK"
     },
     "readiness": {
-      "valid": true,
-      "message": "Readiness OK"
+      "valid": false,
+      "message": "Readiness drift detected"
     },
     "working_tree": {
       "valid": false,
