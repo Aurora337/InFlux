@@ -3,9 +3,9 @@
   "integrity_score": 1.0,
   "missing_release_notes": [
     "v3.10.0",
-    "v3.11.0",
     "v3.12.0",
-    "v3.13.0"
+    "v3.13.0",
+    "v3.14.0"
   ],
   "orphaned_tags": [
     "v0.1.0-kernel",
@@ -13,6 +13,7 @@
     "v0.3.0-consensus",
     "v0.4.0-resilience",
     "v0.5.0-cross-platform",
+    "v0.6.0-economic",
     "v0.6.0-economic-verification",
     "v0.7.5-testnet-validation",
     "v0.8.2-state-synchronization",
@@ -32,6 +33,6 @@
     "v0.9.6-sync-ops-finalization",
     "v1.9.0-state-root-complete"
   ],
-  "tags_checked": 42,
-  "tags_valid": 42
+  "tags_checked": 43,
+  "tags_valid": 43
 }

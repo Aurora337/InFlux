@@ -17,12 +17,12 @@
     },
     "readiness": {
       "valid": false,
-      "message": "Readiness score not 1.0: 0.71"
+      "message": "Readiness score not 1.0: 0.86"
     },
     "monitoring": {
       "valid": false,
-      "message": "Monitoring score not 1.0: 0.25"
+      "message": "Monitoring score not 1.0: 0.5"
     }
   },
-  "timestamp": "2026-07-14T16:14:44.151881Z"
+  "timestamp": "2026-07-14T19:28:15.656090Z"
 }
