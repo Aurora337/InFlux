@@ -21,8 +21,8 @@
     },
     "monitoring": {
       "valid": false,
-      "message": "Monitoring score not 1.0: 0.75"
+      "message": "Monitoring score not 1.0: 0.25"
     }
   },
-  "timestamp": "2026-07-14T03:36:02.345629Z"
+  "timestamp": "2026-07-14T15:04:33.328150Z"
 }

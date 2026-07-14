@@ -3,7 +3,8 @@
   "integrity_score": 1.0,
   "missing_release_notes": [
     "v3.10.0",
-    "v3.11.0"
+    "v3.11.0",
+    "v3.12.0"
   ],
   "orphaned_tags": [
     "v0.1.0-kernel",
@@ -30,6 +31,6 @@
     "v0.9.6-sync-ops-finalization",
     "v1.9.0-state-root-complete"
   ],
-  "tags_checked": 40,
-  "tags_valid": 40
+  "tags_checked": 41,
+  "tags_valid": 41
 }
