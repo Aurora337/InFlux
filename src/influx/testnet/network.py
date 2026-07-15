@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from .exceptions import NetworkError
+from .node import TestnetNode
+
 ...
 
 @dataclass(slots=True)
@@ -65,4 +68,3 @@ class TestnetNetwork:
         ]
 
 
-TestnetNetwork.__test__ = False
