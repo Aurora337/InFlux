@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Optional
 
 from .accounts import WalletAccount
-from .keystore import KeyStore
 from .keystore_adapter import FileKeyStoreAdapter
 
 

@@ -7,8 +7,12 @@ import sys
 from typing import List
 
 __all__ = ["PYTHON_EXECUTABLE", "PYTEST_EXECUTABLE", "python_cmd", "pytest_cmd"]
-
-PYTHON_EXECUTABLE = sys.executable or shutil.which("python") or shutil.which("python3")
+PYTHON_EXECUTABLE: str = (
+    sys.executable
+    or shutil.which("python")
+    or shutil.which("python3")
+    or "python"
+)
 PYTEST_EXECUTABLE = shutil.which("pytest")
 
 if not PYTHON_EXECUTABLE:

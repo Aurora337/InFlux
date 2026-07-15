@@ -11,6 +11,10 @@ class TestnetSimulation:
     Deterministic network simulation engine.
     """
 
+    __test__ = False
+
+    ...
+
     network: TestnetNetwork
 
     events: list[str] = field(

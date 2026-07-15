@@ -12,6 +12,7 @@ class TestnetDeployment:
     Testnet deployment coordinator.
     """
 
+    __test__ = False
     network: TestnetNetwork
 
     def deploy_node(

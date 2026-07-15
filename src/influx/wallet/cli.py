@@ -129,7 +129,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     args = parser.parse_args(argv)
 
-    handlers = [logging.StreamHandler()]
+    handlers: list[logging.Handler] = []
     if args.log_file:
         handlers.append(logging.FileHandler(args.log_file))
     logging.basicConfig(level=getattr(logging, args.log_level), handlers=handlers)

@@ -2,25 +2,22 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .node import TestnetNode
-
-from .exceptions import NetworkError
-
+...
 
 @dataclass(slots=True)
 class TestnetNetwork:
     """
-    Testnet network container.
+    Testnet network representation.
     """
 
-    nodes: dict[str, TestnetNode] = field(
-        default_factory=dict,
-    )
+    nodes: dict[str, TestnetNode] = field(default_factory=dict)
+    validators: list[str] = field(default_factory=list)
 
     def add_node(
         self,
         node: TestnetNode,
     ) -> None:
+        ...
         """
         Add a node to the network.
         """
@@ -66,3 +63,6 @@ class TestnetNetwork:
             for node in self.nodes.values()
             if node.online
         ]
+
+
+TestnetNetwork.__test__ = False

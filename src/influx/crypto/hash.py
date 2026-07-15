@@ -19,9 +19,8 @@ class DeterministicHasher:
         Recursively convert data into deterministic structure.
         """
 
-        if is_dataclass(data):
+        if is_dataclass(data) and not isinstance(data, type):
             return DeterministicHasher.normalize(asdict(data))
-
         if isinstance(data, dict):
             return {
                 key: DeterministicHasher.normalize(data[key])
@@ -72,5 +71,3 @@ class DeterministicHasher:
         serialized.encode("utf-8")
         ).hexdigest()
 
-
-        return DeterministicHasher.hash(serialized)

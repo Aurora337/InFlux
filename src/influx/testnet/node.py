@@ -11,6 +11,10 @@ class TestnetNode:
     Deterministic testnet node representation.
     """
 
+    __test__ = False
+
+    ...
+
     node_id: str
 
     validator: bool = False

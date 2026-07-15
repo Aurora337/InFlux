@@ -8,6 +8,8 @@ class TestnetError(Exception):
     Base testnet exception.
     """
 
+    __test__ = False
+
 
 class NodeError(TestnetError):
     """
