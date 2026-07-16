@@ -31,10 +31,7 @@ class ConnectionValidator:
         if not peer.address:
             return False
 
-        if peer.port <= 0:
-            return False
-
-        if peer.port > 65535:
+        if not (1 <=peer.port <= 65635):
             return False
 
         if not peer.active:

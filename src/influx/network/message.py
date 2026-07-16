@@ -1,30 +1,49 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
+from .errors import MessageError
 
-@dataclass(frozen=True)
+
+@dataclass(slots=True)
 class NetworkMessage:
     """
     Deterministic network message.
-
-    Every message exchanged between peers must use this structure.
     """
 
-    message_id: str
-    sender_id: str
-    receiver_id: str
+    message_id: str = ""
+    sender_id: str = ""
+    receiver_id: str = ""
 
-    epoch: int
-    ctor_slot: int
+    epoch: int = 0
+    ctor_slot: int = 0
+    timestamp: int = 0
 
-    timestamp: float
+    message_type: str = ""
 
-    message_type: str
+    payload: dict[str, Any] = field(
+        default_factory=dict
+    )
 
-    payload: Any
+    state_hash: str = ""
+    signature: str = ""
 
-    state_hash: str
+    # compatibility
+    sender: str | None = None
 
-    signature: str
+    def __post_init__(self) -> None:
+        if self.sender and not self.sender_id:
+            self.sender_id = self.sender
+
+    def validate(self) -> None:
+
+        if not self.message_type:
+            raise MessageError(
+                "missing message type"
+            )
+
+        if not self.sender_id:
+            raise MessageError(
+                "missing sender id"
+            )

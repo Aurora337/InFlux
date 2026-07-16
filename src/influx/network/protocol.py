@@ -5,10 +5,19 @@ from influx.network.message import NetworkMessage
 
 class NetworkProtocol:
     """
-    Base deterministic protocol.
+    Base deterministic network protocol.
     """
 
     VERSION = "1.0"
 
-    def validate(self, message: NetworkMessage) -> bool:
-        return message.message_id != ""
+    def validate(
+        self,
+        message: NetworkMessage,
+    ) -> bool:
+        """
+        Validate incoming message.
+        """
+
+        message.validate()
+
+        return True
