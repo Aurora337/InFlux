@@ -1,107 +1,43 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from dataclasses import dataclass, field
 
-from .node import Node
+from .network_node import NetworkNode
 
 
+@dataclass(slots=True)
 class NodeManager:
     """
-    Controls multiple local InFlux nodes.
-
-    Useful for simulations, testing networks,
-    and future multi-node orchestration.
+    Deterministic manager for network nodes.
     """
 
-    def __init__(self) -> None:
+    _nodes: dict[str, NetworkNode] = field(
+        default_factory=dict
+    )
 
-        self.nodes: Dict[
-            str,
-            Node
-        ] = {}
-
-
-    def add(
+    def register(
         self,
-        node: Node,
+        node: NetworkNode,
     ) -> None:
-        """
-        Register a node.
-        """
+        self._nodes[node.node_id] = node
 
-        self.nodes[
-            node.identity.node_id
-        ] = node
-
-
-    def remove(
+    def unregister(
         self,
         node_id: str,
     ) -> None:
-        """
-        Remove node.
-        """
+        self._nodes.pop(node_id, None)
 
-        self.nodes.pop(
-            node_id,
-            None,
-        )
-
-
-    def lookup(
+    def get(
         self,
         node_id: str,
-    ) -> Optional[Node]:
-        """
-        Find node.
-        """
+    ) -> NetworkNode | None:
+        return self._nodes.get(node_id)
 
-        return self.nodes.get(
-            node_id
+    def nodes(self) -> list[NetworkNode]:
+        return sorted(
+            self._nodes.values(),
+            key=lambda node: node.node_id,
         )
 
-
-    def start_all(self) -> None:
-        """
-        Start every node.
-        """
-
-        for node in self.nodes.values():
-
-            node.start()
-
-
-    def stop_all(self) -> None:
-        """
-        Stop every node.
-        """
-
-        for node in self.nodes.values():
-
-            node.stop()
-
-
-    def active_nodes(self) -> list[Node]:
-        """
-        Return active nodes.
-        """
-
-        return [
-            node
-            for node in self.nodes.values()
-            if node.is_healthy()
-        ]
-
-
-    def snapshot(self) -> dict:
-        """
-        Deterministic manager snapshot.
-        """
-
-        return {
-            node_id:
-                node.snapshot()
-
-            for node_id, node
-            in self.nodes.items()
-        }
+    def count(self) -> int:
+        return len(self._nodes)

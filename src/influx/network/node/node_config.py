@@ -1,58 +1,40 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
-
-from influx.network.transport import TransportType
+from dataclasses import dataclass
 
 
 @dataclass(slots=True)
 class NodeConfig:
     """
-    Configuration for an InFlux node runtime.
-
-    Keeps operational choices separate from
-    node identity and runtime state.
+    Network node configuration.
     """
 
-    node_name: str = "influx-node"
+    host: str = "127.0.0.1"
+
+    port: int = 9000
 
     max_peers: int = 64
 
-    enable_sync: bool = True
+    def validate(self) -> None:
+        if not self.host:
+            raise ValueError("host required")
 
-    enable_consensus: bool = True
+        if self.port <= 0:
+            raise ValueError("invalid port")
 
-    transport: TransportType = (
-        TransportType.LOCAL
-    )
-
-    metadata: dict[str, Any] = field(
-        default_factory=dict
-    )
-
-
-    def validate(self) -> bool:
-        """
-        Validate node configuration.
-        """
-
-        if self.max_peers <= 0:
-            return False
-
-        return True
-
-
-    def snapshot(self) -> dict[str, Any]:
+        if self.port > 65535:
+            raise ValueError("invalid port")
+        
+        if self.max_peers <=0:
+            raise ValueError("invalid max peers")
+        
+    def snapshot(self) -> dict[str, int | str]:
         """
         Deterministic configuration snapshot.
         """
 
         return {
-            "node_name": self.node_name,
+            "host": self.host,
+            "port": self.port,
             "max_peers": self.max_peers,
-            "enable_sync": self.enable_sync,
-            "enable_consensus": self.enable_consensus,
-            "transport": self.transport.value,
-            "metadata": dict(self.metadata),
         }

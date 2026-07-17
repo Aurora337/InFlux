@@ -6,13 +6,8 @@ from dataclasses import dataclass
 @dataclass(slots=True)
 class NodeMetrics:
     """
-    Runtime metrics for an InFlux node.
-
-    These metrics provide observability for node
-    performance, availability, and network behavior.
+    Deterministic node metrics.
     """
-
-    uptime_seconds: float = 0.0
 
     messages_sent: int = 0
 
@@ -22,81 +17,38 @@ class NodeMetrics:
 
     synchronization_events: int = 0
 
-    failures: int = 0
+    errors: int = 0
 
+    uptime_seconds: int = 0
 
-    def record_sent(
-        self,
-    ) -> None:
-        """
-        Record outgoing message.
-        """
-
+    def record_send(self) -> None:
         self.messages_sent += 1
 
-
-    def record_received(
-        self,
-    ) -> None:
-        """
-        Record incoming message.
-        """
-
+    def record_receive(self) -> None:
         self.messages_received += 1
 
+    def peer_connected(self) -> None:
+        self.peers_connected += 1
 
-    def record_peer(
-        self,
-        count: int,
-    ) -> None:
-        """
-        Update connected peers.
-        """
+    def peer_disconnected(self) -> None:
+        if self.peers_connected > 0:
+            self.peers_connected -= 1
 
-        self.peers_connected = count
-
-
-    def record_sync(
-        self,
-    ) -> None:
-        """
-        Record synchronization event.
-        """
-
+    def synchronized(self) -> None:
         self.synchronization_events += 1
 
+    def record_error(self) -> None:
+        self.errors += 1
 
-    def record_failure(
-        self,
-    ) -> None:
-        """
-        Record runtime failure.
-        """
+    def tick(self) -> None:
+        self.uptime_seconds += 1
 
-        self.failures += 1
-
-
-    def snapshot(self) -> dict:
-        """
-        Deterministic metrics snapshot.
-        """
-
+    def snapshot(self) -> dict[str, int]:
         return {
-            "uptime_seconds":
-                self.uptime_seconds,
-
-            "messages_sent":
-                self.messages_sent,
-
-            "messages_received":
-                self.messages_received,
-
-            "peers_connected":
-                self.peers_connected,
-
-            "synchronization_events":
-                self.synchronization_events,
-
-            "failures":
-                self.failures,
+            "messages_sent": self.messages_sent,
+            "messages_received": self.messages_received,
+            "peers_connected": self.peers_connected,
+            "synchronization_events": self.synchronization_events,
+            "errors": self.errors,
+            "uptime_seconds": self.uptime_seconds,
         }

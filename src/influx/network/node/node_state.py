@@ -5,24 +5,13 @@ from enum import Enum
 
 class NodeState(str, Enum):
     """
-    Deterministic lifecycle states for an InFlux node.
-
-    Every node in the network must have one
-    well-defined operational state.
+    Deterministic lifecycle states for a network node.
     """
 
     CREATED = "created"
-
     STARTING = "starting"
-
     SYNCING = "syncing"
-
     ACTIVE = "active"
-
     DEGRADED = "degraded"
-
-    STOPPING = "stopping"
-
     STOPPED = "stopped"
-
     FAILED = "failed"
