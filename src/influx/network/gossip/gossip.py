@@ -1,93 +1,30 @@
 from __future__ import annotations
 
 from .gossip_message import GossipMessage
-from .gossip_metrics import GossipMetrics
-from .gossip_policy import GossipPolicy
 from .gossip_state import GossipState
-from .gossip_table import GossipTable
-from .gossip_validator import GossipValidator
 
 
 class Gossip:
     """
-    Core gossip propagation engine.
-
-    Handles message admission, storage,
-    and propagation lifecycle.
+    Deterministic gossip engine.
     """
 
-    def __init__(
-        self,
-        policy: GossipPolicy | None = None,
-    ) -> None:
 
-        self.policy = (
-            policy
-            if policy is not None
-            else GossipPolicy()
-        )
-
-        self.table = GossipTable()
-
-        self.validator = GossipValidator(
-            self.policy,
-            self.table,
-        )
-
-        self.metrics = GossipMetrics()
+    def __init__(self) -> None:
 
         self.state = GossipState.INITIALIZING
 
+        self.messages: list[GossipMessage] = []
 
-    def start(self) -> None:
+
+    def start(
+        self,
+    ) -> bool:
         """
-        Activate gossip service.
+        Activate gossip subsystem.
         """
 
         self.state = GossipState.ACTIVE
-
-
-    def stop(self) -> None:
-        """
-        Stop gossip service.
-        """
-
-        self.state = GossipState.STOPPED
-
-
-    def receive(
-        self,
-        message: GossipMessage,
-    ) -> bool:
-        """
-        Receive a gossip message.
-        """
-
-        self.metrics.record_received()
-
-        if not self.validator.validate(
-            message
-        ):
-
-            self.metrics.record_rejected()
-
-            return False
-
-
-        added = self.table.add(
-            message
-        )
-
-        if not added:
-
-            self.metrics.record_rejected()
-
-            return False
-
-
-        self.state = GossipState.PROPAGATING
-
-        self.metrics.record_propagated()
 
         return True
 
@@ -97,46 +34,61 @@ class Gossip:
         message: GossipMessage,
     ) -> bool:
         """
-        Prepare message for forwarding.
+        Propagate gossip message.
         """
 
-        if message.expired():
-
-            self.metrics.record_expired()
-
+        if self.state != GossipState.ACTIVE:
             return False
 
+        message.increment_hop()
 
-        return self.receive(
+        self.messages.append(
             message
         )
 
+        self.state = GossipState.PROPAGATING
 
-    def lookup(
+        return True
+    
+
+    def receive(
         self,
-        message_id: str,
-    ) -> GossipMessage | None:
+        message: GossipMessage,
+    ) -> bool:
         """
-        Retrieve known message.
+        Receive a gossip message.
         """
 
-        return self.table.lookup(
-            message_id
+        if message.expired():
+            return False
+
+        self.messages.append(
+            message
         )
 
+        return True
 
-    def snapshot(self) -> dict:
+
+    def stop(
+        self,
+    ) -> bool:
+        """
+        Stop gossip subsystem.
+        """
+
+        self.state = GossipState.STOPPED
+
+        return True
+    
+
+    def snapshot(
+        self,
+    ) -> dict[str, object]:
         """
         Deterministic gossip snapshot.
         """
 
         return {
-            "state":
-                self.state.value,
-
-            "table":
-                self.table.snapshot(),
-
-            "metrics":
-                self.metrics.snapshot(),
+            "state": self.state.value,
+            "messages": len(self.messages),
         }

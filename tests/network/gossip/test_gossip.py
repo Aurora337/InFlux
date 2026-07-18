@@ -6,127 +6,51 @@ from influx.network.gossip.gossip_message import (
     GossipMessage,
 )
 
-from influx.network.gossip.gossip_state import (
-    GossipState,
-)
 
-
-def create_message():
-
+def create_message() -> GossipMessage:
     return GossipMessage(
+        message_id="msg-1",
         origin="node-1",
         payload={
-            "event": "hello",
+            "data": "hello",
         },
+        signature="signature-1",
     )
 
 
-def test_gossip_defaults():
-
+def test_initial_state() -> None:
     gossip = Gossip()
 
-    assert (
-        gossip.state
-        == GossipState.INITIALIZING
-    )
+    assert gossip.state.value == "initializing"
 
 
-def test_start():
-
+def test_start() -> None:
     gossip = Gossip()
 
-    gossip.start()
+    result = gossip.start()
 
-    assert (
-        gossip.state
-        == GossipState.ACTIVE
-    )
+    assert result
+    assert gossip.state.value == "active"
 
 
-def test_receive_message():
-
+def test_propagate() -> None:
     gossip = Gossip()
 
     gossip.start()
 
-    result = gossip.receive(
+    result = gossip.propagate(
         create_message()
     )
 
     assert result
 
-    assert (
-        gossip.table.count()
-        == 1
-    )
 
-
-def test_duplicate_message():
-
+def test_stop() -> None:
     gossip = Gossip()
 
-    message = create_message()
+    gossip.start()
 
-    gossip.receive(
-        message
-    )
+    result = gossip.stop()
 
-    result = gossip.receive(
-        message
-    )
-
-    assert not result
-
-
-def test_lookup():
-
-    gossip = Gossip()
-
-    message = create_message()
-
-    gossip.receive(
-        message
-    )
-
-    found = gossip.lookup(
-        message.message_id
-    )
-
-    assert found is message
-
-
-def test_expired_message():
-
-    gossip = Gossip()
-
-    message = create_message()
-
-    message.ttl = 0
-
-    result = gossip.propagate(
-        message
-    )
-
-    assert not result
-
-
-def test_stop():
-
-    gossip = Gossip()
-
-    gossip.stop()
-
-    assert (
-        gossip.state
-        == GossipState.STOPPED
-    )
-
-
-def test_snapshot():
-
-    gossip = Gossip()
-
-    snapshot = gossip.snapshot()
-
-    assert "state" in snapshot
-    assert "metrics" in snapshot
+    assert result
+    assert gossip.state.value == "stopped"

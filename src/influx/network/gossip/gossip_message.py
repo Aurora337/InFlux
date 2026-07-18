@@ -3,87 +3,81 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from time import time
 from uuid import uuid4
-from typing import Any
 
 
 @dataclass(slots=True)
 class GossipMessage:
     """
-    Represents information propagated through
-    the InFlux gossip network.
-
-    Messages are intentionally independent from
-    transactions and consensus objects.
+    Deterministic gossip propagation message.
     """
 
     origin: str
 
-    payload: dict[str, Any]
+    payload: dict[str, object]
 
     message_id: str = field(
         default_factory=lambda: str(uuid4())
     )
 
-    timestamp: float = field(
-        default_factory=time
-    )
+    signature: str = ""
 
     ttl: int = 8
 
-    signature: str = ""
-
     hops: int = 0
 
+    created_at: float = field(
+        default_factory=time
+    )
 
-    def decrement_ttl(self) -> bool:
+
+    def decrement_ttl(
+        self,
+    ) -> bool:
         """
-        Reduce remaining propagation distance.
-
-        Returns False when expired.
+        Reduce message lifetime and record propagation hop.
         """
 
-        if self.ttl <= 0:
-            return False
-
-        self.ttl -= 1
+        if self.ttl > 0:
+            self.ttl -= 1
 
         self.hops += 1
 
-        return self.ttl > 0
+        return True
 
 
-    def expired(self) -> bool:
+    def increment_hop(
+        self,
+    ) -> None:
         """
-        Determine if message can continue.
+        Increment propagation hops.
+        """
+
+        self.hops += 1
+
+
+    def expired(
+        self,
+    ) -> bool:
+        """
+        Determine whether message expired.
         """
 
         return self.ttl <= 0
 
 
-    def snapshot(self) -> dict[str, Any]:
+    def snapshot(
+        self,
+    ) -> dict[str, object]:
         """
         Deterministic message snapshot.
         """
 
         return {
-            "message_id":
-                self.message_id,
-
-            "origin":
-                self.origin,
-
-            "payload":
-                dict(self.payload),
-
-            "timestamp":
-                self.timestamp,
-
-            "ttl":
-                self.ttl,
-
-            "signature":
-                self.signature,
-
-            "hops":
-                self.hops,
+            "message_id": self.message_id,
+            "origin": self.origin,
+            "payload": self.payload,
+            "signature": self.signature,
+            "ttl": self.ttl,
+            "hops": self.hops,
+            "created_at": self.created_at,
         }
