@@ -5,7 +5,7 @@ from enum import Enum
 
 class GossipState(str, Enum):
     """
-    Deterministic states for gossip operation.
+    Deterministic gossip lifecycle states.
     """
 
     INITIALIZING = "initializing"
@@ -14,8 +14,4 @@ class GossipState(str, Enum):
 
     PROPAGATING = "propagating"
 
-    DEGRADED = "degraded"
-
     STOPPED = "stopped"
-
-    FAILED = "failed"

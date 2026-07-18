@@ -1,20 +1,18 @@
 from __future__ import annotations
 
 from .gossip_message import GossipMessage
-from .gossip_policy import GossipPolicy
-from .gossip_table import GossipTable
 
 
 class GossipValidator:
     """
-    Validates gossip messages before admission.
+    Validates gossip messages.
     """
 
 
     def __init__(
         self,
-        policy: GossipPolicy,
-        table: GossipTable,
+        policy=None,
+        table=None,
     ) -> None:
 
         self.policy = policy
@@ -33,21 +31,10 @@ class GossipValidator:
         if not message.origin:
             return False
 
-
-        if not self.policy.validate_message(
-            message.ttl,
-            message.hops,
-            message.signature,
-        ):
+        if not message.signature:
             return False
 
-
-        if self.policy.prevent_duplicates:
-
-            if self.table.lookup(
-                message.message_id
-            ):
-                return False
-
+        if message.expired():
+            return False
 
         return True
