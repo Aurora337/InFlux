@@ -10,14 +10,12 @@ class MembershipValidator:
     Validates cluster membership operations.
     """
 
-
     def __init__(
         self,
         policy: MembershipPolicy,
     ) -> None:
 
         self.policy = policy
-
 
     def validate_join(
         self,
@@ -28,22 +26,20 @@ class MembershipValidator:
         Validate a member joining.
         """
 
-        if member.node_id in cluster.members:
-            return False
-
+        for existing in cluster.members:
+            if existing.node_id == member.node_id:
+                return False
 
         if not self.policy.validate_member_limit(
             cluster.member_count()
         ):
             return False
 
-
         return self.policy.validate_roles(
             validator=member.validator,
             storage=member.storage,
             archive=member.archive,
         )
-
 
     def validate_leave(
         self,
@@ -54,7 +50,8 @@ class MembershipValidator:
         Validate member removal.
         """
 
-        return (
-            node_id
-            in cluster.members
-        )
+        for member in cluster.members:
+            if member.node_id == node_id:
+                return True
+
+        return False

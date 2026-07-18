@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from .errors import MessageError
@@ -9,41 +9,43 @@ from .errors import MessageError
 @dataclass(slots=True)
 class NetworkMessage:
     """
-    Deterministic network message.
+    Deterministic protocol message.
     """
 
-    message_id: str = ""
-    sender_id: str = ""
-    receiver_id: str = ""
+    message_id: str
+    message_type: str
 
-    epoch: int = 0
-    ctor_slot: int = 0
-    timestamp: int = 0
+    sender_id: str
+    receiver_id: str
 
-    message_type: str = ""
+    epoch: int
+    slot: int
 
-    payload: dict[str, Any] = field(
-        default_factory=dict
-    )
+    timestamp: int
+
+    payload: dict[str, Any]
 
     state_hash: str = ""
     signature: str = ""
 
-    # compatibility
-    sender: str | None = None
-
-    def __post_init__(self) -> None:
-        if self.sender and not self.sender_id:
-            self.sender_id = self.sender
-
     def validate(self) -> None:
+        if not self.message_id:
+            raise MessageError("missing message id")
 
         if not self.message_type:
-            raise MessageError(
-                "missing message type"
-            )
+            raise MessageError("missing message type")
 
         if not self.sender_id:
-            raise MessageError(
-                "missing sender id"
-            )
+            raise MessageError("missing sender id")
+
+        if not self.receiver_id:
+            raise MessageError("missing receiver id")
+
+        if self.epoch < 0:
+            raise MessageError("invalid epoch")
+
+        if self.slot < 0:
+            raise MessageError("invalid slot")
+
+        if self.timestamp < 0:
+            raise MessageError("invalid timestamp")

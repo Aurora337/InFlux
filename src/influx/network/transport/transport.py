@@ -1,76 +1,116 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 
+from influx.network.message import NetworkMessage
+
+from .transport_config import TransportConfig
 from .transport_session import TransportSession
+from .transport_type import TransportType
 
 
-class Transport(ABC):
+@dataclass(slots=True)
+class Transport:
     """
-    Abstract transport interface.
-
-    All transport implementations must provide the same
-    deterministic behavior regardless of underlying protocol.
+    Deterministic transport engine.
     """
 
+    transport_id: str
+    transport_type: TransportType
+    config: TransportConfig
 
-    @abstractmethod
+    active: bool = False
+
+    _messages: list[NetworkMessage] = field(
+        default_factory=list
+    )
+
+
     def open(
         self,
         session: TransportSession,
     ) -> bool:
         """
-        Open a transport session.
+        Open transport session.
         """
 
-        raise NotImplementedError
+        self.config.validate()
+
+        self.active = True
+
+        return True
 
 
-    @abstractmethod
     def close(
         self,
         session: TransportSession,
     ) -> bool:
         """
-        Close a transport session.
+        Close transport session.
         """
 
-        raise NotImplementedError
+        self.active = False
+
+        return True
 
 
-    @abstractmethod
     def send(
         self,
         session: TransportSession,
         data: bytes,
     ) -> bool:
         """
-        Send bytes through transport.
+        Send raw transport bytes.
         """
 
-        raise NotImplementedError
+        if not self.active:
+            return False
+
+        self._messages.append(
+            NetworkMessage(
+                message_id="transport",
+                message_type="RAW",
+                sender_id=session.session_id,
+                receiver_id="",
+                epoch=0,
+                slot=0,
+                timestamp=0,
+                payload={
+                    "data": data.hex()
+                },
+            )
+        )
+
+        return True
 
 
-    @abstractmethod
     def receive(
         self,
         session: TransportSession,
-        data: bytes,
     ) -> bool:
         """
-        Receive bytes through transport.
+        Check if transport has received data.
         """
 
-        raise NotImplementedError
+        if not self.active:
+            return False
 
+        return bool(self._messages)
 
-    @abstractmethod
     def heartbeat(
         self,
         session: TransportSession,
     ) -> bool:
         """
-        Verify transport health.
+        Validate transport liveness.
         """
 
-        raise NotImplementedError
+        return self.active
+
+
+    def is_open(self) -> bool:
+        """
+        Return transport state.
+        """
+
+        return self.active

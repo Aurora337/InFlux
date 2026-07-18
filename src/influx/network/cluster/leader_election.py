@@ -24,7 +24,7 @@ class LeaderElection:
         active_members = sorted(
             [
                 member.node_id
-                for member in cluster.members.values()
+                for member in cluster.members
                 if member.active
             ]
         )

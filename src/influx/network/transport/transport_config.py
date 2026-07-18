@@ -1,83 +1,46 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
-
-from .transport_type import TransportType
+from dataclasses import dataclass
 
 
 @dataclass(slots=True)
 class TransportConfig:
     """
-    Configuration for a transport endpoint.
-
-    This object is intentionally transport-neutral so
-    future adapters can interpret additional options.
+    Transport configuration.
     """
 
-    transport_type: TransportType = (
-        TransportType.LOCAL
-    )
+    host: str
+    port: int
 
-    host: str = "127.0.0.1"
-
-    port: int = 0
-
-    timeout: float = 30.0
-
+    timeout: int = 30
     max_connections: int = 64
 
-    secure: bool = False
-
-    options: dict[str, Any] = field(
-        default_factory=dict
-    )
-
-
-    def validate(self) -> bool:
+    def validate(self) -> None:
         """
-        Validate configuration values.
+        Validate transport configuration.
         """
 
-        if self.port < 0:
-            return False
+        if not self.host:
+            raise ValueError(
+                "missing transport host"
+            )
+
+        if self.port <= 0:
+            raise ValueError(
+                "invalid transport port"
+            )
 
         if self.port > 65535:
-            return False
+            raise ValueError(
+                "invalid transport port"
+            )
 
         if self.timeout <= 0:
-            return False
+            raise ValueError(
+                "invalid timeout"
+            )
 
         if self.max_connections <= 0:
-            return False
-
-        return True
-
-
-    def snapshot(self) -> dict[str, Any]:
-        """
-        Deterministic configuration snapshot.
-        """
-
-        return {
-            "transport_type":
-                self.transport_type.value,
-
-            "host":
-                self.host,
-
-            "port":
-                self.port,
-
-            "timeout":
-                self.timeout,
-
-            "max_connections":
-                self.max_connections,
-
-            "secure":
-                self.secure,
-
-            "options":
-                dict(self.options),
-        }
+            raise ValueError(
+                "invalid max connections"
+            )

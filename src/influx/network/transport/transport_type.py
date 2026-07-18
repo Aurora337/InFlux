@@ -5,21 +5,10 @@ from enum import Enum
 
 class TransportType(str, Enum):
     """
-    Supported InFlux transport mechanisms.
-
-    Transport types describe how bytes move between nodes.
-    They do not contain implementation details.
-
-    New transport implementations should extend this enum
-    without changing existing values.
+    Supported deterministic network transports.
     """
 
-    TCP = "TCP"
-
-    QUIC = "QUIC"
-
-    WEBSOCKET = "WEBSOCKET"
-
-    LOCAL = "LOCAL"
-
-    SIMULATION = "SIMULATION"
+    TCP = "tcp"
+    QUIC = "quic"
+    MEMORY = "memory"
+    LOCAL = "local"

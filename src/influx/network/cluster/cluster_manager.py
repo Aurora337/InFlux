@@ -1,155 +1,116 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from dataclasses import dataclass
 
 from .cluster import Cluster
 from .cluster_member import ClusterMember
-from .cluster_metrics import ClusterMetrics
-from .leader import Leader
-from .leader_election import LeaderElection
-from .membership import Membership
+from .cluster_registry import ClusterRegistry
+from .cluster_validator import ClusterValidator
 
 
+@dataclass(slots=True)
 class ClusterManager:
     """
-    Coordinates cluster operations.
+    Deterministic cluster management service.
     """
 
-
-    def __init__(
-        self,
-    ) -> None:
-
-        self.clusters: Dict[
-            str,
-            Cluster,
-        ] = {}
-
-        self.membership = Membership()
-
-        self.election = LeaderElection()
-
-        self.metrics = ClusterMetrics()
-
-        self.leaders: Dict[
-            str,
-            Leader,
-        ] = {}
-
+    registry: ClusterRegistry
+    validator: ClusterValidator
 
     def register(
         self,
         cluster: Cluster,
-    ) -> None:
+    ) -> bool:
         """
-        Register cluster.
+        Register a validated cluster.
         """
 
-        self.clusters[
-            cluster.cluster_id
-        ] = cluster
+        if not self.validator.validate(cluster):
+            return False
 
+        self.registry.register(cluster)
 
-    def lookup(
+        return True
+
+    def unregister(
         self,
         cluster_id: str,
-    ) -> Optional[Cluster]:
+    ) -> None:
         """
-        Find cluster.
+        Remove a cluster.
         """
 
-        return self.clusters.get(
-            cluster_id
-        )
+        self.registry.unregister(cluster_id)
 
+    def get(
+        self,
+        cluster_id: str,
+    ) -> Cluster | None:
+        """
+        Retrieve a registered cluster.
+        """
 
-    def join(
+        return self.registry.get(cluster_id)
+
+    def add_member(
         self,
         cluster_id: str,
         member: ClusterMember,
     ) -> bool:
         """
-        Add member to cluster.
+        Add a member to a cluster.
         """
 
-        cluster = self.lookup(
-            cluster_id
-        )
+        cluster = self.registry.get(cluster_id)
 
         if cluster is None:
             return False
 
+        cluster.add_member(member)
 
-        result = self.membership.join(
-            cluster,
-            member,
-        )
+        return self.validator.validate(cluster)
 
-
-        if result:
-            self.metrics.record_join()
-
-
-        return result
-
-
-    def elect_leader(
+    def remove_member(
         self,
         cluster_id: str,
-    ) -> Leader | None:
+        node_id: str,
+    ) -> bool:
         """
-        Elect cluster leader.
+        Remove a member from a cluster.
         """
 
-        cluster = self.lookup(
-            cluster_id
-        )
+        cluster = self.registry.get(cluster_id)
 
         if cluster is None:
-            return None
+            return False
 
+        cluster.remove_member(node_id)
 
-        leader = self.election.elect(
-            cluster
-        )
+        return self.validator.validate(cluster)
 
-
-        if leader is not None:
-
-            self.leaders[
-                cluster_id
-            ] = leader
-
-            self.metrics.record_election()
-
-
-        return leader
-
-
-    def snapshot(
+    def clusters(
         self,
-    ) -> dict:
+    ) -> list[Cluster]:
         """
-        Deterministic manager snapshot.
+        Return all registered clusters.
         """
 
-        return {
-            "clusters": {
-                name:
-                    cluster.snapshot()
+        return self.registry.clusters()
 
-                for name, cluster
-                in self.clusters.items()
-            },
+    def count(
+        self,
+    ) -> int:
+        """
+        Return number of registered clusters.
+        """
 
-            "leaders": {
-                name:
-                    leader.snapshot()
+        return self.registry.count()
 
-                for name, leader
-                in self.leaders.items()
-            },
+    def clear(
+        self,
+    ) -> None:
+        """
+        Remove all registered clusters.
+        """
 
-            "metrics":
-                self.metrics.snapshot(),
-        }
+        self.registry.clear()

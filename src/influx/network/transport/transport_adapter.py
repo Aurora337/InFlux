@@ -62,15 +62,13 @@ class TransportAdapter:
     def receive(
         self,
         session: TransportSession,
-        data: bytes,
     ) -> bool:
         """
-        Receive data.
+        Receive transport data.
         """
 
         return self.transport.receive(
-            session,
-            data,
+            session
         )
 
 

@@ -12,15 +12,19 @@ class MessageSerializer:
 
     @staticmethod
     def serialize(message: NetworkMessage) -> str:
+        """
+        Serialize a NetworkMessage into a deterministic JSON string.
+        """
+
         return json.dumps(
             {
                 "message_id": message.message_id,
+                "message_type": message.message_type,
                 "sender_id": message.sender_id,
                 "receiver_id": message.receiver_id,
                 "epoch": message.epoch,
-                "ctor_slot": message.ctor_slot,
+                "slot": message.slot,
                 "timestamp": message.timestamp,
-                "message_type": message.message_type,
                 "payload": message.payload,
                 "state_hash": message.state_hash,
                 "signature": message.signature,
@@ -31,17 +35,21 @@ class MessageSerializer:
 
     @staticmethod
     def deserialize(data: str) -> NetworkMessage:
+        """
+        Deserialize a deterministic JSON string into a NetworkMessage.
+        """
+
         obj = json.loads(data)
 
         return NetworkMessage(
             message_id=obj["message_id"],
+            message_type=obj["message_type"],
             sender_id=obj["sender_id"],
             receiver_id=obj["receiver_id"],
             epoch=obj["epoch"],
-            ctor_slot=obj["ctor_slot"],
+            slot=obj["slot"],
             timestamp=obj["timestamp"],
-            message_type=obj["message_type"],
             payload=obj["payload"],
-            state_hash=obj["state_hash"],
-            signature=obj["signature"],
+            state_hash=obj.get("state_hash", ""),
+            signature=obj.get("signature", ""),
         )

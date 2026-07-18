@@ -1,100 +1,97 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from dataclasses import dataclass, field
 
+from .cluster_config import ClusterConfig
 from .cluster_member import ClusterMember
 from .cluster_state import ClusterState
 
 
+@dataclass(slots=True)
 class Cluster:
     """
-    Represents a coordinated group of nodes.
+    Deterministic network cluster.
     """
 
+    cluster_id: str
 
-    def __init__(
-        self,
-        cluster_id: str,
-    ) -> None:
+    config: ClusterConfig = field(
+        default_factory=ClusterConfig
+    )
 
-        self.cluster_id = cluster_id
+    state: ClusterState = ClusterState.INITIALIZING
 
-        self.members: Dict[
-            str,
-            ClusterMember,
-        ] = {}
-
-        self.state = ClusterState.INITIALIZING
-
+    members: list[ClusterMember] = field(
+        default_factory=list
+    )
 
     def form(
         self,
-    ) -> None:
+    ) -> bool:
         """
-        Begin cluster formation.
+        Transition to forming state.
         """
 
         self.state = ClusterState.FORMING
-
+        return True
 
     def activate(
         self,
-    ) -> None:
+    ) -> bool:
         """
-        Activate cluster.
+        Transition to active state.
         """
 
         self.state = ClusterState.ACTIVE
-
+        return True
 
     def add_member(
         self,
         member: ClusterMember,
     ) -> bool:
-        """
-        Add member to cluster.
-        """
+       """
+       Add a cluster member.
+       """
 
-        if member.node_id in self.members:
+       if len(self.members) >= self.config.max_members:
+           raise ValueError(
+            "cluster capacity reached"
+        )
+
+       if member in self.members:
             return False
 
-        self.members[
-            member.node_id
-        ] = member
+       self.members.append(member)
+       return True
 
-        return True
+    def lookup(
+        self,
+        node_id: str,
+    ) -> ClusterMember | None:
+        """
+        Lookup a member by node ID.
+        """
 
+        for member in self.members:
+            if member.node_id == node_id:
+                return member
+
+        return None
 
     def remove_member(
         self,
         node_id: str,
     ) -> bool:
         """
-        Remove member.
+        Remove a cluster member.
         """
 
-        if node_id not in self.members:
-            return False
+        for member in self.members:
+            if member.node_id == node_id:
+                self.members.remove(member)
+                return True
 
-        del self.members[
-            node_id
-        ]
-
-        return True
-
-
-    def lookup(
-        self,
-        node_id: str,
-    ) -> Optional[ClusterMember]:
-        """
-        Find cluster member.
-        """
-
-        return self.members.get(
-            node_id
-        )
-
+        return False
 
     def member_count(
         self,
@@ -103,30 +100,17 @@ class Cluster:
         Return number of members.
         """
 
-        return len(
-            self.members
-        )
-
+        return len(self.members)
 
     def snapshot(
         self,
-    ) -> dict:
+    ) -> dict[str, object]:
         """
         Deterministic cluster snapshot.
         """
 
         return {
-            "cluster_id":
-                self.cluster_id,
-
-            "state":
-                self.state.value,
-
-            "members": {
-                node_id:
-                    member.snapshot()
-
-                for node_id, member
-                in self.members.items()
-            },
+            "cluster_id": self.cluster_id,
+            "state": self.state.value,
+            "member_count": len(self.members),
         }

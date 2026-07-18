@@ -11,7 +11,6 @@ class Membership:
     Coordinates cluster membership changes.
     """
 
-
     def __init__(
         self,
         policy: MembershipPolicy | None = None,
@@ -26,7 +25,6 @@ class Membership:
         self.validator = MembershipValidator(
             self.policy
         )
-
 
     def join(
         self,
@@ -43,11 +41,7 @@ class Membership:
         ):
             return False
 
-
-        return cluster.add_member(
-            member
-        )
-
+        return cluster.add_member(member)
 
     def leave(
         self,
@@ -64,7 +58,4 @@ class Membership:
         ):
             return False
 
-
-        return cluster.remove_member(
-            node_id
-        )
+        return cluster.remove_member(node_id)

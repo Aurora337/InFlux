@@ -140,7 +140,6 @@ class TransportManager:
 
         success = self.adapter.receive(
             session,
-            data,
         )
 
         if success:

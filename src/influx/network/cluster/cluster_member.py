@@ -28,7 +28,6 @@ class ClusterMember:
         default_factory=time
     )
 
-
     def activate(
         self,
     ) -> None:
@@ -37,7 +36,6 @@ class ClusterMember:
         """
 
         self.active = True
-
 
     def deactivate(
         self,
@@ -48,36 +46,47 @@ class ClusterMember:
 
         self.active = False
 
+    def validate(
+        self,
+    ) -> None:
+        """
+        Validate cluster member.
+        """
+
+        if not self.node_id:
+            raise ValueError(
+                "node_id required"
+            )
+
+        if not self.address:
+            raise ValueError(
+                "address required"
+            )
+
+        if self.port <= 0:
+            raise ValueError(
+                "invalid port"
+            )
+
+        if self.port > 65535:
+            raise ValueError(
+                "invalid port"
+            )
 
     def snapshot(
         self,
-    ) -> dict:
+    ) -> dict[str, str | int | float | bool]:
         """
         Deterministic member snapshot.
         """
 
         return {
-            "node_id":
-                self.node_id,
-
-            "address":
-                self.address,
-
-            "port":
-                self.port,
-
-            "active":
-                self.active,
-
-            "validator":
-                self.validator,
-
-            "storage":
-                self.storage,
-
-            "archive":
-                self.archive,
-
-            "joined_at":
-                self.joined_at,
+            "node_id": self.node_id,
+            "address": self.address,
+            "port": self.port,
+            "active": self.active,
+            "validator": self.validator,
+            "storage": self.storage,
+            "archive": self.archive,
+            "joined_at": self.joined_at,
         }
