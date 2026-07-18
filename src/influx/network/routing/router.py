@@ -26,7 +26,6 @@ class Router:
     ) -> None:
 
         self.route_table = RouteTable()
-
         self.queue = MessageQueue()
 
         self.policy = (
@@ -36,7 +35,6 @@ class Router:
         )
 
         self.metrics = RoutingMetrics()
-
 
     def register_route(
         self,
@@ -48,7 +46,6 @@ class Router:
 
         self.route_table.add(route)
 
-
     def remove_route(
         self,
         destination: str,
@@ -59,7 +56,6 @@ class Router:
 
         self.route_table.remove(destination)
 
-
     def lookup(
         self,
         destination: str,
@@ -68,16 +64,13 @@ class Router:
         Find a route.
         """
 
-        route = self.route_table.lookup(
-            destination
-        )
+        route = self.route_table.lookup(destination)
 
         self.metrics.record_lookup(
             route is not None
         )
 
         return route
-
 
     def enqueue(
         self,
@@ -87,10 +80,7 @@ class Router:
         Queue a message.
         """
 
-        self.queue.enqueue(
-            message
-        )
-
+        self.queue.enqueue(message)
 
     def next_message(
         self,
@@ -100,7 +90,6 @@ class Router:
         """
 
         return self.queue.dequeue()
-
 
     def route(
         self,
@@ -120,32 +109,24 @@ class Router:
         )
 
         if route is None:
-
             self.metrics.record_failure()
-
             return False
-
 
         if not self.policy.validate(
             route,
             message,
         ):
-
             self.metrics.record_failure()
-
             return False
-
 
         if not message.decrement_ttl():
 
             self.metrics.record_ttl_expired()
-
             self.metrics.record_drop()
 
             message.mark_dropped()
 
             return False
-
 
         self.metrics.record_route(
             message.payload_size()
@@ -157,8 +138,9 @@ class Router:
 
         return True
 
-
-    def deliver(self) -> Optional[Message]:
+    def deliver(
+        self,
+    ) -> Optional[Message]:
         """
         Deliver the next queued message.
         """
@@ -166,9 +148,7 @@ class Router:
         message = self.next_message()
 
         if message is None:
-
             return None
-
 
         message.mark_delivered()
 
@@ -176,16 +156,12 @@ class Router:
 
         return message
 
-
     def broadcast(
         self,
         message: Message,
     ) -> bool:
         """
         Broadcast a message.
-
-        The caller is responsible for creating
-        per-destination copies if necessary.
         """
 
         message.destination = "*"
@@ -198,8 +174,9 @@ class Router:
 
         return True
 
-
-    def snapshot(self) -> dict:
+    def snapshot(
+        self,
+    ) -> dict[str, object]:
         """
         Deterministic router snapshot.
         """

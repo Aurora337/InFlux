@@ -1,109 +1,102 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional
-
 from .route import Route
 
 
 class RouteTable:
     """
-    Deterministic routing table.
-
-    Maintains known routes indexed by destination.
+    Deterministic route registry.
     """
 
-    def __init__(self) -> None:
-        self._routes: Dict[str, Route] = {}
+
+    def __init__(
+        self,
+    ) -> None:
+
+        self.routes: dict[str, Route] = {}
 
 
-    def add(self, route: Route) -> None:
+    def add(
+        self,
+        route: Route,
+    ) -> bool:
         """
-        Add or replace a route.
+        Add route.
         """
 
-        self._routes[route.destination] = route
+        if route.route_id in self.routes:
+            return False
+
+        self.routes[
+            route.route_id
+        ] = route
+
+        return True
 
 
     def remove(
         self,
-        destination: str,
-    ) -> None:
+        route_id: str,
+    ) -> bool:
         """
-        Remove a destination.
+        Remove route.
         """
 
-        self._routes.pop(
-            destination,
-            None,
-        )
+        if route_id not in self.routes:
+            return False
+
+        del self.routes[
+            route_id
+        ]
+
+        return True
 
 
     def lookup(
         self,
-        destination: str,
-    ) -> Optional[Route]:
+        route_id: str,
+    ) -> Route | None:
         """
-        Retrieve a route.
+        Lookup route.
         """
 
-        return self._routes.get(
-            destination
+        return self.routes.get(
+            route_id
         )
 
 
-    def exists(
+    def active_routes(
         self,
-        destination: str,
-    ) -> bool:
-        """
-        Determine whether a route exists.
-        """
-
-        return destination in self._routes
-
-
-    def update(
-        self,
-        route: Route,
-    ) -> None:
-        """
-        Replace an existing route.
-        """
-
-        self._routes[
-            route.destination
-        ] = route
-
-        route.touch()
-
-
-    def active(self) -> List[Route]:
+    ) -> list[Route]:
         """
         Return active routes.
         """
 
         return [
             route
-            for route in self._routes.values()
+            for route in self.routes.values()
             if route.active
         ]
 
 
-    def clear(self) -> None:
+    def count(
+        self,
+    ) -> int:
         """
-        Remove every route.
+        Return route count.
         """
 
-        self._routes.clear()
+        return len(self.routes)
 
 
-    def snapshot(self) -> dict:
+    def snapshot(
+        self,
+    ) -> dict[str, object]:
         """
-        Deterministic routing snapshot.
+        Return deterministic snapshot.
         """
 
         return {
-            destination: route.snapshot()
-            for destination, route
-            in self._routes.items()
+            route_id: route.snapshot()
+            for route_id, route in self.routes.items()
         }

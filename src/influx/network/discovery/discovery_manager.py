@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from time import time
 
 from .discovery import Discovery
 from .discovery_record import DiscoveryRecord
@@ -8,96 +8,98 @@ from .discovery_record import DiscoveryRecord
 
 class DiscoveryManager:
     """
-    Controls discovery instances.
-
-    Supports simulations and multi-network
-    environments where multiple discovery
-    domains may exist.
+    Coordinates discovery operations.
     """
 
-    def __init__(self) -> None:
 
-        self.instances: Dict[
-            str,
-            Discovery,
-        ] = {}
-
-
-    def register(
+    def __init__(
         self,
-        name: str,
-        discovery: Discovery,
+        discovery: Discovery | None = None,
     ) -> None:
-        """
-        Register discovery service.
-        """
 
-        self.instances[name] = discovery
-
-
-    def lookup(
-        self,
-        name: str,
-    ) -> Optional[Discovery]:
-        """
-        Retrieve discovery service.
-        """
-
-        return self.instances.get(
-            name
+        self.discovery = (
+            discovery
+            if discovery is not None
+            else Discovery()
         )
 
 
-    def discover(
+    def register_peer(
         self,
-        name: str,
         record: DiscoveryRecord,
     ) -> bool:
         """
-        Discover peer through service.
+        Register a discovered peer.
         """
 
-        discovery = self.lookup(
-            name
-        )
-
-        if discovery is None:
-            return False
-
-        return discovery.discover(
+        return self.discovery.discover(
             record
         )
 
 
-    def start_all(self) -> None:
+    def remove_peer(
+        self,
+        node_id: str,
+    ) -> bool:
         """
-        Start discovery services.
-        """
-
-        for discovery in self.instances.values():
-
-            discovery.start()
-
-
-    def stop_all(self) -> None:
-        """
-        Stop discovery services.
+        Remove discovered peer.
         """
 
-        for discovery in self.instances.values():
+        return self.discovery.remove(
+            node_id
+        )
 
-            discovery.stop()
 
-
-    def snapshot(self) -> dict:
+    def lookup(
+        self,
+        node_id: str,
+    ) -> DiscoveryRecord | None:
         """
-        Deterministic manager snapshot.
+        Lookup peer.
         """
 
-        return {
-            name:
-                discovery.snapshot()
+        return self.discovery.lookup(
+            node_id
+        )
 
-            for name, discovery
-            in self.instances.items()
-        }
+
+    def refresh_peer(
+        self,
+        node_id: str,
+    ) -> bool:
+        """
+        Refresh peer heartbeat.
+        """
+
+        record = self.lookup(
+            node_id
+        )
+
+        if record is None:
+            return False
+
+        record.last_seen = time()
+
+        return True
+
+
+    def snapshot(
+        self,
+    ) -> dict[str, object]:
+        """
+        Return discovery state snapshot.
+        """
+
+        snapshot = self.discovery.snapshot()
+
+        table = snapshot.get(
+            "table",
+            {},
+        )
+
+        if isinstance(table, dict):
+            snapshot.update(
+                table
+            )
+
+        return snapshot

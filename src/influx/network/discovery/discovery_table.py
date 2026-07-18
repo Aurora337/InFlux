@@ -1,24 +1,19 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
-
 from .discovery_record import DiscoveryRecord
 
 
 class DiscoveryTable:
     """
-    Stores known peer discovery records.
-
-    The table provides deterministic lookup and
-    peer lifecycle management.
+    Deterministic discovery record registry.
     """
 
-    def __init__(self) -> None:
 
-        self.records: Dict[
-            str,
-            DiscoveryRecord
-        ] = {}
+    def __init__(
+        self,
+    ) -> None:
+
+        self.records: dict[str, DiscoveryRecord] = {}
 
 
     def add(
@@ -26,9 +21,7 @@ class DiscoveryTable:
         record: DiscoveryRecord,
     ) -> bool:
         """
-        Add a peer record.
-
-        Returns False if duplicate.
+        Add discovery record.
         """
 
         if record.node_id in self.records:
@@ -46,13 +39,15 @@ class DiscoveryTable:
         node_id: str,
     ) -> bool:
         """
-        Remove peer record.
+        Remove discovery record.
         """
 
         if node_id not in self.records:
             return False
 
-        del self.records[node_id]
+        del self.records[
+            node_id
+        ]
 
         return True
 
@@ -60,9 +55,9 @@ class DiscoveryTable:
     def lookup(
         self,
         node_id: str,
-    ) -> Optional[DiscoveryRecord]:
+    ) -> DiscoveryRecord | None:
         """
-        Find peer record.
+        Lookup discovery record.
         """
 
         return self.records.get(
@@ -70,11 +65,22 @@ class DiscoveryTable:
         )
 
 
+    def contains(
+        self,
+        node_id: str,
+    ) -> bool:
+        """
+        Check if record exists.
+        """
+
+        return node_id in self.records
+
+
     def active_peers(
         self,
     ) -> list[DiscoveryRecord]:
         """
-        Return active peers.
+        Return active discovery records.
         """
 
         return [
@@ -82,31 +88,26 @@ class DiscoveryTable:
             for record in self.records.values()
             if record.active
         ]
-
+    
 
     def count(
         self,
     ) -> int:
         """
-        Return peer count.
+        Return number of discovery records.
         """
 
-        return len(
-            self.records
-        )
+        return len(self.records)
 
 
     def snapshot(
         self,
-    ) -> dict:
+    ) -> dict[str, object]:
         """
-        Deterministic table snapshot.
+        Deterministic discovery snapshot.
         """
 
         return {
-            node_id:
-                record.snapshot()
-
-            for node_id, record
-            in self.records.items()
+            node_id: record.snapshot()
+            for node_id, record in self.records.items()
         }

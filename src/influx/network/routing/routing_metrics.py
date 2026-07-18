@@ -6,146 +6,84 @@ from dataclasses import dataclass
 @dataclass(slots=True)
 class RoutingMetrics:
     """
-    Deterministic routing statistics.
-
-    These metrics are intended for observability,
-    replay analysis, benchmarking, and future
-    adaptive routing algorithms.
+    Tracks deterministic routing activity.
     """
 
-    messages_routed: int = 0
-
-    messages_delivered: int = 0
-
-    messages_dropped: int = 0
-
-    routing_failures: int = 0
-
-    broadcasts: int = 0
+    routes_created: int = 0
+    routes_removed: int = 0
+    routing_attempts: int = 0
+    failed_lookups: int = 0
 
     route_lookups: int = 0
-
-    route_misses: int = 0
-
+    routing_failures: int = 0
     ttl_expired: int = 0
+    packets_dropped: int = 0
+    packets_routed: int = 0
+    packets_delivered: int = 0
+    broadcasts: int = 0
 
-    bytes_routed: int = 0
+    def record_attempt(self) -> None:
+        self.routing_attempts += 1
 
+    def record_created(self) -> None:
+        self.routes_created += 1
 
-    def record_route(
-        self,
-        bytes_sent: int,
-    ) -> None:
-        """
-        Record a routed message.
-        """
+    def record_removed(self) -> None:
+        self.routes_removed += 1
 
-        self.messages_routed += 1
-        self.bytes_routed += bytes_sent
-
-
-    def record_delivery(self) -> None:
-        """
-        Record successful delivery.
-        """
-
-        self.messages_delivered += 1
-
-
-    def record_drop(self) -> None:
-        """
-        Record a dropped message.
-        """
-
-        self.messages_dropped += 1
-
-
-    def record_failure(self) -> None:
-        """
-        Record a routing failure.
-        """
-
-        self.routing_failures += 1
-
-
-    def record_broadcast(self) -> None:
-        """
-        Record a broadcast event.
-        """
-
-        self.broadcasts += 1
-
+    def record_failed_lookup(self) -> None:
+        self.failed_lookups += 1
 
     def record_lookup(
         self,
         found: bool,
     ) -> None:
         """
-        Record route lookup activity.
+        Record a route lookup.
         """
+
+        _ = found
 
         self.route_lookups += 1
 
-        if not found:
-            self.route_misses += 1
-
+    def record_failure(self) -> None:
+        self.routing_failures += 1
 
     def record_ttl_expired(self) -> None:
-        """
-        Record TTL expiration.
-        """
-
         self.ttl_expired += 1
 
+    def record_drop(self) -> None:
+        self.packets_dropped += 1
 
-    @property
-    def delivery_rate(self) -> float:
+    def record_route(
+        self,
+        payload_size: int,
+    ) -> None:
         """
-        Successful delivery percentage.
-        """
-
-        if self.messages_routed == 0:
-            return 0.0
-
-        return (
-            self.messages_delivered
-            / self.messages_routed
-        )
-
-
-    @property
-    def lookup_success_rate(self) -> float:
-        """
-        Successful route lookup percentage.
+        Record a routed packet.
         """
 
-        if self.route_lookups == 0:
-            return 0.0
+        _ = payload_size
 
-        return (
-            (
-                self.route_lookups
-                - self.route_misses
-            )
-            / self.route_lookups
-        )
+        self.packets_routed += 1
 
+    def record_delivery(self) -> None:
+        self.packets_delivered += 1
 
-    def snapshot(self) -> dict[str, int | float]:
-        """
-        Produce a deterministic metrics snapshot.
-        """
+    def record_broadcast(self) -> None:
+        self.broadcasts += 1
 
+    def snapshot(self) -> dict[str, int]:
         return {
-            "messages_routed": self.messages_routed,
-            "messages_delivered": self.messages_delivered,
-            "messages_dropped": self.messages_dropped,
-            "routing_failures": self.routing_failures,
-            "broadcasts": self.broadcasts,
+            "routes_created": self.routes_created,
+            "routes_removed": self.routes_removed,
+            "routing_attempts": self.routing_attempts,
+            "failed_lookups": self.failed_lookups,
             "route_lookups": self.route_lookups,
-            "route_misses": self.route_misses,
+            "routing_failures": self.routing_failures,
             "ttl_expired": self.ttl_expired,
-            "bytes_routed": self.bytes_routed,
-            "delivery_rate": self.delivery_rate,
-            "lookup_success_rate": self.lookup_success_rate,
+            "packets_dropped": self.packets_dropped,
+            "packets_routed": self.packets_routed,
+            "packets_delivered": self.packets_delivered,
+            "broadcasts": self.broadcasts,
         }
