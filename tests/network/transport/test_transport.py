@@ -42,14 +42,8 @@ class MockTransport(Transport):
 
     def receive(
         self,
-        session: TransportSession,
-        data: bytes,
-    ) -> bool:
-
-        session.record_receive(
-            len(data)
-        )
-
+        session,
+    ):
         return True
 
 

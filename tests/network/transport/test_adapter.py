@@ -71,10 +71,9 @@ def test_receive():
 
     assert adapter.receive(
         session,
-        b"hello",
     )
 
-    assert session.bytes_received == 5
+    assert session.connected
 
 
 def test_heartbeat():
