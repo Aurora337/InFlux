@@ -6,7 +6,9 @@
     "v3.12.0",
     "v3.13.0",
     "v3.14.0",
-    "v3.15.0"
+    "v3.15.0",
+    "v4.0.0",
+    "v4.1.0"
   ],
   "orphaned_tags": [
     "v0.1.0-kernel",
@@ -34,6 +36,6 @@
     "v0.9.6-sync-ops-finalization",
     "v1.9.0-state-root-complete"
   ],
-  "tags_checked": 44,
-  "tags_valid": 44
+  "tags_checked": 46,
+  "tags_valid": 46
 }

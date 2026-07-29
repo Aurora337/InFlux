@@ -1,34 +1,41 @@
-from .proposal import (
+"""
+InFlux Deterministic Governance Layer.
+
+Provides deterministic governance primitives including:
+- Proposal lifecycle management
+- Token-weighted voting with snapshot semantics
+- Treasury management
+- Governance engine coordination
+- Drift detection and policy enforcement
+- Governance metrics collection
+"""
+
+from influx.governance.proposal import (
     Proposal,
+    ProposalStatus,
+    ProposalType,
+    ProposalLifecycle,
 )
-
-from .voting_engine import (
-    VotingEngine,
-    VoteResult,
+from influx.governance.voting import (
+    Vote,
+    VotingSession,
+    VotingPower,
 )
-
-from .governance_rules import (
-    GovernanceRules,
-    GovernanceRuleEngine,
-)
-
-from .upgrade_manager import (
-    UpgradeManager,
-    UpgradeRecord,
-)
-
-from .governance_metrics import (
-    GovernanceMetrics,
-)
-
+from influx.governance.treasury import Treasury
+from influx.governance.governance_engine import GovernanceEngine
+from influx.governance.drift_detector import DriftDetector
+from influx.governance.governance_metrics import GovernanceMetrics
 
 __all__ = [
     "Proposal",
-    "VotingEngine",
-    "VoteResult",
-    "GovernanceRules",
-    "GovernanceRuleEngine",
-    "UpgradeManager",
-    "UpgradeRecord",
+    "ProposalStatus",
+    "ProposalType",
+    "ProposalLifecycle",
+    "Vote",
+    "VotingSession",
+    "VotingPower",
+    "Treasury",
+    "GovernanceEngine",
+    "DriftDetector",
     "GovernanceMetrics",
 ]

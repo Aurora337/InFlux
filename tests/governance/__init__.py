@@ -1,11 +1,7 @@
 """
-Governance validation package.
+Governance test suite for InFlux.
 
-Contains deterministic tests for:
-
-- proposals
-- voting
-- governance rules
-- upgrades
-- metrics
+Tests cover proposal lifecycle, voting, treasury management,
+governance engine coordination, drift detection, metrics,
+invariants, determinism, and performance baselines.
 """

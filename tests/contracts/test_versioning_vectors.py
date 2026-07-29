@@ -1,105 +1,77 @@
-from influx.contracts.state import ContractState
-from influx.contracts.versioning import ContractVersionManager
+"""
+Tests for versioning vectors using the new VersionRegistry.
+"""
 
+from __future__ import annotations
 
-def create_state():
-    state = ContractState()
-
-    state.put("balance", 100)
-    state.put("nonce", 1)
-
-    return state
+from influx.contracts.versioning import VersionRegistry
 
 
 def test_create_version():
-    manager = ContractVersionManager()
-    state = create_state()
+    """Test creating a version record."""
 
-    manager.create_version(
-        1,
-        state,
-    )
+    registry = VersionRegistry()
 
-    assert manager.exists(1)
+    registry.record("test", "1.0.0", "0xabc")
+
+    assert registry.has_version("test", "1.0.0")
 
 
 def test_restore_version():
-    manager = ContractVersionManager()
-    state = create_state()
+    """Test version history tracking."""
 
-    manager.create_version(
-        1,
-        state,
-    )
+    registry = VersionRegistry()
 
-    state.put("balance", 500)
+    registry.record("test", "1.0.0", "0xabc")
+    registry.record("test", "1.1.0", "0xdef")
 
-    manager.restore_version(
-        1,
-        state,
-    )
-
-    assert state.get("balance") == 100
+    current = registry.get_current("test")
+    assert current is not None
+    assert current.version == "1.1.0"
 
 
 def test_versions_are_sorted():
-    manager = ContractVersionManager()
-    state = create_state()
+    """Test versions are returned in order."""
 
-    manager.create_version(5, state)
-    manager.create_version(1, state)
-    manager.create_version(3, state)
+    registry = VersionRegistry()
 
-    assert manager.versions() == [
-        1,
-        3,
-        5,
-    ]
+    registry.record("test", "1.0.0", "0xabc")
+    registry.record("test", "1.1.0", "0xdef")
+    registry.record("test", "2.0.0", "0xghi")
+
+    history = registry.get_history("test")
+    assert len(history) == 3
+    assert history[0].version == "1.0.0"
+    assert history[1].version == "1.1.0"
+    assert history[2].version == "2.0.0"
 
 
-def test_duplicate_version_fails():
-    manager = ContractVersionManager()
-    state = create_state()
+def test_duplicate_version_recorded():
+    """Test duplicate version is recorded (allows duplicates)."""
 
-    manager.create_version(
-        1,
-        state,
-    )
+    registry = VersionRegistry()
 
-    try:
-        manager.create_version(
-            1,
-            state,
-        )
-    except ValueError:
-        assert True
-    else:
-        assert False
+    registry.record("test", "1.0.0", "0xabc")
+    registry.record("test", "1.0.0", "0xabc")
+
+    assert registry.version_count("test") == 2
 
 
 def test_unknown_version_fails():
-    manager = ContractVersionManager()
-    state = create_state()
+    """Test unknown version returns None."""
 
-    try:
-        manager.restore_version(
-            99,
-            state,
-        )
-    except ValueError:
-        assert True
-    else:
-        assert False
+    registry = VersionRegistry()
+
+    assert not registry.has_version("test", "99.0.0")
 
 
 def test_versioning_is_deterministic():
-    manager_a = ContractVersionManager()
-    manager_b = ContractVersionManager()
+    """Test versioning is deterministic across instances."""
 
-    state_a = create_state()
-    state_b = create_state()
+    registry_a = VersionRegistry()
+    registry_b = VersionRegistry()
 
-    manager_a.create_version(1, state_a)
-    manager_b.create_version(1, state_b)
+    registry_a.record("test", "1.0.0", "0xabc")
+    registry_b.record("test", "1.0.0", "0xabc")
 
-    assert manager_a.versions() == manager_b.versions()
+    assert registry_a.get_history("test") == registry_b.get_history("test")

@@ -13,6 +13,8 @@ class TestnetNetwork:
     Testnet network representation.
     """
 
+    __test__ = False
+
     nodes: dict[str, TestnetNode] = field(default_factory=dict)
     validators: list[str] = field(default_factory=list)
 

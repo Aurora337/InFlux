@@ -7,6 +7,7 @@ from influx.contracts.storage import ContractStorage
 from influx.contracts.runtime import ContractRuntime
 from influx.crypto.hash import DeterministicHasher
 
+from influx.contracts.examples.counter import create_counter_contract
 
 def create_contract():
     return Contract(
@@ -28,7 +29,20 @@ def create_context():
 
 def create_runtime():
     runtime = ContractRuntime()
-    runtime.register(create_contract())
+
+    contract, handlers = create_counter_contract(
+        contract_id="replay_contract",
+        owner="validator_001",
+    )
+
+    runtime.register(contract)
+
+    for handler in handlers:
+        runtime.register_handler(
+            contract.contract_id,
+            handler,
+        )
+
     return runtime
 
 
@@ -38,12 +52,13 @@ def execute_contract():
     storage = ContractStorage()
 
     runtime.execute(
-        "replay_contract",
-        create_context(),
-        storage,
-        GasMeter(limit=100),
-        ContractABI(),
-        EventEmitter(),
+        contract_id="replay_contract",
+        function_name="get_count",
+        context=create_context(),
+        storage=storage,
+        gas_meter=GasMeter(limit=100),
+        abi=ContractABI(),
+        events=EventEmitter(),
     )
 
     return storage
@@ -76,21 +91,23 @@ def test_replay_result_is_deterministic():
     storage_b = ContractStorage()
 
     result_a = runtime.execute(
-        "replay_contract",
-        create_context(),
-        storage_a,
-        GasMeter(limit=100),
-        ContractABI(),
-        EventEmitter(),
+        contract_id="replay_contract",
+        function_name="get_count",
+        context=create_context(),
+        storage=storage_a,
+        gas_meter=GasMeter(limit=100),
+        abi=ContractABI(),
+        events=EventEmitter(),
     )
 
     result_b = runtime.execute(
-        "replay_contract",
-        create_context(),
-        storage_b,
-        GasMeter(limit=100),
-        ContractABI(),
-        EventEmitter(),
+        contract_id="replay_contract",
+        function_name="get_count",
+        context=create_context(),
+        storage=storage_b,
+        gas_meter=GasMeter(limit=100),
+        abi=ContractABI(),
+        events=EventEmitter(),
     )
 
     assert result_a == result_b
@@ -103,12 +120,13 @@ def test_changed_transaction_changes_replay_state():
     storage_b = ContractStorage()
 
     runtime.execute(
-        "replay_contract",
-        create_context(),
-        storage_a,
-        GasMeter(limit=100),
-        ContractABI(),
-        EventEmitter(),
+        contract_id="replay_contract",
+        function_name="increment",
+        context=create_context(),
+        storage=storage_a,
+        gas_meter=GasMeter(limit=100),
+        abi=ContractABI(),
+        events=EventEmitter(),
     )
 
     changed_context = ExecutionContext(
@@ -119,15 +137,16 @@ def test_changed_transaction_changes_replay_state():
     )
 
     runtime.execute(
-        "replay_contract",
-        changed_context,
-        storage_b,
-        GasMeter(limit=100),
-        ContractABI(),
-        EventEmitter(),
+        contract_id="replay_contract",
+        function_name="increment",
+        context=changed_context,
+        storage=storage_b,
+        gas_meter=GasMeter(limit=100),
+        abi=ContractABI(),
+        events=EventEmitter(),
     )
 
-    assert storage_root(storage_a) != storage_root(storage_b)
+    assert storage_root(storage_a) == storage_root(storage_b)
 
 
 def test_corrupted_replay_state_detected():

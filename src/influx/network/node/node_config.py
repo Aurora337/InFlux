@@ -9,6 +9,8 @@ class NodeConfig:
     Network node configuration.
     """
 
+    node_name: str = "node"
+
     host: str = "127.0.0.1"
 
     port: int = 9000
@@ -34,6 +36,7 @@ class NodeConfig:
         """
 
         return {
+            "node_name": self.node_name,
             "host": self.host,
             "port": self.port,
             "max_peers": self.max_peers,

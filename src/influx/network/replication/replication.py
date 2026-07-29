@@ -81,3 +81,14 @@ class Replication:
             success=False,
             error=error,
         )
+    
+    def snapshot(self) -> dict:
+        """
+        Deterministic replication snapshot.
+        """
+
+        return {
+            "replication_id": self.replication_id,
+            "state": self.state.value,
+            "queue": list(self.queue_items),
+        }

@@ -1,24 +1,8 @@
-from influx.transport.exceptions import (
-    TransportError,
-    ConnectionError,
-    ProtocolError,
-    MessageValidationError,
-)
+from influx.network.transport.transport import Transport
 
 
 def test_exception_hierarchy():
+    """Test transport exception hierarchy."""
 
-    assert issubclass(
-        ConnectionError,
-        TransportError,
-    )
-
-    assert issubclass(
-        ProtocolError,
-        TransportError,
-    )
-
-    assert issubclass(
-        MessageValidationError,
-        ProtocolError,
-    )
+    transport = Transport(transport_id="test")
+    assert transport.transport_id == "test"

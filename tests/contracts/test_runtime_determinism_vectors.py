@@ -4,26 +4,26 @@ from influx.contracts.storage import ContractStorage
 from influx.contracts.gas import GasMeter
 from influx.contracts.events import EventEmitter
 from influx.contracts.abi import ContractABI
+from influx.contracts.examples.counter import create_counter_contract
 
-
-from influx.contracts.contract import Contract
-
-
-def create_contract():
-    return Contract(
-        contract_id="test_contract",
-        owner="validator_001",
-        version="1.0.0",
-        code_hash="abc123",
-    )
+import pytest
 
 
 def create_runtime():
     runtime = ContractRuntime()
 
-    runtime.register(
-        create_contract()
+    contract, handlers = create_counter_contract(
+        contract_id="test_contract",
+        owner="validator_001",
     )
+
+    runtime.register(contract)
+
+    for handler in handlers:
+        runtime.register_handler(
+            contract.contract_id,
+            handler,
+        )
 
     return runtime
 
@@ -54,21 +54,23 @@ def test_same_execution_produces_same_result():
     storage_b, gas_b, abi_b, events_b = create_environment()
 
     result_a = runtime_a.execute(
-        "test_contract",
-        create_context(),
-        storage_a,
-        gas_a,
-        abi_a,
-        events_a,
+        contract_id="test_contract",
+        function_name="get_count",
+        context=create_context(),
+        storage=storage_a,
+        gas_meter=gas_a,
+        abi=abi_a,
+        events=events_a,
     )
 
     result_b = runtime_b.execute(
-        "test_contract",
-        create_context(),
-        storage_b,
-        gas_b,
-        abi_b,
-        events_b,
+        contract_id="test_contract",
+        function_name="get_count",
+        context=create_context(),
+        storage=storage_b,
+        gas_meter=gas_b,
+        abi=abi_b,
+        events=events_b,
     )
 
     assert result_a == result_b
@@ -80,17 +82,16 @@ def test_execution_changes_storage_deterministically():
     storage, gas, abi, events = create_environment()
 
     runtime.execute(
-        "test_contract",
-        create_context(),
-        storage,
-        gas,
-        abi,
-        events,
+        contract_id="test_contract",
+        function_name="increment",
+        context=create_context(),
+        storage=storage,
+        gas_meter=gas,
+        abi=abi,
+        events=events,
     )
 
-    assert storage.get("last_transaction") == "tx_001"
-    assert storage.get("last_caller") == "validator_001"
-    assert storage.get("last_block") == "1"
+    assert storage.get("count") == "1"
 
 
 def test_registered_contract_count():
@@ -102,14 +103,13 @@ def test_registered_contract_count():
 def test_duplicate_contract_registration_fails():
     runtime = create_runtime()
 
-    try:
-        runtime.register(
-            DummyContract()
-        )
-    except Exception:
-        assert True
-    else:
-        assert False
+    contract, _ = create_counter_contract(
+        contract_id="test_contract",
+        owner="validator_001",
+    )
+
+    with pytest.raises(Exception):
+        runtime.register(contract)
 
 
 def test_missing_contract_fails():
@@ -117,16 +117,13 @@ def test_missing_contract_fails():
 
     storage, gas, abi, events = create_environment()
 
-    try:
+    with pytest.raises(Exception):
         runtime.execute(
-            "missing",
-            create_context(),
-            storage,
-            gas,
-            abi,
-            events,
+            contract_id="missing",
+            function_name="get_count",
+            context=create_context(),
+            storage=storage,
+            gas_meter=gas,
+            abi=abi,
+            events=events,
         )
-    except Exception:
-        assert True
-    else:
-        assert False

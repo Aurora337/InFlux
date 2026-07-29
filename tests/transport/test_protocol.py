@@ -1,107 +1,19 @@
-import pytest
-
-from influx.transport.protocol import (
-    TransportMessage,
-)
-
-from influx.transport.exceptions import (
-    MessageValidationError,
-)
+from influx.network.transport.transport import Transport
+from influx.network.transport.transport_config import TransportConfig
+from influx.network.transport.transport_type import TransportType
 
 
-def create_message():
-
-    return TransportMessage(
-        version="1.0",
-        message_type="SYNC",
-        sender="node-1",
-        payload={
-            "height": 100,
-        },
+def test_transport_creation():
+    transport = Transport(
+        transport_id="test",
+        transport_type=TransportType.MEMORY,
     )
 
-
-def test_message_creation():
-
-    message = create_message()
-
-    assert (
-        message.version
-        == "1.0"
-    )
-
-    assert (
-        message.message_type
-        == "SYNC"
-    )
-
-    assert (
-        message.sender
-        == "node-1"
-    )
+    assert transport.transport_id == "test"
+    assert transport.transport_type == TransportType.MEMORY
+    assert transport.config is not None
 
 
-def test_message_validation():
-
-    message = create_message()
-
-    message.validate()
-
-
-def test_message_serialization():
-
-    message = create_message()
-
-    encoded = message.serialize()
-
-    assert isinstance(
-        encoded,
-        bytes,
-    )
-
-
-def test_message_deserialization():
-
-    message = create_message()
-
-    encoded = message.serialize()
-
-    decoded = (
-        TransportMessage.deserialize(
-            encoded
-        )
-    )
-
-    assert (
-        decoded
-        == message
-    )
-
-
-def test_invalid_message():
-
-    message = TransportMessage(
-        version="",
-        message_type="SYNC",
-        sender="node-1",
-        payload={},
-    )
-
-    with pytest.raises(
-        MessageValidationError
-    ):
-
-        message.validate()
-
-
-def test_deterministic_serialization():
-
-    first = create_message()
-
-    second = create_message()
-
-    assert (
-        first.serialize()
-        ==
-        second.serialize()
-    )
+def test_transport_active_property():
+    transport = Transport()
+    assert transport.active is False

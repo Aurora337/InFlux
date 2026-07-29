@@ -54,3 +54,9 @@ build/
 *.egg/
 .eggs/
 .venv/
+
+# Crash dumps
+core.*
+
+# Bounteous Brain local config
+.brain/
