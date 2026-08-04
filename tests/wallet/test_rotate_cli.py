@@ -13,7 +13,7 @@ def test_rotate_and_resign_cli():
     with TemporaryDirectory() as td:
         base = Path(td)
         mgr = WalletManager(base)
-        acct = mgr.create_account("acct-cli", "id-cli", 1)
+        mgr.create_account("acct-cli", "id-cli", 1)
 
         # create a sample transaction JSON to be resigned
         resign_dir = base / "txs"

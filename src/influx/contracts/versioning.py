@@ -12,7 +12,6 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .contract import Contract
-from .exceptions import ContractError
 
 
 @dataclass(frozen=True, slots=True)

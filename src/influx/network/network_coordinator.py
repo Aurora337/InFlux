@@ -55,7 +55,7 @@ class NetworkCoordinator:
         peer_count = len(self.state.peers)
         if peer_count % 10 == 0 and peer_count > 0:
             self.drift_detector.detect_config_drift(
-                component=f"network.peer_count",
+                component="network.peer_count",
                 expected=f"{peer_count}_peers",
                 actual=peer_count,
                 message=f"Network reached {peer_count} connected peers",

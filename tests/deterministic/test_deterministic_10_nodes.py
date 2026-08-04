@@ -3,7 +3,6 @@ Test deterministic convergence with 10 nodes.
 Minimum viable network size.
 """
 
-import pytest
 from harness.deterministic import DeterministicValidator
 from harness.deterministic.assertions import ConvergenceAssertions
 

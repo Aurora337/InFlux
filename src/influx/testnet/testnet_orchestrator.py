@@ -36,6 +36,7 @@ class TestnetResult:
 
 
 class TestnetOrchestrator:
+    __test__ = False
     """
     Orchestrates the full lifecycle of a multi-node testnet.
 

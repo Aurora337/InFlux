@@ -1,7 +1,6 @@
 from influx.network.node.network_node import NetworkNode
 from influx.network.node.node_config import NodeConfig
 from influx.network.node.node_coordinator import NodeCoordinator
-from influx.network.node.node_event import NodeEvent
 from influx.network.node.node_events import NodeEvents
 from influx.network.node.node_sync import NodeSync
 from influx.network.node.node_validator import NodeValidator

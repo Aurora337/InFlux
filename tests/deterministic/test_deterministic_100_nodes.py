@@ -3,7 +3,6 @@ Test deterministic convergence with 100 nodes.
 Moderate network size with higher coordination overhead.
 """
 
-import pytest
 from harness.deterministic import DeterministicValidator
 from harness.deterministic.assertions import ConvergenceAssertions
 

@@ -9,7 +9,6 @@ Asserts that every honest node ends with identical:
 
 from __future__ import annotations
 
-from typing import Any
 
 from ..deterministic_validator import NodeState, ValidationResult
 

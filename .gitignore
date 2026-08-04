@@ -60,3 +60,6 @@ core.*
 
 # Bounteous Brain local config
 .brain/
+
+docs/audit/*.json
+

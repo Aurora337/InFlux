@@ -117,8 +117,24 @@ class Proposal:
     execution_delay_blocks: int = 100
     quorum: float = 0.4
     approval_threshold: float = 0.5
+    votes_for: list[str] = field(default_factory=list)
+    votes_against: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
     _hash: Optional[str] = field(default=None, repr=False)
+
+    def approved(self, threshold: int = 1) -> bool:
+        """
+        Determine whether proposal passes governance approval.
+
+        Approval requires:
+        - minimum number of supporting votes
+        - supporting votes greater than opposing votes
+        """
+
+        return (
+            len(self.votes_for) >= threshold
+            and len(self.votes_for) > len(self.votes_against)
+        )
 
     def compute_hash(self) -> str:
         """
@@ -136,6 +152,8 @@ class Proposal:
             "execution_delay_blocks": self.execution_delay_blocks,
             "quorum": self.quorum,
             "approval_threshold": self.approval_threshold,
+            "votes_for": sorted(self.votes_for),
+            "votes_against": sorted(self.votes_against),
             "metadata": dict(sorted(self.metadata.items())),
         }
         serialized = json.dumps(canonical, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -161,6 +179,9 @@ class Proposal:
             "target_block_height": self.target_block_height,
             "quorum": self.quorum,
             "approval_threshold": self.approval_threshold,
+            "votes_for": self.votes_for,
+            "votes_against": self.votes_against,
+            "approved": self.approved,
         }
 
     def validate(self) -> bool:

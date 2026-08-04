@@ -91,7 +91,7 @@ def test_invalid_signature_verification():
 
 def test_unsigned_transaction_fails():
 
-    signer = WalletSigner()
+    WalletSigner()
 
 
 def test_ed25519_signing_and_verification():
@@ -119,7 +119,7 @@ def test_ed25519_invalid_verification():
     from nacl.signing import SigningKey
 
     sk = SigningKey.generate()
-    vk = sk.verify_key
+    sk.verify_key
 
     other_sk = SigningKey.generate()
     other_vk = other_sk.verify_key

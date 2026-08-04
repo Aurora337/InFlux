@@ -11,7 +11,6 @@ Generates audit report with validation of:
 - Order-independent synchronization results
 """
 
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -75,7 +74,7 @@ def run_cross_cluster_sync_audit(output_path: Path | None = None) -> dict:
         cluster_2.snapshot(),
         cluster_2.cluster_hash(),
     )
-    sync_12 = session_12.synchronize()
+    session_12.synchronize()
     result.add_session_result(session_12)
     
     # Session 2: Instance 2 ↔ Instance 3
@@ -90,7 +89,7 @@ def run_cross_cluster_sync_audit(output_path: Path | None = None) -> dict:
         cluster_3.snapshot(),
         cluster_3.cluster_hash(),
     )
-    sync_23 = session_23.synchronize()
+    session_23.synchronize()
     result.add_session_result(session_23)
     
     # Session 3: Instance 1 ↔ Instance 3 (verification)
@@ -105,7 +104,7 @@ def run_cross_cluster_sync_audit(output_path: Path | None = None) -> dict:
         cluster_3.snapshot(),
         cluster_3.cluster_hash(),
     )
-    sync_13 = session_13.synchronize()
+    session_13.synchronize()
     result.add_session_result(session_13)
     
     # Verify all sessions reached same convergence point

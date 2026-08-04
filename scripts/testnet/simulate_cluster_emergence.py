@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Run deterministic cluster emergence simulation and write artifacts."""
 
+# ruff: noqa: E402
+
 from __future__ import annotations
 
 import argparse
@@ -13,8 +15,12 @@ SRC_PATH = ROOT / "src"
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-from influx.kernel.cluster import ClusterThresholds, NodeRole
-from influx.kernel.cluster.simulation import ClusterEvent, default_event_stream, run_cluster_emergence_simulation
+from influx.kernel.cluster import ClusterThresholds, NodeRole  # noqa: E402
+from influx.kernel.cluster.simulation import (  # noqa: E402
+    ClusterEvent,
+    default_event_stream,
+    run_cluster_emergence_simulation,
+)
 
 
 def _parse_events(path: Path) -> list[ClusterEvent]:

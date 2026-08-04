@@ -8,7 +8,6 @@ voting sessions, treasury interactions, and state transitions.
 from __future__ import annotations
 
 import hashlib
-import json
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -23,7 +22,6 @@ from influx.governance.voting import (
     Vote,
     VoteOption,
     VotingSession,
-    VotingPower,
 )
 from influx.governance.treasury import Treasury
 from influx.governance.governance_metrics import GovernanceMetrics

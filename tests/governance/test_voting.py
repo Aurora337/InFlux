@@ -5,7 +5,6 @@ Tests vote creation/hashing, voting power registration, vote casting,
 quorum calculation, approval thresholds, veto mechanics, and result computation.
 """
 
-import pytest
 
 from influx.governance.voting import (
     Vote,

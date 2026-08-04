@@ -216,6 +216,51 @@ class ContractRuntime:
             contract_id=contract.contract_id,
             message="Deployment completed.",
         )
+    def _get_storage(
+        self,
+        contract_id: str,
+        storage: ContractStorage,
+    ) -> ContractStorage:
+        """
+        Return the canonical storage instance for a contract.
+
+        If the contract has been deployed, always use the
+        persisted storage. Otherwise use the supplied storage.
+        """
+
+        return self.contract_storage.get(
+            contract_id,
+            storage,
+        )
+
+    def _record_execution_metadata(
+        self,
+        storage: ContractStorage,
+        context: ExecutionContext,
+    ) -> None:
+        """
+        Persist deterministic execution metadata.
+        """
+
+        storage.put(
+            "last_transaction",
+            context.transaction_id,
+        )
+
+        storage.put(
+            "last_caller",
+            context.caller,
+        )
+
+        storage.put(
+            "last_block",
+            str(context.block_height),
+        )
+
+        storage.put(
+            "last_network",
+            context.network_id,
+        )
 
     # ---------------------------------------------------------
     # Execution
@@ -257,7 +302,7 @@ class ContractRuntime:
         )
 
         try:
-            return self.engine.dispatch(
+            result = self.engine.dispatch(
                 contract=contract,
                 function_name=function_name,
                 context=context,
@@ -269,8 +314,10 @@ class ContractRuntime:
                 kwargs=kwargs,
             )
 
+            return result
+
         finally:
-            self._pop_call()
+            self.call_stack.pop()
 
     # ---------------------------------------------------------
     # Cross-contract calls
@@ -329,20 +376,6 @@ class ContractRuntime:
         # ---------------------------------------------------------
     # Internal Helpers
     # ---------------------------------------------------------
-
-    def _get_storage(
-        self,
-        contract_id: str,
-        storage: ContractStorage,
-    ) -> ContractStorage:
-        """
-        Return deployed storage when available.
-        """
-
-        return self.contract_storage.get(
-            contract_id,
-            storage,
-        )
 
     def _validate_execution(
         self,

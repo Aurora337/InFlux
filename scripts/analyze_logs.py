@@ -13,7 +13,6 @@ from collections import Counter, defaultdict
 LOG_DIR = Path("logs")
 
 def analyze_log_file(path: Path):
-    counts = Counter()
     levels = defaultdict(int)
     error_re = re.compile(r"\b(ERROR|WARN|WARNING|CRITICAL)\b", re.IGNORECASE)
     total_lines = 0

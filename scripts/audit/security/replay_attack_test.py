@@ -7,10 +7,8 @@ Tests the protocol's resistance to replay attacks.
 import hashlib
 import json
 import os
-import sys
 import time
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 
 @dataclass
@@ -35,7 +33,7 @@ class ReplayAttackTester:
         
         # Simulate a replayed message with same nonce but different timestamp
         replayed_nonce = original_nonce
-        replayed_timestamp = original_timestamp + 3600  # 1 hour later
+        _ = original_timestamp + 3600  # 1 hour later
         
         # In a proper implementation, the nonce should be tracked
         # and replayed messages should be rejected
@@ -80,7 +78,7 @@ class ReplayAttackTester:
 
     def test_signature_replay(self) -> ReplayTestResult:
         """Test that signatures cannot be replayed."""
-        sig_data = os.urandom(64)
+        _ = os.urandom(64)
         context = b"influx:tx:1234"
         
         # In a proper implementation, signatures include context

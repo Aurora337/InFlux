@@ -10,7 +10,6 @@ import hashlib
 import json
 import random
 
-import pytest
 
 from influx.governance.proposal import (
     Proposal,
@@ -22,9 +21,8 @@ from influx.governance.voting import (
     Vote,
     VoteOption,
     VotingSession,
-    VotingPower,
 )
-from influx.governance.treasury import Treasury, Dispersal, DispersalStatus
+from influx.governance.treasury import Treasury
 from influx.governance.governance_engine import GovernanceEngine
 
 
@@ -41,7 +39,7 @@ class TestInvariantProposalIds:
         engine2 = GovernanceEngine()
 
         p1 = engine1.create_proposal(title="Test", description="Desc", proposer="alice")
-        p2 = engine2.create_proposal(title="Test", description="Desc", proposer="alice")
+        engine2.create_proposal(title="Test", description="Desc", proposer="alice")
 
         # Note: IDs include a timestamp component, so they may differ.
         # This test validates that the proposal_id is always a valid 16-char hex string.

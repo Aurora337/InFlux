@@ -2,8 +2,7 @@
 Unit tests for event content hashing utilities.
 """
 
-import pytest
-from influx.events.event import Event, EventType, create_event
+from influx.events.event import EventType, create_event
 from influx.events.event_hash import (
     compute_content_hash,
     verify_event_chain,

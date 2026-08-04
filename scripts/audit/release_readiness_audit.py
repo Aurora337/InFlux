@@ -18,15 +18,11 @@ Checks:
 import json
 import subprocess
 import sys
-from datetime import UTC, datetime
+from datetime import datetime, UTC
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-
-
 def run_command(cmd, capture=True):
-    """Run shell command and return result."""
     try:
         if capture:
             result = subprocess.run(
@@ -34,70 +30,114 @@ def run_command(cmd, capture=True):
                 shell=True,
                 capture_output=True,
                 text=True,
-                cwd=str(REPO_ROOT)
+                cwd="/workspaces/InFlux",
+                timeout=900,
             )
             return result.returncode == 0, result.stdout.strip(), result.stderr.strip()
+
         else:
-            result = subprocess.run(cmd, shell=True, cwd=str(REPO_ROOT))
+            result = subprocess.run(
+                cmd,
+                shell=True,
+                cwd="/workspaces/InFlux",
+                timeout=900,
+            )
             return result.returncode == 0, "", ""
+
+    except subprocess.TimeoutExpired:
+        return False, "", "Command timed out after 900 seconds"
+
     except Exception as e:
         return False, "", str(e)
 
 
 def check_tests_valid():
-    """Verify all tests pass."""
-    python_executable = sys.executable
-    success, stdout, _ = run_command(
-        f"{python_executable} -m pytest "
-        "tests/audit/test_audit_policy_enforcement.py::test_policy_schema "
-        "tests/assessment/test_testnet_readiness.py::test_testnet_readiness_output_contract "
-        "-v --tb=short 2>&1 | tail -20"
-    )
-    
-    # Parse pytest output for pass/fail
-    if "passed" in stdout and "failed" not in stdout:
-        # Extract test count
-        import re
-        match = re.search(r"(\d+) passed", stdout)
+    """
+    Verify the repository test suite.
+
+    During release hardening we do not rerun the entire repository
+    from inside the audit because the audit itself is executed by
+    pytest. Running pytest recursively causes extremely long audit
+    times.
+
+    Instead we verify the major subsystem suites individually.
+    """
+
+    test_commands = [
+        "python -m pytest tests/contracts -q",
+        "python -m pytest tests/events -q",
+        "python -m pytest tests/governance -q",
+        "python -m pytest tests/vm -q",
+        "python -m pytest tests/network -q",
+        "python -m pytest tests/transport -q",
+        "python -m pytest tests/deterministic -q",
+    ]
+
+    total_passed = 0
+
+    import re
+
+    for cmd in test_commands:
+        success, stdout, stderr = run_command(cmd)
+
+        if not success:
+            return False, total_passed, 0
+
+        match = re.search(r"(\d+)\s+passed", stdout)
         if match:
-            return True, int(match.group(1)), 0
-    
-    # Fallback: run tests and check exit code
-    success, _, _ = run_command(
-        f"{python_executable} -m pytest "
-        "tests/audit/test_audit_policy_enforcement.py::test_policy_schema "
-        "tests/assessment/test_testnet_readiness.py::test_testnet_readiness_output_contract "
-        "-q"
-    )
-    return success, 0, 0
+            total_passed += int(match.group(1))
+
+    return True, total_passed, 0
 
 
 def check_audit_reports_valid():
     """Verify release_integrity and repository_health reports exist and are valid."""
-    audit_file = REPO_ROOT / "docs" / "audit" / "release_integrity_report.json"
-    health_file = REPO_ROOT / "docs" / "audit" / "repository_health.json"
-    
+
+    audit_file = Path("/workspaces/InFlux/docs/audit/release_integrity_report.json")
+    health_file = Path("/workspaces/InFlux/docs/audit/repository_health.json")
+
     audit_valid = False
     health_valid = False
-    
+
     if audit_file.exists():
         try:
             with open(audit_file) as f:
                 data = json.load(f)
-                audit_valid = data.get("audit_valid", False) and data.get("integrity_score", 0) == 1.0
-        except:
-            pass
-    
+
+            print("\nRelease Integrity Report:")
+            print(json.dumps(data, indent=2))
+
+            audit_valid = (
+                data.get("audit_valid", False)
+                and data.get("integrity_score", 0) == 1.0
+            )
+
+        except Exception as e:
+            print(f"Failed reading release_integrity_report.json: {e}")
+
+    else:
+        print("release_integrity_report.json not found")
+
     if health_file.exists():
         try:
             with open(health_file) as f:
                 data = json.load(f)
-                health_valid = data.get("health_valid", False) and data.get("health_score", 0) == 1.0
-        except:
-            pass
-    
-    return audit_valid and health_valid
 
+            print("\nRepository Health Report:")
+            print(json.dumps(data, indent=2))
+
+            health_valid = (
+                data.get("health_valid", False)
+                and data.get("health_score", 0) == 1.0
+            )
+
+        except Exception as e:
+            print(f"Failed reading repository_health.json: {e}")
+
+    else:
+        print("repository_health.json not found")
+
+    return audit_valid and health_valid
 
 def check_release_notes_present():
     """Verify release notes exist for this version."""
@@ -106,7 +146,7 @@ def check_release_notes_present():
     version = version.strip()
     
     # Look for release notes
-    release_notes_dir = REPO_ROOT / "docs" / "releases"
+    release_notes_dir = Path("/workspaces/InFlux/docs/releases")
     if release_notes_dir.exists():
         # Check if any release notes exist
         notes_files = list(release_notes_dir.glob("*.md"))
@@ -122,13 +162,13 @@ def check_tags_consistent():
         tag_count = int(stdout.strip())
         # Should have at least the v1.1.1 tag now
         return tag_count >= 1
-    except:
-        return False
+    except Exception:
+        pass
 
 
 def check_working_tree_clean():
-    """Verify no uncommitted changes outside expected audit artifacts."""
-    success, stdout, _ = run_command("git status --porcelain -- . ':(exclude)docs/audit'")
+    """Verify no uncommitted changes."""
+    success, stdout, _ = run_command("git status --porcelain")
     return stdout.strip() == ""
 
 
@@ -184,7 +224,7 @@ def generate_readiness_report():
     report = {
         "release_ready": release_ready,
         "readiness_score": round(readiness_score, 2),
-        "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "timestamp": datetime.now(UTC).isoformat(),
         "checks": {
             "tests_valid": tests_valid,
             "audit_valid": audit_valid,
@@ -197,7 +237,7 @@ def generate_readiness_report():
     }
     
     # Write report
-    report_path = REPO_ROOT / "docs" / "audit" / "release_readiness_report.json"
+    report_path = Path("/workspaces/InFlux/docs/audit/release_readiness_report.json")
     report_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(report_path, "w") as f:
@@ -208,7 +248,7 @@ def generate_readiness_report():
     print(f"\n{status_icon} Release Readiness Report")
     print(f"   Score: {readiness_score:.1%}")
     print(f"   Ready: {release_ready}")
-    print(f"\nChecks:")
+    print("\nChecks:")
     for check, result in report["checks"].items():
         icon = "✓" if result else "✗"
         print(f"  {icon} {check}")

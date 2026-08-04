@@ -14,7 +14,7 @@ from influx.network.peer import Peer
 from influx.network.registry import PeerRegistry
 from influx.network.sync.sync import Sync
 from influx.governance.governance_engine import GovernanceEngine
-from influx.governance.drift_detector import DriftDetector, DriftSeverity
+from influx.governance.drift_detector import DriftDetector
 
 
 class NetworkManager:

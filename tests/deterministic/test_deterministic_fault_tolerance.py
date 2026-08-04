@@ -3,7 +3,6 @@ Test deterministic convergence under various fault conditions.
 Includes leader failures, node failures, and recovery scenarios.
 """
 
-import pytest
 from harness.deterministic import DeterministicValidator
 from harness.deterministic.assertions import ConvergenceAssertions
 from harness.deterministic.scenarios import FaultScenarios

@@ -3,7 +3,6 @@ Test deterministic convergence with 1000 nodes.
 Large network size testing scalability of consensus.
 """
 
-import pytest
 from harness.deterministic import DeterministicValidator
 from harness.deterministic.assertions import ConvergenceAssertions
 

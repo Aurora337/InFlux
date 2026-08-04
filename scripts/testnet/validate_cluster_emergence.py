@@ -13,7 +13,7 @@ SRC_PATH = ROOT / "src"
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-from influx.kernel.cluster.validation import validate_cluster_emergence_report
+from influx.kernel.cluster.validation import validate_cluster_emergence_report  # noqa: E402
 
 
 def _render_markdown(result: dict) -> str:

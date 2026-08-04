@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-from .abi import ContractABI, ContractFunction
+from .abi import ContractABI
 from .context import ExecutionContext
 from .contract import Contract
 from .events import ContractEvent, EventEmitter

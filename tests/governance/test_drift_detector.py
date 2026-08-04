@@ -6,7 +6,6 @@ policy violations, specification drift, consensus drift,
 severity/category filtering, and snapshot behavior.
 """
 
-import pytest
 
 from influx.governance.drift_detector import (
     DriftDetector,

@@ -1,5 +1,4 @@
 from influx.network.transport.transport import Transport
-from influx.network.transport.transport_config import TransportConfig
 from influx.network.transport.transport_session import TransportSession
 from influx.network.transport.transport_type import TransportType
 

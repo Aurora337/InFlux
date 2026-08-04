@@ -8,7 +8,7 @@ The validator never mutates state — it only checks conditions.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 from .economic_context import EconomicContext
 from .economic_executor import EconomicOperation, OperationType

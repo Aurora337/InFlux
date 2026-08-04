@@ -3,7 +3,6 @@ Test deterministic convergence under network partition scenarios.
 Tests that nodes reconverge after partition heals.
 """
 
-import pytest
 from harness.deterministic import DeterministicValidator
 from harness.deterministic.assertions import ConvergenceAssertions
 from harness.deterministic.scenarios import FaultScenarios

@@ -5,12 +5,9 @@ Generates malformed inputs to test protocol robustness.
 """
 
 import os
-import sys
 import json
 import random
 import struct
-from pathlib import Path
-from typing import Any
 
 
 class FuzzTester:
@@ -58,7 +55,7 @@ class FuzzTester:
                 msg = self.fuzz_message()
                 tx = self.fuzz_transaction()
                 sig = self.fuzz_signature()
-                state = self.fuzz_state()
+                _ = self.fuzz_state()
                 self.results.append({
                     "iteration": i,
                     "passed": True,

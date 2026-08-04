@@ -20,6 +20,7 @@ influx-wallet-rotate = "influx.wallet.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -31,9 +32,11 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"
-testpaths = [
-    "tests",
-]
+
+markers = [
+    "slow: marks tests that take longer to execute"
+]   
+
 pythonpath = [
     ".",
     "src"

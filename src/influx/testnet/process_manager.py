@@ -7,7 +7,6 @@ Uses subprocess to run actual node instances with real sockets and networking.
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 import os
@@ -16,8 +15,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from dataclasses import dataclass, field
-from pathlib import Path
+from dataclasses import dataclass
 from typing import Optional
 
 logger = logging.getLogger(__name__)

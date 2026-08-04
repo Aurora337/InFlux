@@ -3,7 +3,6 @@ Test deterministic convergence under recovery scenarios.
 Tests that nodes recover and reconverge after failures.
 """
 
-import pytest
 from harness.deterministic import DeterministicValidator
 from harness.deterministic.assertions import ConvergenceAssertions
 from harness.deterministic.scenarios import FaultScenarios, AdversarialScenarios

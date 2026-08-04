@@ -8,7 +8,6 @@ Generates a deterministic formation report for:
 - Hash stability across formation runs
 """
 
-import hashlib
 import json
 import sys
 from pathlib import Path
