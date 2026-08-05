@@ -63,3 +63,20 @@ core.*
 
 docs/audit/*.json
 
+# ============================================================
+# Generated Audit Reports
+# ============================================================
+
+docs/audit/release_integrity_report.json
+docs/audit/release_readiness_report.json
+docs/audit/repository_health.json
+docs/audit/continuous_audit_report.json
+docs/audit/automated_release_validation_report.json
+
+# ============================================================
+# Local Release Engineering Artifacts
+# ============================================================
+
+RC*.patch
+backups/
+
