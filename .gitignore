@@ -80,3 +80,4 @@ docs/audit/automated_release_validation_report.json
 RC*.patch
 backups/
 
+.brain-cache/
