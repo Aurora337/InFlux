@@ -30,7 +30,6 @@ class EconomicStateExchange:
         """
         canonical = json.dumps(
             {
-                "cluster_id": self.cluster_id,
                 "reserve_supply": self.reserve_supply,
                 "circulating_supply": self.circulating_supply,
                 "economic_epoch": self.economic_epoch,
