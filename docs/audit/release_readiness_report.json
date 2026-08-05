@@ -1,13 +1,13 @@
 {
   "release_ready": false,
-  "readiness_score": 0.71,
-  "timestamp": "2026-07-15T01:04:33.115769Z",
+  "readiness_score": 0.86,
+  "timestamp": "2026-07-29T05:17:57.338171Z",
   "checks": {
     "tests_valid": true,
     "audit_valid": false,
     "release_notes_present": true,
     "tags_consistent": true,
-    "working_tree_clean": false,
+    "working_tree_clean": true,
     "no_generated_artifacts": true,
     "main_has_merge": true
   }

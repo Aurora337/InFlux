@@ -23,3 +23,21 @@ class MessageError(NetworkError):
     """
     Invalid protocol message.
     """
+
+
+class PeerNotFound(NetworkError):
+    """
+    Peer not found in registry.
+    """
+
+
+class SessionClosed(NetworkError):
+    """
+    Session is closed.
+    """
+
+
+class SerializationError(NetworkError):
+    """
+    Message serialization error.
+    """

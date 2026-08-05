@@ -45,6 +45,13 @@ class ValidatorLifecycle:
         self.registered = True
         self.state = ValidatorState.REGISTERED
 
+    def register(self) -> None:
+        """
+        Compatibility alias for register_validator().
+        """
+
+        self.register_validator()
+
     def start_validator(self) -> None:
         self._require_state(ValidatorState.REGISTERED, "start")
         self.state = ValidatorState.STARTED
@@ -67,10 +74,12 @@ class ValidatorLifecycle:
 
     def emit_status(self) -> dict:
         if self.state is None:
-            raise LifecycleError("validator must be created before status emission")
+            raise LifecycleError(
+                "validator must be created before status emission"
+            )
+
         return {
             "validator_id": self.validator_id,
-            "state": self.state.value,
             "registered": self.registered,
             "started": self.started,
             "healthy": self.healthy,

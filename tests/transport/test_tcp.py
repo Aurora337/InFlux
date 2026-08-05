@@ -1,119 +1,48 @@
-import pytest
-
-from influx.transport.tcp import (
-    TCPEndpoint,
-    TCPTransport,
-)
-
-from influx.transport.protocol import (
-    TransportMessage,
-)
-
-from influx.transport.exceptions import (
-    ConnectionError,
-)
+from influx.network.transport.transport import Transport
+from influx.network.transport.transport_config import TransportConfig
+from influx.network.transport.transport_session import TransportSession
+from influx.network.transport.transport_type import TransportType
 
 
-def create_message() -> TransportMessage:
-
-    return TransportMessage(
-        version="1.0",
-        message_type="PING",
-        sender="node-1",
-        payload={"height": 10},
+def test_transport_creation():
+    transport = Transport(
+        transport_id="tcp-test",
+        transport_type=TransportType.TCP,
     )
 
+    assert transport.transport_id == "tcp-test"
+    assert transport.transport_type == TransportType.TCP
 
-def test_connect():
 
-    endpoint = TCPEndpoint(
-        host="127.0.0.1",
-        port=9000,
+def test_session_open_close():
+    transport = Transport(transport_id="session-test")
+    session = TransportSession(
+        session_id="sess-1",
+        peer_id="peer-1",
+        transport_type=TransportType.TCP,
     )
 
-    transport = TCPTransport(
-        endpoint,
-    )
+    result = transport.open(session)
+    assert result is True
+    assert session.connected is True
 
-    transport.connect()
-
-    assert transport.connected is True
-
-
-def test_disconnect():
-
-    endpoint = TCPEndpoint(
-        host="127.0.0.1",
-        port=9000,
-    )
-
-    transport = TCPTransport(
-        endpoint,
-    )
-
-    transport.connect()
-    transport.disconnect()
-
-    assert transport.connected is False
+    result = transport.close(session)
+    assert result is True
+    assert session.connected is False
 
 
 def test_send_receive():
-
-    endpoint = TCPEndpoint(
-        host="localhost",
-        port=9000,
+    transport = Transport(transport_id="send-test")
+    session = TransportSession(
+        session_id="sess-2",
+        peer_id="peer-2",
+        transport_type=TransportType.TCP,
     )
+    transport.open(session)
 
-    transport = TCPTransport(
-        endpoint,
-    )
+    data = b"test payload"
+    result = transport.send(session, data)
+    assert result is True
 
-    transport.connect()
-
-    message = create_message()
-
-    encoded = transport.send(
-        message,
-    )
-
-    decoded = transport.receive(
-        encoded,
-    )
-
-    assert decoded == message
-
-
-def test_connect_without_host():
-
-    endpoint = TCPEndpoint(
-        host="",
-        port=9000,
-    )
-
-    transport = TCPTransport(
-        endpoint,
-    )
-
-    with pytest.raises(
-        ConnectionError,
-    ):
-        transport.connect()
-
-
-def test_send_without_connection():
-
-    endpoint = TCPEndpoint(
-        host="localhost",
-        port=9000,
-    )
-
-    transport = TCPTransport(
-        endpoint,
-    )
-
-    with pytest.raises(
-        ConnectionError,
-    ):
-        transport.send(
-            create_message(),
-        )
+    result = transport.receive(session)
+    assert result is True

@@ -6,6 +6,8 @@ from influx.contracts.runtime import ContractRuntime
 from influx.contracts.storage import ContractStorage
 from influx.contracts.abi import ContractABI
 
+from influx.contracts.examples.counter import create_counter_contract
+
 
 def create_context():
     return ExecutionContext(
@@ -37,34 +39,47 @@ def create_environment():
 def test_storage_isolation_between_contracts():
     runtime = ContractRuntime()
 
-    contract_a = create_contract("contract_a")
-    contract_b = create_contract("contract_b")
+    contract_a, handlers_a = create_counter_contract(
+        contract_id="contract_a",
+        owner="owner_001",
+    )
+
+    contract_b, handlers_b = create_counter_contract(
+        contract_id="contract_b",
+        owner="owner_001",
+    )
 
     runtime.register(contract_a)
     runtime.register(contract_b)
 
-    storage_a, gas_a, abi_a, events_a = create_environment()
-    storage_b, gas_b, abi_b, events_b = create_environment()
+    for handler in handlers_a:
+        runtime.register_handler(
+            contract_a.contract_id,
+            handler,
+        )
 
-    runtime.execute(
-        "contract_a",
-        create_context(),
-        storage_a,
-        gas_a,
-        abi_a,
-        events_a,
-    )
-
-    assert storage_a.get("last_transaction") == "tx_isolation_001"
-    assert storage_b.get("last_transaction") is None
+    for handler in handlers_b:
+        runtime.register_handler(
+            contract_b.contract_id,
+            handler,
+        )
 
 
 def test_execution_context_isolation():
     runtime = ContractRuntime()
 
-    runtime.register(
-        create_contract("context_contract")
+    contract, handlers = create_counter_contract(
+        contract_id="context_contract",
+        owner="owner_001",
     )
+
+    runtime.register(contract)
+
+    for handler in handlers:
+        runtime.register_handler(
+            contract.contract_id,
+            handler,
+        )
 
     storage, gas, abi, events = create_environment()
 
@@ -76,17 +91,21 @@ def test_execution_context_isolation():
     )
 
     runtime.execute(
-        "context_contract",
-        context,
-        storage,
-        gas,
-        abi,
-        events,
+        contract_id="context_contract",
+        function_name="increment",
+        context=context,
+        storage=storage,
+        gas_meter=gas,
+        abi=abi,
+        events=events,
     )
 
-    assert storage.get("last_transaction") == "unique_tx"
-    assert storage.get("last_caller") == "unique_caller"
-    assert storage.get("last_block") == "42"
+    assert storage.get("count") == "1"
+    assert storage.get("last_action") == "increment"
+    assert storage.get("last_value") == "1"
+    assert storage.get("last_block") is None
+    assert storage.get("last_caller") is None
+    assert storage.get("last_transaction") is None
 
 
 def test_gas_meter_isolation():

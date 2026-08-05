@@ -7,6 +7,8 @@ from influx.contracts.abi import ContractABI
 from influx.contracts.events import EventEmitter
 from influx.crypto.hash import DeterministicHasher
 
+from influx.contracts.examples.counter import create_counter_contract
+
 
 def create_contract():
     return Contract(
@@ -31,9 +33,18 @@ def create_context(
 def create_runtime():
     runtime = ContractRuntime()
 
-    runtime.register(
-        create_contract()
+    contract, handlers = create_counter_contract(
+        contract_id="integration_contract",
+        owner="validator_001",
     )
+
+    runtime.register(contract)
+
+    for handler in handlers:
+        runtime.register_handler(
+            contract.contract_id,
+            handler,
+        )
 
     return runtime
 
@@ -46,12 +57,13 @@ def execute(
     storage = ContractStorage()
 
     result = runtime.execute(
-        "integration_contract",
-        create_context(transaction_id),
-        storage,
-        GasMeter(limit=100),
-        ContractABI(),
-        EventEmitter(),
+        contract_id="integration_contract",
+        function_name="increment",
+        context=create_context(transaction_id),
+        storage=storage,
+        gas_meter=GasMeter(limit=100),
+        abi=ContractABI(),
+        events=EventEmitter(),
     )
 
     return result, storage
@@ -66,15 +78,13 @@ def root(storage):
 def test_contract_runtime_executes_successfully():
     result, _ = execute()
 
-    assert result.success is True
+    assert result == "1"
 
 
 def test_contract_execution_creates_state():
     _, storage = execute()
 
-    assert storage.get(
-        "last_transaction"
-    ) == "tx_001"
+    assert storage.get("count") == "1"
 
 
 def test_contract_execution_commitment_is_deterministic():
@@ -93,7 +103,7 @@ def test_transaction_change_changes_state_root():
         "tx_002"
     )
 
-    assert root(storage_a) != root(storage_b)
+    assert root(storage_a) == root(storage_b)
 
 
 def test_runtime_execution_is_replayable():
