@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-from runtime_executable import PYTHON_EXECUTABLE
+from influx.runtime_executable import PYTHON_EXECUTABLE
 
 
 class TestAutomatedReleaseValidation:

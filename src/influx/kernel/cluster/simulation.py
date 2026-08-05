@@ -81,11 +81,11 @@ def run_cluster_emergence_simulation(
     windows: list[dict] = []
     inactivity_windows = 0
 
-    for window in range(min_window, max_window + 1):
+    for window_index in range(min_window, max_window + 1):
         in_window = [
             event
             for event in ordered_events
-            if _window_index(event.ctor_slot, cfg.ctor_window_size) == window
+            if _window_index(event.ctor_slot, cfg.ctor_window_size) == window_index
         ]
         signals = [_event_to_signal(event) for event in in_window]
 
@@ -111,7 +111,7 @@ def run_cluster_emergence_simulation(
 
         windows.append(
             {
-                "window_index": window,
+                "window_index": window_index,
                 "event_count": len(in_window),
                 "ctor_stable": ctor_ordering_stable(signals),
                 "reserve_pressure": reserve_pressure,

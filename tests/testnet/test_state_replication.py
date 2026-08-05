@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from runtime_executable import python_cmd
+from influx.runtime_executable import python_cmd
 from scripts.testnet.state_replication_validator import StateReplicationError, validate_state_replication
 
 

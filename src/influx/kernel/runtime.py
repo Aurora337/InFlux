@@ -1,19 +1,9 @@
 from influx.kernel.state import State
-
-
-try:
-    from influx.kernel.ledger.pipeline import process_pipeline
-    from influx.kernel.ledger.serialization import serialize_state
-    from influx.kernel.ledger.hash_sync import compute_root_hash
-    from influx.kernel.node.vn import ValidatorNode
-    from influx.kernel.sync.shcm import verify_state_hash
-except ModuleNotFoundError:
-    from ledger.pipeline import process_pipeline
-    from ledger.serialization import serialize_state
-    from ledger.hash_sync import compute_root_hash
-    from node.vn import ValidatorNode
-    from sync.shcm import verify_state_hash
-
+from influx.kernel.ledger.pipeline import process_pipeline
+from influx.kernel.ledger.serialization import serialize_state
+from influx.kernel.ledger.hash_sync import compute_root_hash
+from influx.kernel.node.vn import ValidatorNode
+from influx.kernel.sync.shcm import verify_state_hash
 
 def main():
 
@@ -48,12 +38,10 @@ def main():
 
     peer_hashes = [local_hash for _, local_hash in node_hashes]
     network_hash = peer_hashes[0]
-    validations = [
-        validator.validate_hash(local_hash, network_hash)
-        for validator, local_hash in node_hashes
-    ]
+    
     consensus_ok = verify_state_hash(network_hash, peer_hashes)
-
+    for validator, local_hash in node_hashes:
+        validator.validate_hash(local_hash, network_hash)
     print("\nNODE HASHES")
     for validator, local_hash in node_hashes:
         print({"node": validator.node_id, "hash": local_hash})

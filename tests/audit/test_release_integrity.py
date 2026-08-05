@@ -8,12 +8,10 @@ output for scripts/audit/release_integrity_audit.py.
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Dict, List
 
 import pytest
 
@@ -22,9 +20,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.audit.release_integrity_audit import (  # noqa: E402
-    REPO_ROOT,
-    _find_matching_note,
-    _strip_suffix,
     _tag_sort_key,
     collect_release_notes,
     enumerate_tags,
@@ -237,8 +232,8 @@ class TestCLI:
 
     def test_cli_generates_report_file(self):
         """Running the CLI must produce the report JSON."""
-        with tempfile.TemporaryDirectory() as tmp:
-            result = subprocess.run(
+        with tempfile.TemporaryDirectory():
+            subprocess.run(
                 [sys.executable, str(PROJECT_ROOT / "scripts" / "audit" / "release_integrity_audit.py")],
                 capture_output=True,
                 text=True,

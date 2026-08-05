@@ -37,9 +37,9 @@ def test_block_store_persistence():
     # Create store and append blocks
     store = BlockStore(test_dir)
     
-    block1 = store.append("hash1_state")
-    block2 = store.append("hash2_state")
-    block3 = store.append("hash3_state")
+    store.append("hash1_state")
+    store.append("hash2_state")
+    store.append("hash3_state")
     
     assert store.chain_height() == 3
     assert store.verify_chain()

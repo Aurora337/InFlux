@@ -7,13 +7,44 @@ name = "influx"
 version = "0.1.0"
 description = "InFlux Ledger + Consensus System"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "fastapi",
+    "requests",
+    "uvicorn",
+    "pynacl>=1.5.0"
+]
 
 [project.scripts]
-influx = "influx.cli:main"
+influx = "influx.cli.main:main"
+influx-wallet-rotate = "influx.wallet.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["E402"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "src"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "pynacl>=1.5.0",
+    "argon2-cffi>=21.3.0",
+    "cryptography>=39.0.0",
+]
+
+crypto = [
+    "pynacl>=1.5.0",
+    "argon2-cffi>=21.3.0",
+    "cryptography>=39.0.0",
+]

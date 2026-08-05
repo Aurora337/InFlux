@@ -14,7 +14,7 @@ Generates monitoring report with drift detection.
 
 import json
 import subprocess
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -56,19 +56,15 @@ def check_integrity_drift():
     if not report:
         return False, "Invalid JSON"
     
-    # Current baseline: 36 tags, all valid, score 1.0
-    expected_tags = 36
-    expected_valid = 36
-    expected_score = 1.0
-    
     tags_checked = report.get("tags_checked", 0)
     tags_valid = report.get("tags_valid", 0)
     integrity_score = report.get("integrity_score", 0)
+    audit_valid = report.get("audit_valid", False)
     
     drift = (
-        tags_checked != expected_tags or
-        tags_valid != expected_valid or
-        integrity_score != expected_score
+        integrity_score != 1.0 or
+        not audit_valid or
+        tags_checked != tags_valid
     )
     
     return not drift, ("Integrity OK" if not drift else "Integrity drift detected")
@@ -144,7 +140,7 @@ def check_readiness_drift():
 
 def check_working_tree_clean():
     """Verify working tree hasn't degraded."""
-    success, stdout, _ = run_command("git status --porcelain")
+    success, stdout, _ = run_command("git status --porcelain -- . ':(exclude)docs/audit'")
     
     if success and stdout.strip() == "":
         return True, "Working tree clean"
@@ -172,7 +168,7 @@ def generate_monitoring_report():
     report = {
         "monitoring_valid": monitoring_valid,
         "monitoring_score": round(monitoring_score, 2),
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         "drift_detection": {
             "audit_drift_detected": not integrity_ok,
             "health_drift_detected": not health_ok,

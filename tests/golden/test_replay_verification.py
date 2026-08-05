@@ -59,7 +59,7 @@ def test_replay_verification_detects_mismatch():
     
     # Compute correct hash
     serialized = serialize_state(next_state)
-    correct_hash = compute_root_hash(serialized)
+    compute_root_hash(serialized)
     
     # Store with tampered hash
     store = ReplayStore()

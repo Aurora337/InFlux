@@ -5,7 +5,7 @@ import json
 import subprocess
 from pathlib import Path
 
-from runtime_executable import PYTHON_EXECUTABLE
+from influx.runtime_executable import PYTHON_EXECUTABLE
 
 
 SCRIPT_PATH = Path("scripts/audit/release_certification_pipeline.py")

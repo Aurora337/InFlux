@@ -1,15 +1,11 @@
 """Persistent block storage for deterministic ledger."""
 
 import json
-import os
 from pathlib import Path
 from typing import Optional
 from time import time
 
-try:
-    from influx.kernel.ledger.block import Block
-except ModuleNotFoundError:
-    from block import Block
+from influx.kernel.ledger.block import Block 
 
 
 class BlockStore:

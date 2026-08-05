@@ -1,7 +1,13 @@
 {
-  "audit_valid": true,
+  "audit_valid": false,
   "integrity_score": 1.0,
-  "missing_release_notes": [],
+  "missing_release_notes": [
+    "v3.10.0",
+    "v3.12.0",
+    "v3.13.0",
+    "v3.14.0",
+    "v3.15.0"
+  ],
   "orphaned_tags": [
     "v0.1.0-kernel",
     "v0.2.0-replay",
@@ -25,8 +31,9 @@
     "v0.9.3-sync-ops-governance",
     "v0.9.4-sync-ops-finalization",
     "v0.9.5-sync-ops-finalization",
-    "v0.9.6-sync-ops-finalization"
+    "v0.9.6-sync-ops-finalization",
+    "v1.9.0-state-root-complete"
   ],
-  "tags_checked": 36,
-  "tags_valid": 36
+  "tags_checked": 44,
+  "tags_valid": 44
 }
