@@ -419,53 +419,69 @@ def expected_release_note(tag: str) -> str:
 
 def expected_release_note_filename(tag: str) -> str:
     """
-    Return the expected release note filename for a tag.
+    Return canonical release note filename.
 
-    Compatibility wrapper for older audit helper callers.
+    Examples:
+        v0.1   -> v0.1-release-notes.md
+        0.1    -> v0.1-release-notes.md
+        v1.5.0 -> v1.5.0-release-notes.md
     """
+    if not tag.startswith("v"):
+        tag = f"v{tag}"
 
-    return expected_release_note(tag)
+    return f"{tag}-release-notes.md"
 
 
 # ============================================================================
 # Audit Helpers
 # ============================================================================
 
-def find_orphaned_tags(all_tags: List[str], notes_by_prefix: Dict[str, str]) -> List[str]:
-    """Tags that don't map to any known milestone notes."""
+def find_orphaned_tags(
+    all_tags: List[str],
+    notes_by_prefix: Dict[str, str],
+) -> List[str]:
+    """Public release tags that don't map to release notes."""
+
     orphaned: List[str] = []
+
     for tag in all_tags:
         if classify_tag(tag) != PUBLIC_RELEASE:
             continue
-            
+
         expected = _find_matching_note(tag)
+
         if expected is None:
             orphaned.append(tag)
             continue
+
         key = _strip_suffix(expected, "-release-notes.md")
-        # If milestone doesn't exist in filesystem, it is considered orphaned.
+
+        # Public releases must have matching release notes.
         if key not in notes_by_prefix:
             orphaned.append(tag)
-    orphaned.sort()
-    return orphaned
+
+    return sorted(orphaned)
 
 
-def find_version_tags_without_notes(all_tags: List[str], notes_by_prefix: Dict[str, str]) -> List[str]:
+def find_version_tags_without_notes(
+    all_tags: List[str],
+    notes_by_prefix: Dict[str, str],
+) -> List[str]:
     """Tags mapped to a milestone prefix but missing that milestone's notes."""
+
     missing: List[str] = []
+
     for tag in all_tags:
-        if classify_tag(tag) != PUBLIC_RELEASE:
+        if not is_tag_version_tag(tag):
             continue
 
-        expected = _find_matching_note(tag)
-        if expected is None:
-            # Non-version or unmapped tags are not "missing release notes".
-            continue
+        expected = expected_release_note(tag)
         key = _strip_suffix(expected, "-release-notes.md")
+
         if key not in notes_by_prefix:
             missing.append(tag)
-    missing.sort()
-    return missing
+
+    return sorted(missing)
 
 
 # ============================================================================

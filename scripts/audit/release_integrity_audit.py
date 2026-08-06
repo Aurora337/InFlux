@@ -17,17 +17,15 @@ Exit code: 0 when audit_valid == true, 1 when audit_valid == false.
 
 import json
 import re
-import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
+
 from scripts.audit.common import (
     collect_release_notes,
     enumerate_tags,
-    expected_release_note,
     find_orphaned_tags,
     find_version_tags_without_notes,
-    run_git,
     tag_commit_exists_in_history,
     tag_resolves_to_commit,
 )
@@ -57,8 +55,27 @@ AUDIT_REPORT_PATH = AUDIT_REPORT_DIR / "release_integrity_report.json"
 #   v1.1*  -> docs/releases/v1.1-release-notes.md
 
 
+def _tag_sort_key(tag: str) -> tuple:
+    """
+    Deterministic version-aware tag sorting.
+
+    Examples:
+        v0.1       -> (0, 1)
+        v1.1.0     -> (1, 1, 0)
+        v1.10.0    -> (1, 10, 0)
+    """
+    cleaned = tag.lstrip("v")
+    parts = re.findall(r"\d+", cleaned)
+
+    if parts:
+        return tuple(int(p) for p in parts)
+
+    return (tag,)
+
+
 def run_audit() -> Dict:
     """Execute the full release integrity audit and return the report dict."""
+
     all_tags = enumerate_tags()
     available_notes = collect_release_notes()
 
@@ -69,6 +86,7 @@ def run_audit() -> Dict:
     for tag in all_tags:
         resolves = tag_resolves_to_commit(tag)
         exists = tag_commit_exists_in_history(tag)
+
         if resolves and exists:
             valid_tags.append(tag)
         else:
@@ -85,11 +103,15 @@ def run_audit() -> Dict:
         available_notes,
     )
 
-
     # -- Score calculation ---------------------------------------------------
     tags_checked = len(all_tags)
     tags_valid = len(valid_tags)
-    integrity_score = round(tags_valid / tags_checked, 4) if tags_checked > 0 else 0.0
+
+    integrity_score = (
+        round(tags_valid / tags_checked, 4)
+        if tags_checked > 0
+        else 0.0
+    )
 
     # -- Deterministic output ------------------------------------------------
     invalid_tags.sort()
