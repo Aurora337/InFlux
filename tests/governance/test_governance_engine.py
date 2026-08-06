@@ -6,9 +6,8 @@ voting, closing, execution, block advancement, and treasury integration.
 Invariant tests are in test_governance_invariants.py.
 """
 
-import pytest
 
-from influx.governance.proposal import ProposalStatus, ProposalType, ProposalLifecycle
+from influx.governance.proposal import ProposalStatus, ProposalType
 from influx.governance.voting import VoteOption
 from influx.governance.governance_engine import GovernanceEngine
 

@@ -2,8 +2,7 @@
 Unit tests for Economic Context.
 """
 
-import pytest
-from influx.economics.economic_context import EconomicContext, create_economic_context
+from influx.economics.economic_context import create_economic_context
 
 
 class TestEconomicContext:

@@ -11,7 +11,7 @@ import time
 import pytest
 
 from influx.governance.governance_engine import GovernanceEngine
-from influx.governance.proposal import Proposal, ProposalType, ProposalStatus, ProposalLifecycle
+from influx.governance.proposal import ProposalType, ProposalStatus, ProposalLifecycle
 from influx.governance.voting import Vote, VoteOption, VotingSession
 from influx.governance.treasury import Treasury
 

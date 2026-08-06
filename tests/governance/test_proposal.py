@@ -5,11 +5,7 @@ Tests proposal creation, lifecycle transitions, hashing determinism,
 serialization, validation, and snapshot behavior.
 """
 
-import hashlib
-import json
-from datetime import datetime, timezone
 
-import pytest
 
 from influx.governance.proposal import (
     Proposal,

@@ -2,8 +2,7 @@
 Unit tests for the Event Queue.
 """
 
-import pytest
-from influx.events.event import Event, EventType, create_event
+from influx.events.event import EventType, create_event
 from influx.events.event_queue import EventQueue
 
 

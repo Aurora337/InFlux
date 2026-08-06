@@ -5,8 +5,6 @@ Runs static analysis tools and checks for common security issues.
 """
 
 import ast
-import os
-import sys
 from pathlib import Path
 
 
@@ -222,7 +220,7 @@ class StaticAnalyzer:
 
 def main() -> int:
     analyzer = StaticAnalyzer()
-    issues = analyzer.run_all()
+    analyzer.run_all()
     report = analyzer.report()
 
     import json

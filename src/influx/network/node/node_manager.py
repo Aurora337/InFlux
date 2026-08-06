@@ -12,7 +12,7 @@ class NodeManager:
     Deterministic manager for network nodes.
     """
 
-    _nodes: dict[str, object] = field(
+    _nodes: dict[str, NetworkNode] = field(
         default_factory=dict
     )
 
@@ -59,13 +59,13 @@ class NodeManager:
         return len(self._nodes)
 
     # Compatibility API for the higher-level Node implementation.
-    def add(self, node: object) -> None:
+    def add(self, node: NetworkNode) -> None:
         self.register(node)
 
     def remove(self, node_id: str) -> None:
         self.unregister(node_id)
 
-    def lookup(self, node_id: str) -> object | None:
+    def lookup(self, node_id: str) -> NetworkNode | None:
         return self.get(node_id)
 
     def start_all(self) -> None:
@@ -76,7 +76,7 @@ class NodeManager:
         for node in self._nodes.values():
             node.stop()
 
-    def active_nodes(self) -> list[object]:
+    def active_nodes(self) -> list[NetworkNode]:
         return [
             node
             for node in self._nodes.values()

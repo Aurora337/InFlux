@@ -4,7 +4,6 @@ import sys
 sys.path.insert(0, "src")
 
 from influx.kernel.state import State
-from influx.kernel.ledger.pipeline import process_pipeline
 from influx.kernel.ledger.serialization import serialize_state
 from influx.kernel.ledger.hash_sync import compute_root_hash
 from replay_store import StateSnapshot

@@ -6,15 +6,12 @@ FastAPI application serving real-time network metrics and cluster topology.
 
 from __future__ import annotations
 
-import json
 import logging
 import time
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 
 logger = logging.getLogger(__name__)
 

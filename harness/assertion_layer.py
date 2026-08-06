@@ -3,7 +3,7 @@
 Assertion utilities and invariant checks for harness tests.
 """
 
-from typing import Any, Callable
+from typing import Any
 
 class AssertionFailure(Exception):
     pass

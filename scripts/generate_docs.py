@@ -5,8 +5,6 @@ Documentation Generator for InFlux.
 Generates structured documentation from code and audit artifacts.
 """
 
-import json
-import os
 from pathlib import Path
 
 

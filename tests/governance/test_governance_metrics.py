@@ -4,7 +4,6 @@ Unit tests for the governance metrics module.
 Tests metrics recording, rate calculations, and snapshot behavior.
 """
 
-import pytest
 
 from influx.governance.governance_metrics import GovernanceMetrics
 

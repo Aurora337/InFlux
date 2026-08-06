@@ -14,14 +14,19 @@ class ReportGenerator:
         lines = ["In~Flux Test Report", "===================="]
         counters = metrics.get("counters", {})
         gauges = metrics.get("gauges", {})
-        lines.append("
-Counters:")
+
+        lines.append("")
+        lines.append("Counters:")
+
         for k, v in counters.items():
             lines.append(f"- {k}: {v}")
-        lines.append("
-Gauges:")
+
+        lines.append("")
+        lines.append("Gauges:")
+
         for k, v in gauges.items():
             lines.append(f"- {k}: {v}")
+            
         return "\n".join(lines)
 
     def generate_json(self, metrics: Dict[str, Any]) -> str:

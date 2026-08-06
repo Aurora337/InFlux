@@ -8,9 +8,8 @@ and chain integrity verification.
 from __future__ import annotations
 
 import hashlib
-import json
 from dataclasses import dataclass, field
-from typing import Any, Optional, Sequence
+from typing import Any, Optional
 
 from .event import Event, create_event, EventType
 

@@ -26,7 +26,7 @@ from typing import Any, Optional
 
 from .economic_context import EconomicContext
 from .economic_state import EconomicState
-from .economic_transition import EconomicTransition, StateTransition, TransitionType
+from .economic_transition import EconomicTransition, StateTransition
 
 
 class OperationType(Enum):

@@ -7,7 +7,7 @@ import requests
 from influx.runtime.node import InFluxNode
 from influx.config.settings import InFluxConfig
 from influx.simulation.run_cluster import SimulatedCluster
-from influx.simulation.test_fault_network import FaultTestNetwork
+from influx.simulation.fault_network import FaultTestNetwork
 
 import influx.observability.replay
 

@@ -2,8 +2,7 @@
 Unit tests for the Event Bus.
 """
 
-import pytest
-from influx.events.event import Event, EventType
+from influx.events.event import EventType
 from influx.events.event_bus import EventBus
 
 

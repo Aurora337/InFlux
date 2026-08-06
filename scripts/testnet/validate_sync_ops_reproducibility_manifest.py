@@ -134,7 +134,6 @@ def validate_manifest(
         )
 
         failed_from_checks = [item for item in checks_data if not item.get("passed", False)]
-        computed_failed = [item for item in checks if not item["passed"]]
         checks.append(
             _make_check(
                 "checks_total_consistent",

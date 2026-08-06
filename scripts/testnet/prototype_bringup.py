@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Prototype testnet bring-up validator for v1.4.0."""
 
+# ruff: noqa: E402
+
 from __future__ import annotations
 
 import argparse

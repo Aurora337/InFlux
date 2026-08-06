@@ -19,11 +19,11 @@ def test_key_rotation_keeps_old_signatures():
     sk1 = SigningKey.generate()
     sk1_hex = sk1.encode().hex()
     vk1_hex = sk1.verify_key.encode().hex()
-    entry1 = ks.add_key("acct-1", sk1_hex, vk1_hex, 1)
+    ks.add_key("acct-1", sk1_hex, vk1_hex, 1)
 
     signer = Ed25519WalletSigner()
     tx = create_transaction()
-    sig1 = signer.sign(tx, sk1_hex)
+    signer.sign(tx, sk1_hex)
     assert signer.verify(tx, vk1_hex)
 
     # rotate
@@ -40,5 +40,5 @@ def test_key_rotation_keeps_old_signatures():
 
     # new signature with new key verifies
     tx2 = create_transaction()
-    sig2 = signer.sign(tx2, sk2_hex)
+    signer.sign(tx2, sk2_hex)
     assert signer.verify(tx2, vk2_hex)

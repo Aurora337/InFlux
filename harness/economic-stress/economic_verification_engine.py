@@ -12,7 +12,6 @@ sys.path.insert(0, "src")
 
 from influx.kernel.state import State
 from influx.kernel.economic.delta_c import compute_delta
-from influx.kernel.economic.reproduction import reproduce_supply
 from influx.kernel.ledger.serialization import serialize_state
 from influx.kernel.ledger.hash_sync import compute_root_hash
 

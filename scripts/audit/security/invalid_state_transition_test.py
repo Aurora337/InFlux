@@ -5,9 +5,7 @@ Tests protocol handling of invalid state transitions.
 """
 
 import json
-import sys
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 
 @dataclass

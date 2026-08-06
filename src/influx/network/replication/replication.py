@@ -90,5 +90,5 @@ class Replication:
         return {
             "replication_id": self.replication_id,
             "state": self.state.value,
-            "queue": list(self.queue_items),
+            "queue": list(self.target_replicas),
         }

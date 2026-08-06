@@ -5,7 +5,6 @@ Tests treasury initialization, deposit/withdraw operations, dispersal lifecycle,
 accounting, multi-token support, and snapshot behavior.
 """
 
-import pytest
 
 from influx.governance.treasury import Treasury, Dispersal, DispersalStatus
 
@@ -227,7 +226,6 @@ class TestTreasuryDispersal:
 
     def test_dispersal_hash_determinism(self):
         """Same dispersal fields should produce the same hash."""
-        from influx.governance.treasury import Dispersal
 
         d1 = Dispersal(
             dispersal_id="disp-001",

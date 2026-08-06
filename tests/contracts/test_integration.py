@@ -5,17 +5,14 @@ Integration tests for the smart contract runtime.
 from __future__ import annotations
 
 from influx.contracts.runtime import ContractRuntime
-from influx.contracts.contract import Contract
 from influx.contracts.context import ExecutionContext
 from influx.contracts.storage import ContractStorage
 from influx.contracts.gas import GasMeter
 from influx.contracts.abi import ContractABI
 from influx.contracts.events import EventEmitter
-from influx.contracts.engine import FunctionHandler
 from influx.contracts.examples.counter import create_counter_contract
 from influx.contracts.examples.token import create_token_contract
 from influx.runtime.contract_integration import ContractRuntimeCoordinator
-from influx.runtime.coordinator import RuntimeCoordinator
 
 
 def test_counter_full_workflow() -> None:

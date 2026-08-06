@@ -3,7 +3,7 @@ Unit tests for the Event Filter.
 """
 
 import pytest
-from influx.events.event import Event, EventType, create_event
+from influx.events.event import EventType, create_event
 from influx.events.event_filter import (
     EventFilter,
     filter_by_type,

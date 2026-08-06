@@ -3,7 +3,7 @@
 Metrics collector placeholder: aggregate counters, histograms and simple statistics.
 """
 
-from typing import Dict, List
+from typing import Dict
 
 class MetricsCollector:
     def __init__(self):

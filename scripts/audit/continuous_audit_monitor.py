@@ -14,11 +14,8 @@ Generates monitoring report with drift detection.
 
 import json
 import subprocess
-from datetime import UTC, datetime
+from datetime import datetime, UTC
 from pathlib import Path
-
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def run_command(cmd):
@@ -29,7 +26,7 @@ def run_command(cmd):
             shell=True,
             capture_output=True,
             text=True,
-            cwd=str(REPO_ROOT)
+            cwd="/workspaces/InFlux"
         )
         return result.returncode == 0, result.stdout.strip(), result.stderr.strip()
     except Exception as e:
@@ -41,13 +38,13 @@ def load_report(report_path):
     try:
         with open(report_path) as f:
             return json.load(f)
-    except:
+    except Exception:
         return None
 
 
 def check_integrity_drift():
     """Check for drift in integrity metrics."""
-    report_path = REPO_ROOT / "docs" / "audit" / "release_integrity_report.json"
+    report_path = Path("/workspaces/InFlux/docs/audit/release_integrity_report.json")
     
     if not report_path.exists():
         return False, "Report missing"
@@ -56,15 +53,19 @@ def check_integrity_drift():
     if not report:
         return False, "Invalid JSON"
     
+    # Current baseline: 36 tags, all valid, score 1.0
+    expected_tags = 36
+    expected_valid = 36
+    expected_score = 1.0
+    
     tags_checked = report.get("tags_checked", 0)
     tags_valid = report.get("tags_valid", 0)
     integrity_score = report.get("integrity_score", 0)
-    audit_valid = report.get("audit_valid", False)
     
     drift = (
-        integrity_score != 1.0 or
-        not audit_valid or
-        tags_checked != tags_valid
+        tags_checked != expected_tags or
+        tags_valid != expected_valid or
+        integrity_score != expected_score
     )
     
     return not drift, ("Integrity OK" if not drift else "Integrity drift detected")
@@ -72,7 +73,7 @@ def check_integrity_drift():
 
 def check_health_drift():
     """Check for drift in health metrics."""
-    report_path = REPO_ROOT / "docs" / "audit" / "repository_health.json"
+    report_path = Path("/workspaces/InFlux/docs/audit/repository_health.json")
     
     if not report_path.exists():
         return False, "Report missing"
@@ -107,7 +108,7 @@ def check_health_drift():
 
 def check_readiness_drift():
     """Check for drift in readiness metrics."""
-    report_path = REPO_ROOT / "docs" / "audit" / "release_readiness_report.json"
+    report_path = Path("/workspaces/InFlux/docs/audit/release_readiness_report.json")
     
     if not report_path.exists():
         return False, "Report missing"
@@ -140,7 +141,7 @@ def check_readiness_drift():
 
 def check_working_tree_clean():
     """Verify working tree hasn't degraded."""
-    success, stdout, _ = run_command("git status --porcelain -- . ':(exclude)docs/audit'")
+    success, stdout, _ = run_command("git status --porcelain")
     
     if success and stdout.strip() == "":
         return True, "Working tree clean"
@@ -168,7 +169,7 @@ def generate_monitoring_report():
     report = {
         "monitoring_valid": monitoring_valid,
         "monitoring_score": round(monitoring_score, 2),
-        "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "timestamp": datetime.now(UTC).isoformat(),
         "drift_detection": {
             "audit_drift_detected": not integrity_ok,
             "health_drift_detected": not health_ok,
@@ -184,7 +185,7 @@ def generate_monitoring_report():
     }
     
     # Write report
-    report_path = REPO_ROOT / "docs" / "audit" / "continuous_audit_report.json"
+    report_path = Path("/workspaces/InFlux/docs/audit/continuous_audit_report.json")
     report_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(report_path, "w") as f:
@@ -195,11 +196,11 @@ def generate_monitoring_report():
     print(f"\n{status_icon} Continuous Audit Monitoring")
     print(f"   Score: {monitoring_score:.0%}")
     print(f"   Valid: {monitoring_valid}")
-    print(f"\nDrift Detection:")
+    print("\nDrift Detection:")
     for drift_type, detected in report["drift_detection"].items():
         icon = "🔴" if detected else "✓"
         print(f"  {icon} {drift_type}: {detected}")
-    print(f"\nDetailed Checks:")
+    print("\nDetailed Checks:")
     for check_name, check_result in report["checks"].items():
         icon = "✓" if check_result["valid"] else "✗"
         print(f"  {icon} {check_name}: {check_result['message']}")

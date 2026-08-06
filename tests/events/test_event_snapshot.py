@@ -2,8 +2,7 @@
 Unit tests for Event Snapshot.
 """
 
-import pytest
-from influx.events.event import Event, EventType, create_event
+from influx.events.event import EventType, create_event
 from influx.events.event_snapshot import EventSnapshot, EventSnapshotManager
 
 
